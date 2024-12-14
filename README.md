@@ -14,5 +14,5 @@ For cheats, put a copy of `usrcheat.dat` into the `_nds/cheats` folder. Themes g
 
 ## License
 
-This project is comprimised of various sources and is collectively licensed under the GPL-3.0-or-later license.
+This project is comprised of various sources and is collectively licensed under the GPL-3.0-or-later license.
 Please check [the license section](https://github.com/coderkei/akmenu-next/tree/main/licenses) for more information as well as a copy of all applicable licenses.
