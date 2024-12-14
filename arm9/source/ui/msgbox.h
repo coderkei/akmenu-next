@@ -22,6 +22,7 @@ namespace akui {
 #define MB_YES 4
 #define MB_NO 8
 #define MB_YES_NO 12
+#define MB_NONE 16
 
 #define ID_OK 1
 #define ID_CANCEL 0
@@ -76,5 +77,9 @@ class cMessageBox : public cForm {
 };
 
 u32 messageBox(cWindow* parent, const std::string& title, const std::string& msg, u32 style);
+
+  // namespace akui
+
+u32 messageBoxStatic(cWindow* parent, const std::string& title, const std::string& msg, u32 style);
 
 }  // namespace akui

@@ -1,4 +1,6 @@
 build
+themes
+package
 data/load.bin
 *.elf
 *.nds

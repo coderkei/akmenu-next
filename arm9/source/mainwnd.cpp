@@ -380,6 +380,7 @@ void cMainWnd::onKeyAPressed() {
 
 void cMainWnd::launchSelected() {
     std::string fullPath = _mainList->getSelectedFullPath();
+    std::string romName = _mainList->getSelectedShowName();
 
     if (fullPath[fullPath.size() - 1] == '/') {
         _mainList->enterDir(fullPath);
@@ -402,9 +403,12 @@ void cMainWnd::launchSelected() {
     dbg_printf("%d\n", fullPath[fullPath.size() - 1]);
 
     std::string title, text;
-    bool show = true;
+    bool show = true;;
+    progressWnd().setTipText("Loading " + romName + "...");
+    progressWnd().show();
+    progressWnd().setPercent(0);
     switch (launchRom(fullPath, rominfo,
-                      rominfo.isHomebrew() && "akmenu4.nds" == _mainList->getSelectedShowName())) {
+                      rominfo.isHomebrew() && "BOOT.NDS" == _mainList->getSelectedShowName())) {
         case ELaunchNoFreeSpace:
             title = LANG("no free space", "title");
             text = LANG("no free space", "text");
@@ -413,7 +417,9 @@ void cMainWnd::launchSelected() {
             show = false;
             break;
     }
+    progressWnd().setPercent(100);
     if (show) messageBox(this, title, text, MB_OK);
+    progressWnd().hide();
 }
 
 void cMainWnd::onKeyBPressed() {

@@ -10,9 +10,9 @@
 #pragma once
 
 #ifndef __DSIMODE__
-#define SFN_SYSTEM_DIR "fat:/__rpg/"
+#define SFN_SYSTEM_DIR "fat:/_nds/"
 #else
-#define SFN_SYSTEM_DIR "sd:/__rpg/"
+#define SFN_SYSTEM_DIR "sd:/_nds/"
 #endif
 #define SFN_OFFICIAL_SAVELIST SFN_SYSTEM_DIR "savelist.bin"
 #define SFN_CUSTOM_SAVELIST SFN_SYSTEM_DIR "gamedata.bin"

@@ -19,6 +19,9 @@
 #include "../inifile.h"
 #include "../mainlist.h"
 #include "../systemfilenames.h"
+#include "../language.h"
+#include "../ui/msgbox.h"
+#include "../ui/progresswnd.h"
 #include "ILauncher.h"
 #include "NdsBootstrapLauncher.h"
 #include "nds_loader_arm9.h"
@@ -74,8 +77,12 @@ bool NdsBootstrapLauncher::prepareIni() {
 bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, u32 flags,
                                      u32 cheatOffset, u32 cheatSize) {
     const char ndsBootstrapPath[] = SD_ROOT_0 "/_nds/nds-bootstrap-release.nds";
+    progressWnd().setTipText("Initializing nds-bootstrap...");
+    progressWnd().show();
+    progressWnd().setPercent(0);
 
     if (access(ndsBootstrapPath, F_OK) != 0) {
+        progressWnd().hide();
         printLoaderNotFound(ndsBootstrapPath);
         return false;
     }
@@ -90,20 +97,29 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
     if (access("/_nds/nds-bootstrap/", F_OK) != 0) {
         mkdir("/_nds/nds-bootstrap/", 0777);
     }
+    progressWnd().setPercent(25);
 
     // Setup argv to launch nds-bootstrap
     argv.push_back(ndsBootstrapPath);
 
+    progressWnd().setTipText("Loading usrcheat.dat...");
+    progressWnd().setPercent(50);
     // Prepare cheat codes if enabled
     if (flags & PATCH_CHEATS) {
-        if (!prepareCheats()) return false;
+        if (!prepareCheats()) {
+            return false;
+        }
     }
+    progressWnd().setTipText("Initializing nds-bootstrap...");
+    progressWnd().setPercent(75);
 
     // Setup nds-bootstrap INI parameters
     if (!prepareIni()) return false;
+    progressWnd().setPercent(100);
 
     // Launch
     eRunNdsRetCode rc = runNdsFile(argv[0], argv.size(), &argv[0]);
+    progressWnd().hide();
     if (rc == RUN_NDS_OK) return true;
 
     return false;

@@ -47,7 +47,7 @@ cHelpWnd::cHelpWnd(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::strin
 
     // u8 nandDriverVer = getNandDriverVer();
     _helpText += '\n';
-    _helpText += formatString("LHS akmenu %s.%s ", AKMENU_VERSION_MAIN, AKMENU_VERSION_SUB);
+    _helpText += formatString("coderkei akmenu-next %s.%s ", AKMENU_VERSION_MAIN, AKMENU_VERSION_SUB);
     _helpText += formatString("\n%s %s ", AKMENU_LOADER_NAME, AKMENU_LOADER_VERSION);
 }
 

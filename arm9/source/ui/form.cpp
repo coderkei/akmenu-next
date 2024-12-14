@@ -180,6 +180,19 @@ u32 cForm::doModal() {
     return modalRet();
 }
 
+u32 cForm::doStatic() {
+    windowManager().addWindow(this);
+    show();
+
+    timer().updateFps();
+    INPUT& inputs = updateInput();
+    processInput(inputs);
+    windowManager().update();
+    gdi().present(GE_MAIN);
+
+    return modalRet();
+}
+
 void cForm::onOK() {
     _modalRet = 1;
 }
