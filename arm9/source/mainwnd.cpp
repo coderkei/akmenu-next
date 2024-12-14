@@ -608,7 +608,7 @@ void cMainWnd::setParam(void) {
             gs().uiName = uiNames[uiIndexAfter];
             gs().langDirectory = langNames[langIndexAfter];
             gs().saveSettings();
-            HomebrewLauncher().launchRom("/akmenu4.nds", "", 0, 0, 0);
+            HomebrewLauncher().launchRom("/BOOT.NDS", "", 0, 0, 0);
         }
     }
 
@@ -618,7 +618,7 @@ void cMainWnd::setParam(void) {
         if (ID_YES == ret) {
             gs().langDirectory = langNames[langIndexAfter];
             gs().saveSettings();
-            HomebrewLauncher().launchRom("/akmenu4.nds", "", 0, 0, 0);
+            HomebrewLauncher().launchRom("/BOOT.NDS", "", 0, 0, 0);
         }
     }
 

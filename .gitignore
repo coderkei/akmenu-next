@@ -2,6 +2,7 @@ build
 themes
 package
 data/load.bin
+.vscode
 *.elf
 *.nds
 *.dsi
