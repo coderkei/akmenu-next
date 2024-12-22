@@ -304,7 +304,7 @@ void cGdi::frameRect(s16 x, s16 y, u16 w, u16 h, u16 thickness, GRAPHICS_ENGINE 
 }
 
 void cGdi::fillRect(u16 color1, u16 color2, s16 x, s16 y, u16 w, u16 h, GRAPHICS_ENGINE engine) {
-    ALIGN(4) u16 color[2] = {BIT(15) | color1, BIT(15) | color2};
+    ALIGN(4) u16 color[2] = { (u16)(BIT(15) | color1), (u16)(BIT(15) | color2) };
     u16* pSrc = (u16*)color;
     u16* pDest = NULL;
 

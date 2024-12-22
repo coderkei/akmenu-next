@@ -27,6 +27,7 @@ GRAPHICS :=
 ARCH := -marm -mthumb-interwork -march=armv5te -mtune=arm946e-s
 
 CFLAGS   := -g -Wall -O3\
+			-Wno-address-of-packed-member \
             $(ARCH) $(INCLUDE) -DARM9
 
 CFLAGS   += -D_NO_BOOTSTUB_

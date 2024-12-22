@@ -146,11 +146,13 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
         u32 bigSaveMask = 14;
         // reading speed setting
         std::string disk = aFullPath.substr(0, 5);
-        bool dma = false, protection = aRomInfo.saveInfo().isProtection();
+        // bool dma = false, protection = aRomInfo.saveInfo().isProtection();
+        bool protection = aRomInfo.saveInfo().isProtection();
         u32 speed = 0;
         {
             if (protection) speed = 0x1fff;
-            dma = aRomInfo.saveInfo().isDMA();
+            // dma = aRomInfo.saveInfo().isDMA();
+            aRomInfo.saveInfo().isDMA();
             flags |= PATCH_DMA;
             if ((gameCode & 0xffffff) ==
                 0x425855)  // 4950 - Jam with the Band (Europe) (En,Fr,De,Es,It)

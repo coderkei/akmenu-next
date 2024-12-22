@@ -28,7 +28,7 @@ CFLAGS   := -g -Wall -O3\
             $(ARCH) $(INCLUDE) -DARM7
 CXXFLAGS := $(CFLAGS) -fno-rtti -fno-exceptions
 ASFLAGS  := -g $(ARCH)
-LDFLAGS   = -specs=../ds_arm7_iwram.specs -g $(ARCH) -Wl,--nmagic -Wl,-Map,$(notdir $*).map
+LDFLAGS   = -specs=ds_arm7.specs -g $(ARCH) -Wl,--nmagic -Wl,-Map,$(notdir $*).map
 
 LIBS := -ldswifi7 -lmm7 -lnds7
 

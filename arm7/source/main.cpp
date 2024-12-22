@@ -14,6 +14,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+extern void swiSwitchToGBAModeFixed(); // This is broken in libnds since 2008. Not fixed until libnds2 which this project isn't using yet.
 void __libnds_exit(int rc) {}
 #ifdef __cplusplus
 }
@@ -106,7 +107,7 @@ static void menuValue32Handler(u32 value, void* data) {
                 ii = (1 * PM_BACKLIGHT_TOP) | PM_SOUND_AMP;
             writePowerManagement(PM_CONTROL_REG, ii);
             swiChangeSoundBias(0, 0x400);
-            swiSwitchToGBAMode();
+            swiSwitchToGBAModeFixed();
         } break;
         case MENU_MSG_ARM7_REBOOT_TT:
             prepairResetTT();
@@ -154,6 +155,7 @@ int main() {
 
     irqInit();
     fifoInit();
+	touchInit();
 
     // Start the RTC tracking IRQ
     initClockIRQ();
@@ -166,5 +168,11 @@ int main() {
 
     irqEnable(IRQ_VBLANK | IRQ_NETWORK);
 
+	if (isDSiMode() && REG_SNDEXTCNT != 0) {
+		i2cWriteRegister(0x4A, 0x12, 0x00);	// Press power-button for auto-reset
+		i2cWriteRegister(0x4A, 0x70, 0x01);	// Bootflag = Warmboot/SkipHealthSafety
+	}
+
     while (true) swiWaitForVBlank();
 }
+

@@ -59,3 +59,4 @@ typedef t_singleton<cExpansion> cExpansion_s;
 inline cExpansion& expansion() {
     return cExpansion_s::instance();
 }
+

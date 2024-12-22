@@ -23,13 +23,19 @@ GAME_SUBTITLE2 := github.com/coderkei
 include $(DEVKITARM)/ds_rules
 
 #.PHONY: checkarm7 checkarm9 checkarm9_ak2 checkarm9_dsi checkarm9_m3 checkarm9_tt clean
-.PHONY: checkarm7 checkarm9 checkarm9_dsi clean
+.PHONY: nds-bootloader checkarm7 checkarm9 checkarm9_dsi clean
 
 #---------------------------------------------------------------------------------
 # main targets
 #---------------------------------------------------------------------------------
-all:	checkarm7 checkarm9 checkarm9_dsi \
+all:	nds-bootloader checkarm7 checkarm9 checkarm9_dsi \
 		$(TARGET).nds $(TARGET).dsi
+
+data:
+	@mkdir -p data
+
+nds-bootloader: data
+	$(MAKE) -C nds-bootloader LOADBIN=$(CURDIR)/data/load.bin
 
 #---------------------------------------------------------------------------------
 checkarm7:
@@ -46,13 +52,14 @@ checkarm9_dsi:
 #---------------------------------------------------------------------------------
 $(TARGET).nds : $(NITRO_FILES) arm7/$(TARGET).elf arm9/$(TARGET).elf
 	ndstool	-c $(TARGET).nds -7 arm7/$(TARGET).elf -9 arm9/$(TARGET).elf \
-	-b $(GAME_ICON) "$(GAME_TITLE);$(GAME_SUBTITLE1);$(GAME_SUBTITLE2)" \
+	-h 0x200 -t banner.bin \
 	$(_ADDFILES)
 
 #---------------------------------------------------------------------------------
 $(TARGET).dsi : $(NITRO_FILES) arm7/$(TARGET).elf arm9_dsi/$(TARGET).elf
 	ndstool	-c $@ -7 arm7/$(TARGET).elf -9 arm9_dsi/$(TARGET).elf \
-	-b $(GAME_ICON) "$(GAME_TITLE);$(GAME_SUBTITLE1);$(GAME_SUBTITLE2)" \
+	-t banner.bin \
+	-g AKGE 01 "AKMENU" -z 80040407 -u 00030004 -a 00000138 -p 0001 \
 	$(_ADDFILES)
 
 #---------------------------------------------------------------------------------
@@ -60,7 +67,7 @@ arm7/$(TARGET).elf:
 	$(MAKE) -C arm7
 
 #---------------------------------------------------------------------------------
-arm9/$(TARGET).elf:
+arm9/$(TARGET).elf: nds-bootloader
 	$(MAKE) -C arm9
 
 #---------------------------------------------------------------------------------
@@ -71,5 +78,7 @@ arm9_dsi/$(TARGET).elf:
 clean:
 	$(MAKE) -C arm9 clean
 	$(MAKE) -C arm9_dsi clean
+	$(MAKE) -C nds-bootloader clean
 	$(MAKE) -C arm7 clean
+	rm -rf data
 	rm -f *.nds *.dsi
