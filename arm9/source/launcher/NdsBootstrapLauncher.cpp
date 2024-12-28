@@ -119,7 +119,6 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
 
     // Launch
     eRunNdsRetCode rc = runNdsFile(argv[0], argv.size(), &argv[0]);
-    progressWnd().hide();
     if (rc == RUN_NDS_OK) return true;
 
     return false;
