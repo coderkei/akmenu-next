@@ -608,7 +608,11 @@ void cMainWnd::setParam(void) {
             gs().uiName = uiNames[uiIndexAfter];
             gs().langDirectory = langNames[langIndexAfter];
             gs().saveSettings();
-            HomebrewLauncher().launchRom("/_nds/launcher.nds", "", 0, 0, 0);
+            #ifdef __DSIMODE__ 
+            HomebrewLauncher().launchRom("sd:/_nds/launcher.nds", "", 0, 0, 0);
+            #else
+            HomebrewLauncher().launchRom("fat:/_nds/launcher.nds", "", 0, 0, 0);
+            #endif
         }
     }
 
@@ -618,7 +622,11 @@ void cMainWnd::setParam(void) {
         if (ID_YES == ret) {
             gs().langDirectory = langNames[langIndexAfter];
             gs().saveSettings();
-            HomebrewLauncher().launchRom("/_nds/launcher.nds", "", 0, 0, 0);
+            #ifdef __DSIMODE__ 
+            HomebrewLauncher().launchRom("sd:/_nds/launcher.nds", "", 0, 0, 0);
+            #else
+            HomebrewLauncher().launchRom("fat:/_nds/launcher.nds", "", 0, 0, 0);
+            #endif
         }
     }
 
