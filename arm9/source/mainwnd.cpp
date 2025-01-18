@@ -528,8 +528,8 @@ void cMainWnd::setParam(void) {
                               gs().showHiddenFiles);
     settingWnd.addSettingItem(LANG("rom trim", "text"), _values, gs().romTrim);
     _values.clear();
-    _values.push_back(".sav");
     _values.push_back(".nds.sav");
+    _values.push_back(".sav");
     settingWnd.addSettingItem(LANG("file settings", "save extension"), _values, gs().saveExt);
 
     // page 4: patches

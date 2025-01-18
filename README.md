@@ -4,13 +4,15 @@ Frontend for nds-bootstrap based upon lifehansolhacker's akmenu4 port [https://g
 
 ## Getting Started
 
-Requires devkitarm to be installed. Build the repository with `build.sh`.
+Requires devkitarm to be installed. Simply build the repository with `make`.
 
 
 ### Configuration
 
-The system directory is `_nds` where the akmenu system files should be placed, along with a copy of nds-bootstrap as `nds-bootstrap-release.nds`.
-For cheats, put a copy of `usrcheat.dat` into the `_nds/cheats` folder. Themes go into `_nds/ui`.
+* The system directory is `_nds` where the akmenu system files should be placed, along with a copy of nds-bootstrap as `nds-bootstrap-release.nds`.
+* The binary of akmenu-next additionally needs to be in the `_nds` folder as `launcher.nds` for theme & language reboots.
+* Cheats should be placed as `usrcheat.dat` into the `_nds/cheats` folder.
+* Themes go into `_nds/ui`. Acekard & Wood R4 themes are supported.
 
 ## License
 
