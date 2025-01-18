@@ -4,7 +4,7 @@ Frontend for nds-bootstrap based upon lifehansolhacker's akmenu4 port [https://g
 
 ## Getting Started
 
-Requires devkitarm to be installed. Simply build the repository with `make`.
+Requires devkitarm to be installed with the `nds-dev` package. Simply build the repository with `make`.
 
 
 ### Configuration

@@ -77,6 +77,7 @@ bool NdsBootstrapLauncher::prepareIni() {
 bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, u32 flags,
                                      u32 cheatOffset, u32 cheatSize) {
     const char ndsBootstrapPath[] = SD_ROOT_0 "/_nds/nds-bootstrap-release.nds";
+    const char ndsBootstrapPathNightly[] = SD_ROOT_0 "/_nds/nds-bootstrap-nightly.nds";
     progressWnd().setTipText("Initializing nds-bootstrap...");
     progressWnd().show();
     progressWnd().setPercent(0);
@@ -84,6 +85,11 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
     if (access(ndsBootstrapPath, F_OK) != 0) {
         progressWnd().hide();
         printLoaderNotFound(ndsBootstrapPath);
+        return false;
+    }
+    else if(access("/_nds/nightly.txt", F_OK) == 0 && access(ndsBootstrapPathNightly, F_OK) != 0){
+        progressWnd().hide();
+        printLoaderNotFound(ndsBootstrapPathNightly);
         return false;
     }
 
@@ -99,8 +105,14 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
     }
     progressWnd().setPercent(25);
 
-    // Setup argv to launch nds-bootstrap
-    argv.push_back(ndsBootstrapPath);
+    // Setup argv to launch nds-bootstrap                              
+    if(access("/_nds/nightly.txt", F_OK) != 0) {
+        argv.push_back(ndsBootstrapPath);
+    }
+    else{
+        //Debug use 
+        argv.push_back(ndsBootstrapPathNightly);
+    }
 
     progressWnd().setTipText("Loading usrcheat.dat...");
     progressWnd().setPercent(50);
