@@ -9,10 +9,10 @@ Requires devkitarm to be installed with the `nds-dev` package. Simply build the 
 
 ### Configuration
 
-* The system directory is `_nds` where the akmenu system files should be placed, along with a copy of nds-bootstrap as `nds-bootstrap-release.nds`.
-* The binary of akmenu-next additionally needs to be in the `_nds` folder as `launcher.nds` for theme & language reboots.
-* Cheats should be placed as `usrcheat.dat` into the `_nds/cheats` folder.
-* Themes go into `_nds/ui`. Acekard & Wood R4 themes are supported.
+* The system directory is `_nds/akmenunext` where the akmenu system files should be placed, along with a copy of nds-bootstrap in the `_nds` folder as `nds-bootstrap-release.nds`.
+* The binary of akmenu-next additionally needs to be in the `_nds/akmenunext` folder as `launcher.nds` for theme & language reboots.
+* Cheats should be placed as `usrcheat.dat` into the `_nds/akmenu/cheats` folder.
+* Themes go into `_nds/akmenunext/ui`. Acekard & Wood R4 themes are supported.
 
 ## License
 

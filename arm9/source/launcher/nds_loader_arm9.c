@@ -281,6 +281,8 @@ eRunNdsRetCode runNds (const void* loader, u32 loaderSize, u32 cluster, bool ini
 
 	// Direct CPU access to VRAM bank C
 	VRAM_C_CR = VRAM_ENABLE | VRAM_C_LCD;
+	//Fix VRAM because for some reason some homebrew screws up without it
+	memset (LCDC_BANK_C, 0x00, 128 * 1024);
 	// Load the loader/patcher into the correct address
 	vramcpy (LCDC_BANK_C, loader, loaderSize);
 

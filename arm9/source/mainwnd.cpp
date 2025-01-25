@@ -381,6 +381,11 @@ void cMainWnd::onKeyAPressed() {
 void cMainWnd::launchSelected() {
     std::string fullPath = _mainList->getSelectedFullPath();
     std::string romName = _mainList->getSelectedShowName();
+    size_t lastSlashPos = fullPath.find_last_of("/\\");
+    std::string directory = fullPath.substr(0, lastSlashPos + 1);
+    
+    // Create the new path by appending "saves/"
+    std::string savesPath = directory + "saves/" + romName;
 
     if (fullPath[fullPath.size() - 1] == '/') {
         _mainList->enterDir(fullPath);
@@ -408,7 +413,7 @@ void cMainWnd::launchSelected() {
     progressWnd().show();
     progressWnd().setPercent(0);
     switch (launchRom(fullPath, rominfo,
-                      rominfo.isHomebrew() && "BOOT.NDS" == _mainList->getSelectedShowName())) {
+                      rominfo.isHomebrew() && "BOOT.NDS" == _mainList->getSelectedShowName(), savesPath)) {
         case ELaunchNoFreeSpace:
             title = LANG("no free space", "title");
             text = LANG("no free space", "text");
@@ -531,6 +536,10 @@ void cMainWnd::setParam(void) {
     _values.push_back(".nds.sav");
     _values.push_back(".sav");
     settingWnd.addSettingItem(LANG("file settings", "save extension"), _values, gs().saveExt);
+        _values.clear();
+    _values.push_back("no");
+    _values.push_back("yes");
+    settingWnd.addSettingItem(LANG("file settings", "use saves folder"), _values, gs().saveDir);
 
     // page 4: patches
     settingWnd.addSettingTab(LANG("setting window", "patches"));
@@ -538,8 +547,6 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("switches", "Disable"));
     _values.push_back(LANG("switches", "Enable"));
     settingWnd.addSettingItem(LANG("patches", "cheating system"), _values, gs().cheats);
-    settingWnd.addSettingItem(LANG("patches", "reset in game"), _values, gs().softreset);
-    settingWnd.addSettingItem(LANG("patches", "homebrew reset"), _values, gs().homebrewreset);
 #ifdef __KERNEL_LAUNCHER_SUPPORT__
     _values.clear();
     _values.push_back("Kernel");
@@ -589,6 +596,7 @@ void cMainWnd::setParam(void) {
     gs().showHiddenFiles = settingWnd.getItemSelection(2, 0);
     gs().romTrim = settingWnd.getItemSelection(2, 1);
     gs().saveExt = settingWnd.getItemSelection(2, 2);
+    gs().saveDir = settingWnd.getItemSelection(2, 3);
 
     // page 4: patches
     gs().cheats = settingWnd.getItemSelection(3, 0);
@@ -609,9 +617,9 @@ void cMainWnd::setParam(void) {
             gs().langDirectory = langNames[langIndexAfter];
             gs().saveSettings();
             #ifdef __DSIMODE__ 
-            HomebrewLauncher().launchRom("sd:/_nds/launcher.nds", "", 0, 0, 0);
+            HomebrewLauncher().launchRom("sd:/_nds/akmenunext/launcher.nds", "", 0, 0, 0);
             #else
-            HomebrewLauncher().launchRom("fat:/_nds/launcher.nds", "", 0, 0, 0);
+            HomebrewLauncher().launchRom("fat:/_nds/akmenunext/launcher.nds", "", 0, 0, 0);
             #endif
         }
     }
@@ -623,9 +631,9 @@ void cMainWnd::setParam(void) {
             gs().langDirectory = langNames[langIndexAfter];
             gs().saveSettings();
             #ifdef __DSIMODE__ 
-            HomebrewLauncher().launchRom("sd:/_nds/launcher.nds", "", 0, 0, 0);
+            HomebrewLauncher().launchRom("sd:/_nds/akmenunext/launcher.nds", "", 0, 0, 0);
             #else
-            HomebrewLauncher().launchRom("fat:/_nds/launcher.nds", "", 0, 0, 0);
+            HomebrewLauncher().launchRom("fat:/_nds/akmenunext/launcher.nds", "", 0, 0, 0);
             #endif
         }
     }

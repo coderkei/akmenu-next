@@ -58,6 +58,7 @@ class cGlobalSettings {
     bool cheatDB;
     int slot2mode;
     bool saveExt;
+    bool saveDir;
     bool safeMode;
     bool show12hrClock;
     bool autorunWithLastRom;

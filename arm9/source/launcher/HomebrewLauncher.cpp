@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+#include "flags.h"
 #include "HomebrewLauncher.h"
 #include "ILauncher.h"
 #include "nds_loader_arm9.h"

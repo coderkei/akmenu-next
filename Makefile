@@ -30,6 +30,7 @@ include $(DEVKITARM)/ds_rules
 #---------------------------------------------------------------------------------
 all:	nds-bootloader checkarm7 checkarm9 checkarm9_dsi \
 		$(TARGET).nds $(TARGET).dsi
+	@$(MAKE) organize_files
 
 data:
 	@mkdir -p data
@@ -75,10 +76,18 @@ arm9_dsi/$(TARGET).elf:
 	$(MAKE) -C arm9_dsi
 
 #---------------------------------------------------------------------------------
+organize_files:
+	@mkdir -p build
+	@mv -f $(TARGET).nds $(TARGET).dsi build/
+	@cd build && \
+	cp $(TARGET).nds launcher_$(TARGET).nds && \
+	cp $(TARGET).dsi launcher_$(TARGET).dsi
+
+#---------------------------------------------------------------------------------
 clean:
 	$(MAKE) -C arm9 clean
 	$(MAKE) -C arm9_dsi clean
 	$(MAKE) -C nds-bootloader clean
 	$(MAKE) -C arm7 clean
-	rm -rf data
+	rm -rf data build
 	rm -f *.nds *.dsi

@@ -14,7 +14,7 @@
 
 bool PassMeLauncher::launchRom(std::string romPath, std::string savePath, u32 flags,
                                u32 cheatOffset, u32 cheatSize) {
-    const char passMeLoaderPath[] = "fat:/_nds/PassMeLoader.nds";
+    const char passMeLoaderPath[] = "fat:/_nds/akmenunext/PassMeLoader.nds";
 
     if (access(passMeLoaderPath, F_OK) != 0) {
         printLoaderNotFound(passMeLoaderPath);
