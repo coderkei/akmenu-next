@@ -59,6 +59,7 @@ class cGlobalSettings {
     int slot2mode;
     bool saveExt;
     bool saveDir;
+    bool nightly;
     bool safeMode;
     bool show12hrClock;
     bool autorunWithLastRom;
