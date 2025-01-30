@@ -40,6 +40,7 @@ cGlobalSettings::cGlobalSettings() {
     saveExt = true;
     saveDir = false;
     nightly = false;
+    cardDma = true;
     safeMode = false;
     show12hrClock = false;
     autorunWithLastRom = false;
@@ -71,6 +72,7 @@ void cGlobalSettings::loadSettings() {
     saveDir = ini.GetInt("system", "savedir", saveDir);
     nightly = ini.GetInt("system", "nightly", nightly);
     dma = ini.GetInt("system", "dma", dma);
+    cardDma = ini.GetInt("system", "carddma", cardDma);
     sdsave = ini.GetInt("system", "sdsave", sdsave);
     safeMode = ini.GetInt("system", "safemode", safeMode);
     show12hrClock = ini.GetInt("system", "Show12hrClock", show12hrClock);
@@ -119,6 +121,7 @@ void cGlobalSettings::saveSettings() {
     ini.SetInt("system", "cheats", cheats);
     ini.SetInt("system", "softreset", softreset);
     ini.SetInt("system", "dma", dma);
+    ini.SetInt("system", "carddma", cardDma);
     ini.SetInt("system", "sdsave", sdsave);
     ini.SetInt("system", "safemode", safeMode);
     ini.SetInt("system", "savedir", saveDir);

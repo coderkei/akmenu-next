@@ -550,6 +550,10 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("switches", "Disable"));
     _values.push_back(LANG("switches", "Enable"));
     settingWnd.addSettingItem(LANG("patches", "cheating system"), _values, gs().cheats);
+    _values.clear();
+    _values.push_back(LANG("switches", "Disable"));
+    _values.push_back(LANG("switches", "Enable"));
+    settingWnd.addSettingItem(LANG("patches", "carddma"), _values, gs().cardDma);
 #ifdef __KERNEL_LAUNCHER_SUPPORT__
     _values.clear();
     _values.push_back("Kernel");
@@ -603,9 +607,9 @@ void cMainWnd::setParam(void) {
 
     // page 4: patches
     gs().cheats = settingWnd.getItemSelection(3, 0);
-    gs().softreset = settingWnd.getItemSelection(3, 1);
-    gs().homebrewreset = settingWnd.getItemSelection(3, 2);
-    gs().romLauncher = settingWnd.getItemSelection(3, 3);
+    gs().cardDma = settingWnd.getItemSelection(3, 1);
+    gs().softreset = settingWnd.getItemSelection(3, 2);
+    gs().homebrewreset = settingWnd.getItemSelection(3, 3);
 
     // page 5: gba
     gs().gbaSleepHack = settingWnd.getItemSelection(4, 0);

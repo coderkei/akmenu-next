@@ -53,13 +53,14 @@ class cGlobalSettings {
     bool Animation;
     bool cheats;
     bool softreset;
-    bool dma;
+    bool cardDma;
     bool sdsave;
     bool cheatDB;
     int slot2mode;
     bool saveExt;
     bool saveDir;
     bool nightly;
+    bool dma;
     bool safeMode;
     bool show12hrClock;
     bool autorunWithLastRom;

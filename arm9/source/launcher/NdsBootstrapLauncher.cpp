@@ -69,6 +69,12 @@ bool NdsBootstrapLauncher::prepareIni() {
     CIniFile ini;
     ini.SetString("NDS-BOOTSTRAP", "NDS_PATH", mRomPath);
     ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", mSavePath);
+    if(gs().cardDma){
+        ini.SetInt("NDS-BOOTSTRAP", "CARD_READ_DMA", 1);
+    }
+    else{
+        ini.SetInt("NDS-BOOTSTRAP", "CARD_READ_DMA", 0);
+    }
 
     ini.SaveIniFile("/_nds/nds-bootstrap.ini");
     return true;
