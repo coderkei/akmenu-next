@@ -22,4 +22,5 @@ class NdsBootstrapLauncher : public ILauncher {
     std::string mRomPath;
     std::string mSavePath;
     u32 mFlags;
+    DSRomInfo _romInfo;
 };

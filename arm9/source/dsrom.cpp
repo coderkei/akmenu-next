@@ -47,6 +47,10 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
         return false;
     }
 
+    if (header.unitCode == 0x03) {
+        _isDSiWare = ETrue;
+    }
+
     ///////// ROM Header /////////
     u16 crc = swiCRC16(0xFFFF, &header, 0x15E);
     if (crc != header.headerCRC16)  // 锟侥硷拷头 CRC 锟斤拷锟襟，诧拷锟斤拷nds锟斤拷戏
@@ -204,6 +208,7 @@ bool DSRomInfo::loadGbaRomInfo(const std::string& filename) {
 void DSRomInfo::load(void) {
     if (_isDSRom == EMayBe) loadDSRomInfo(_fileName, true);
     if (_isGbaRom == EMayBe) loadGbaRomInfo(_fileName);
+    if (_isDSiWare == EMayBe) loadDSRomInfo(_fileName, true);
 }
 
 tNDSBanner& DSRomInfo::banner(void) {
@@ -224,6 +229,11 @@ u8 DSRomInfo::version(void) {
 bool DSRomInfo::isDSRom(void) {
     load();
     return (_isDSRom == ETrue) ? true : false;
+}
+
+bool DSRomInfo::isDSiWare(void) {
+    load();
+    return (_isDSiWare == ETrue) ? true : false;
 }
 
 bool DSRomInfo::isHomebrew(void) {

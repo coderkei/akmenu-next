@@ -10,6 +10,7 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include <fat.h>
 
 #include <nds/ndstypes.h>
 
@@ -25,6 +26,7 @@
 #include "ILauncher.h"
 #include "NdsBootstrapLauncher.h"
 #include "nds_loader_arm9.h"
+#include "fat_ext.h"
 
 bool NdsBootstrapLauncher::prepareCheats() {
     u32 gameCode, crc32;
@@ -67,16 +69,34 @@ cheat_failed:
 
 bool NdsBootstrapLauncher::prepareIni() {
     CIniFile ini;
+    tDSiHeader header;
+    char sfnSrl[62];
+	char sfnPub[62];
+    char sfnPrv[62];
+    _romInfo.MayBeDSRom(mRomPath);
+    bool dsiWare = _romInfo.isDSiWare();
+    
     ini.SetString("NDS-BOOTSTRAP", "NDS_PATH", mRomPath);
-    ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", mSavePath);
-    if(gs().cardDma){
-        ini.SetInt("NDS-BOOTSTRAP", "CARD_READ_DMA", 1);
+    // check for DSiWare
+    if(dsiWare){
+        //TODO create pub & prv savwe
+        #ifdef __DSIMODE__
+        fatGetAliasPath("sd:/", mRomPath, sfnSrl);
+        fatGetAliasPath("sd:/", pubPath, sfnPub);
+        fatGetAliasPath("sd:/", prvPath, sfnPrv);
+        ini.SetString("NDS-BOOTSTRAP", "APP_PATH", sfnSrl);
+        ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", sfnPub);
+        ini.SetString("NDS-BOOTSTRAP", "PRV_PATH", sfnPrv);
+        #else
+        //TODO flashcart
+        #endif
     }
     else{
-        ini.SetInt("NDS-BOOTSTRAP", "CARD_READ_DMA", 0);
+        ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", mSavePath);
     }
-
+    
     ini.SaveIniFile("/_nds/nds-bootstrap.ini");
+
     return true;
 }
 
@@ -84,7 +104,14 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
                                      u32 cheatOffset, u32 cheatSize) {
     const char ndsBootstrapPath[] = SD_ROOT_0 "/_nds/nds-bootstrap-release.nds";
     const char ndsBootstrapPathNightly[] = SD_ROOT_0 "/_nds/nds-bootstrap-nightly.nds";
+    const char ndsBootstrapCheck[] = SD_ROOT_0 "/_nds/pagefile.sys";
     bool useNightly = false;
+
+    //has the user used nds-bootstrap before?
+    if(access(ndsBootstrapCheck, F_OK) != 0){
+        akui::messageBox(NULL, LANG("nds bootstrap", "firsttimetitle"), LANG("nds bootstrap", "firsttime"), MB_OK);
+    }
+
     progressWnd().setTipText("Initializing nds-bootstrap...");
     progressWnd().show();
     progressWnd().setPercent(0);

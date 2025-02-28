@@ -140,12 +140,15 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
     std::string saveName;
     std::string useSavesPath;
     ILauncher* launcher = nullptr;
+    bool isDsiWare;
     if (!aRomInfo.isHomebrew()) {
         u32 gameCode;
         memcpy(&gameCode, aRomInfo.saveInfo().gameCode, sizeof(gameCode));  // because alignment
         bool isBigSave = false;
         u32 bigSaveSize = 8 * 1024 * 1024;
         u32 bigSaveMask = 14;
+        // check for DSiWare
+        isDsiWare = aRomInfo.isDSiWare();
         // reading speed setting
         std::string disk = aFullPath.substr(0, 5);
         // bool dma = false, protection = aRomInfo.saveInfo().isProtection();
@@ -209,13 +212,16 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
                     saveManager().updateCustomSaveList(aRomInfo.saveInfo());
                 }
             }
-            if (cSaveManager::initializeSaveFile(useSavesPath, aRomInfo.saveInfo().getSlot(),
-                                                 SaveSize(st))) {
+            if(!isDsiWare){
+                if (cSaveManager::initializeSaveFile(useSavesPath, aRomInfo.saveInfo().getSlot(),
+                SaveSize(st))) {
                 flags |= PATCH_SD_SAVE | (SaveMask(st) << PATCH_SAVE_SHIFT);
                 saveManager().saveLastInfo(aFullPath);
-            } else {
+                } else {
                 return ELaunchNoFreeSpace;
+                }
             }
+
         }
         __NDSHeader->cardControl13 = 0x00406000 | speed;
 

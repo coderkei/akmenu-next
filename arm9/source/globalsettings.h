@@ -53,7 +53,6 @@ class cGlobalSettings {
     bool Animation;
     bool cheats;
     bool softreset;
-    bool cardDma;
     bool sdsave;
     bool cheatDB;
     int slot2mode;
