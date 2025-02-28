@@ -26,7 +26,6 @@
 #include "ILauncher.h"
 #include "NdsBootstrapLauncher.h"
 #include "nds_loader_arm9.h"
-#include "fat_ext.h"
 
 bool NdsBootstrapLauncher::prepareCheats() {
     u32 gameCode, crc32;
@@ -81,12 +80,12 @@ bool NdsBootstrapLauncher::prepareIni() {
     if(dsiWare){
         //TODO create pub & prv savwe
         #ifdef __DSIMODE__
-        fatGetAliasPath("sd:/", mRomPath, sfnSrl);
+        /*fatGetAliasPath("sd:/", mRomPath, sfnSrl);
         fatGetAliasPath("sd:/", pubPath, sfnPub);
         fatGetAliasPath("sd:/", prvPath, sfnPrv);
         ini.SetString("NDS-BOOTSTRAP", "APP_PATH", sfnSrl);
         ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", sfnPub);
-        ini.SetString("NDS-BOOTSTRAP", "PRV_PATH", sfnPrv);
+        ini.SetString("NDS-BOOTSTRAP", "PRV_PATH", sfnPrv);*/
         #else
         //TODO flashcart
         #endif
@@ -94,7 +93,7 @@ bool NdsBootstrapLauncher::prepareIni() {
     else{
         ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", mSavePath);
     }
-    
+
     ini.SaveIniFile("/_nds/nds-bootstrap.ini");
 
     return true;
