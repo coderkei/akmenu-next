@@ -104,12 +104,12 @@ No Save = 沒有存檔
 64M = 64M
 default = 預設
 save slot = 選擇存檔Slot
-tab1 = Compatibility
-tab2 = Features
+tab1 = 相容性
+tab2 = 功能
 
 [system setting]
 title = 系統設定
-safe mode = Safe Mode
+safe mode = 安全模式
 
 [rom info]
 title = 檔案資訊
@@ -157,12 +157,12 @@ item1 = 是
 
 [language]
 text = 系統語言
-ja = 日本語
-en = english
-fr = français
-de = deutsch
-it = italiano
-es = español
+ja = 日文
+en = 英文
+fr = 法文
+de = 德文
+it = 義大利文
+es = 西班牙文
 
 [ui style]
 text = 面版
@@ -206,9 +206,9 @@ cheating system = 金手指
 reset in game = 暖開機  (L+R+A+B+↓)
 dma = DMA模式
 protection = 反制燒錄保護
-linkage = Link with GBA
-sd save = Save directly to SD
-homebrew reset = Reset in Homebrew
+linkage = 與GBA連結
+sd save = 直接存儲到SD
+homebrew reset = 在HomeBrew中暖開機
 
 [switches]
 Enable = 開啟
@@ -237,42 +237,42 @@ oldschool = 傳統
 modern = 圖示
 internal = 遊戲標題
 animation = 動畫
-12 hour = 12-hour clock
+12 hour = 12小時制
 
 [gba settings]
 title = GBA 設定
 sleephack = 通用休眠
 autosave = 啟動時備份存檔
-mode = Slot-2 mode
-modegba = gba
-modends = nds
-modeask = ask
-modetext = Launch slot-2 in NDS mode?
+mode = Slot-2 模式
+modegba = gba模式
+modends = nds模式
+modeask = ask模式
+modetext = 以NDS模式讀取slot-2嗎?
 
 [sd save]
 title = 提示
-text = This game cannot be launched from Acekard Internal Flash Memory, please copy game from Acekard Internal Flash Memory to SD card and try again.
+text = 該遊戲無法從 Acekard 內建記憶體中啟動，請將遊戲從 Acekard 內建記憶體移動到SD卡中再重試。
 
 [icon]
-icon = Show icon
-transparent = transparent
-as is = as is
-firmware = firmware
+icon = 顯示圖示
+transparent = 邊框透明
+as is = 原圖示
+firmware = 韌體
 
 [cheats]
-title = Cheats
-info = More…
-deselect = Deselect all
+title = 作弊
+info = 更多…
+deselect = 全部復位
 
 [saveslot]
-title = Copy Save Slot
-confirm = Are you sure you want to copy save slot?
-target slot = Target Save Slot
+title = 複製存檔槽位
+confirm = 確定要複製存檔槽位嗎？
+target slot = 目標存檔槽位
 
 [mainlist]
-flash memory = Flash Memory
-microsd card = microSD Card
-slot2 card = Slot2 Card
-favorites = Favorites
+flash memory = 內建記憶體
+microsd card = microSD卡
+slot2 card = Slot2卡
+favorites = 喜愛的
 
 [end]
