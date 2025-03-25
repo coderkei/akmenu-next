@@ -13,7 +13,7 @@ Setting = 设置
 Info = 文件信息
 Help = 帮助信息
 Tools = 工具
-START = START
+START = 菜单
 
 [message box]
 yes = 是
@@ -109,14 +109,14 @@ tab2 = 特殊选项
 
 [system setting]
 title = 系统选项
-safe mode = Safe Mode
+safe mode = 安全模式
 
 [rom info]
 title = 文件信息
 file date = 最后写入：%d年%d月%d日 %02d:%02d:%02d(GMT)
 file size = 文件大小：%s
 save type = 存档类型：%s
-game code = Game Code: %s
+game code = 游戏编码: %s
 copy slot = 复制存档
 
 [disk info]
@@ -208,7 +208,7 @@ dma = DMA 模式
 protection = 自动反烧录
 linkage = 与GBA联动
 sd save = 直接存储至SD卡
-homebrew reset = Reset in Homebrew
+homebrew reset = 在自制程序中复位
 
 [switches]
 Enable = 启用
@@ -227,7 +227,7 @@ slow = 慢
 [file settings]
 title = 文件系统设置
 show hidden files = 显示隐藏文件
-save extension = Save extension
+save extension = 存档格式
 
 [interface settings]
 title = 文件系统设置
@@ -237,16 +237,16 @@ oldschool = 简洁
 modern = 图标
 internal = 游戏标题
 animation = 动画
-12 hour = 12-hour clock
+12 hour = 12小时制
 
 [gba settings]
 title = GBA 设定
 sleephack = 启用休眠
 autosave = 启动时备份存档
 mode = Slot-2 模式
-modegba = 引导到gba模式
-modends = nds
-modeask = ask
+modegba = GBA模式
+modends = NDS模式
+modeask = ASK模式
 modetext = 在 slot-2接口启用NDS模式?
 
 [sd save]
@@ -261,8 +261,8 @@ firmware = 固件图标
 
 [cheats]
 title = 金手指
-info = More…
-deselect = Deselect all
+info = 更多…
+deselect = 取消选择所有
 
 [saveslot]
 title = 存档管理
@@ -270,9 +270,9 @@ confirm = 你是否想要复制此位置存档？
 target slot = 目标存档位置
 
 [mainlist]
-flash memory = Flash Memory
-microsd card = microSD Card
-slot2 card = Slot2 Card
-favorites = Favorites
+flash memory = 内置闪存
+microsd card = 内存卡
+slot2 card = Slot2扩展卡
+favorites = 收藏夹
 
 [end]
