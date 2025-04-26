@@ -19,7 +19,7 @@ cGlobalSettings::cGlobalSettings() {
     brightness = 1;
     language = 1;
     langDirectory = "English";
-    uiName = "zelda";
+    uiName = "blue skies";
     startupFolder = "...";
     fileListType = 0;
     romTrim = 0;
@@ -39,6 +39,7 @@ cGlobalSettings::cGlobalSettings() {
     slot2mode = ESlot2Ask;
     saveExt = true;
     saveDir = false;
+    dsOnly = false;
     nightly = false;
     safeMode = false;
     show12hrClock = false;
@@ -69,6 +70,7 @@ void cGlobalSettings::loadSettings() {
     cheats = ini.GetInt("system", "cheats", cheats);
     softreset = ini.GetInt("system", "softreset", softreset);
     saveDir = ini.GetInt("system", "savedir", saveDir);
+    dsOnly = ini.GetInt("system", "dsonly", dsOnly);
     nightly = ini.GetInt("system", "nightly", nightly);
     dma = ini.GetInt("system", "dma", dma);
     sdsave = ini.GetInt("system", "sdsave", sdsave);
@@ -82,7 +84,10 @@ void cGlobalSettings::loadSettings() {
             (temp == "slow") ? EScrollSlow : ((temp == "medium") ? EScrollMedium : EScrollFast);
 
     temp = ini.GetString("system", "viewMode", "icon");
-    viewMode = (temp == "list") ? EViewList : ((temp == "icon") ? EViewIcon : EViewInternal);
+    viewMode = (temp == "list") ? EViewList 
+         : (temp == "icon") ? EViewIcon 
+         : (temp == "small") ? EViewSmall
+         : EViewInternal;
 
     temp = ini.GetString("system", "slot2mode", "ask");
     slot2mode = (temp == "gba") ? ESlot2Gba : ((temp == "nds") ? ESlot2Nds : ESlot2Ask);
@@ -125,14 +130,19 @@ void cGlobalSettings::saveSettings() {
     ini.SetInt("system", "nightly", nightly);
     ini.SetInt("system", "Show12hrClock", show12hrClock);
     ini.SetInt("system", "homebrewreset", homebrewreset);
+    ini.SetInt("system", "dsonly", dsOnly);
 
     ini.SetString("system", "scrollSpeed",
                   (scrollSpeed == EScrollSlow)
                           ? "slow"
                           : ((scrollSpeed == EScrollMedium) ? "medium" : "fast"));
     ini.SetString(
-            "system", "viewMode",
-            (viewMode == EViewList) ? "list" : ((viewMode == EViewIcon) ? "icon" : "internal"));
+        "system", "viewMode",
+        (viewMode == EViewList) ? "list" 
+        : (viewMode == EViewIcon) ? "icon" 
+        : (viewMode == EViewSmall) ? "small" 
+        : (viewMode == EViewInternal) ? "internal"
+        : "internal");
     ini.SetString("system", "slot2mode",
                   (slot2mode == ESlot2Gba) ? "gba" : ((slot2mode == ESlot2Nds) ? "nds" : "ask"));
     ini.SetString("system", "saveext", saveExt ? ".sav" : ".nds.sav");

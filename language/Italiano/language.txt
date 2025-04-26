@@ -1,16 +1,14 @@
-﻿// Thanks to Giovanni Zilli
+﻿// Updated for Wood 1.33 by linoxyard
 
 [font]
 main = liberation.pcf
 language = 4
 
 [start menu]
-Copy = Copia
-Cut = Taglia
-Paste = Incolla
-Delete = Elimina
 Setting = Impostazioni
-Info = File Info
+Set favorite = Imposta preferito
+Unset favorite = Rimuovi dai preferiti
+Info = Info File
 Help = Aiuto
 Tools = Strumenti
 START = START
@@ -22,76 +20,76 @@ ok = OK
 cancel = Annulla
 
 [progress window]
-processing save = Elaborazione… Non spegnere!
-processing copy = Copia in corso… Non spegnere! %c per annullare
-first use sd = Controllo SD per il primo utilizzo…
-gba load = Caricamento gioco GBA…
-gba save load = Caricamento salvataggio GBA…
-gba save store = Elaborazione salvataggio GBA… Non spegnere!
-erase nor = Cancellazigne NOR flash… Non spegnere!
+processing save = Salvataggio in corso, non spegnere
+processing copy = Copia in corso, non spegnere, %c per annullare
+first use sd = Controllo SD per il primo utilizzo
+gba load = Caricamento gioco gba
+gba save load = Caricamento salvataggio gba
+gba save store = Salvataggio gba in corso, non spegnere
+erase nor = Cancella la NOR
 
 [copy file error]
-title = Errore di copia File
-text = Il File non esiste.
+title = Errore
+text = Il file non esiste
 
 [copy file exists]
-title = Conferma Incolla File
-text = E' presente un file con lo stesso nome. Sostituirlo?
+title = Attenzione
+text = Esiste un file con lo stesso nome, sostituirlo?
 
 [copy dest is directory]
-title = Errore di Copia Cartella
-text = Questa cartella contiene già una Cartella con lo stesso nome. Non è possibile copiare il file.
+title = Errore
+text = Esiste una cartella con lo stesso nome, impossibile copiare.
 
 [move dest is directory]
-title = Errore Spostamento File o Cartella
-text =  Questa cartella contiene già una Cartella con lo stesso nome. Non è possibile spostare il file.
+title = Errore
+text = Esiste una cartella con lo stesso nome, impossibile spostare.
 
 [no copy dir]
-title = Taglia/Incolla Cartella
-text = Opzione non ancora supportata per le cartelle!
+title = Errore
+text = Impossibile copiare/spostare la cartella.
 
 [stop copying file]
-title = Conferma annullamento Copia File
-text = Vuoi annullare la copia del File?
+title = Fine copia del file
+text = Vuoi terminare la copia?
 
 [confirm delete file]
-title = Conferma Eliminazione File/Cartella
-text = Il File o la Cartella non potrà essere recuperato, sei sicuro di voler eliminare '%s'?
+title = Conferma
+text = Impossibile ripristinare il file dopo la cancellazione di "%s", continuare?
 
 [do not delete directory]
-title = Errore eliminazione Cartella
-text = Questa Cartella non è vuota, elimina i Files all'interno e riprova.
+title = Attenzione
+text = Eliminazione annullata.
 
 [restore save fail]
-title = Attenzione!
-text = Errore nel recupero del salvataggio.
+title = Errore
+text = Impossibile ripristinare il salvataggio.
 
 [language changed]
-title = Confermi il cambio della Lingua?
-text = Vuoi riavviare la console per applicare il cambio della lingua? Scegli "No" per mantenere l'attuale.
+title = Domanda
+text = La lingua è stata cambiata, riavviare per applicare le impostazioni? Scegli "No" per riavviare dopo.
 
 [ui style changed]
-title = Confermi il cambio del Tema?
-text = Vuoi riavviare la console per applicare il cambio del Tema? Scegli "No" per mantenere l'attuale.
+title = Domanda
+text = L'interfaccia è stata cambiata, riavviare per applicare le impostazioni? Scegli "No" per riavviare dopo.
 
 [setting window]
 ok = OK
-savetype = Salavataggio
+savetype = Impostazioni
 cancel = Annulla
 confirm = Conferma
-confirm text = Salvare impostazioni correnti?
+confirm text = Salvare le impostazioni correnti?
 close = Chiudi
 system = Sistema
 interface = Interfaccia
 filesystem = File system
 gba = GBA
-patches = Patches
+patches = Patch
 
 [save type]
-title = Seleziona il tipo di salvataggio
-text = Tipo salvataggio
-Unknown = Auto
-No Save = Disattiva
+title = Impostazioni
+text = Scegli un tipo di salvataggio
+Unknown = sconosciuto/auto
+No Save = nessuno
 4K = 4K
 64K = 64K
 512K = 512K
@@ -102,121 +100,126 @@ No Save = Disattiva
 16M = 16M
 32M = 32M
 64M = 64M
-default = Default
-save slot = Scegli lo slot
-tab1 = Compatibility
-tab2 = Features
+default = default
+save slot = Scegli Slot
+tab1 = Compatibilità
+tab2 = Caratteristiche
 
 [system setting]
-title = Opzioni di Sistema
-safe mode = Safe Mode
+title = Impostazioni di sistema
+safe mode = Modalità sicura
 
 [rom info]
-title = Proprietà Rom
+title = Informazioni
 file date = Ultima modifica: %d/%d/%d %02d:%02d:%02d(GMT)
 file size = Dimensione: %s
-save type = Salvataggio: %s
-game code = Codice Gioco: %s
-copy slot = Copy Slot
+save type = Tipo salvataggio: %s
+game code = Codice: %s
+copy slot = Copia lo Slot
 
 [disk info]
 total = Capacità Disco: %s
-used = Spazio utilizzato: %s
-free = Spazio libero: %s
+used = Spazio Usato: %s
+free = Spazio Libero: %s
 
 [no free space]
-title = Errore. Spazio terminato.
-text = Non c'è abbastanza spazio libero.
+title = Errore
+text = Non c'è spazio sul disco.
 
 [unsupported sd]
-title = MicroSD non supportata
-text = Questa MicroSD (Model:%s) non è supportata, copia i programmi dalla microSD all' Acekard Flash Memory e riprova.
+title = SD non supportata
+text = Questa SD (Model:%s) non è adatta all'esecuzione di programmi per DS, si prega di cambiare SD o copiare il file nella memoria interna e provare ancora.
 
 [sd card error]
-title = Errore di accesso alla microSD
-text = Impossibile accedere alla microSD, assicuarati che la microSD sia formattata e inserita correttamente.
+title = Errore SD
+text = Impossibile accedere alla SD, potrebbe non essere inserita correttamente.
 
 [no sd for save]
-title = Nessuna microSD per il salvataggio
-text = Impossibile accedere alla microSD, il salvataggio della partita precedente sarà scritto in '%s'.
+title = Errore SD
+text = Impossibile accedere alla SD, il salvataggio del programma lanciato prima sarà scritto in questo file: "%s".
 
 [no gba card]
-title = Cartuccia GBA non trovata
-text = Non è inserita nessuna cartuccia nello SLOT-2
+title = Notifica
+text = Nessuna cartuccia nello SLOT-2
 
 [filelist type]
-text = File da visualizzare
+text = Imposta il tipo di lista file
 item0 = NDS
 item1 = NDS + SAV
-item2 = Tutti
+item2 = TUTTI
 
 [rom trim]
-text = Trimma ROM quando copi
-item0 = Disabilitato
-item1 = Abilitato
+text = Trimma rom durante la copia
+item0 = No
+item1 = Sì
 
 [language]
-text = Lingua del Sistema
+text = Lingua
 ja = 日本語
-en = english
-fr = français
-de = deutsch
-it = italiano
-es = español
+en = English
+fr = Français
+de = Deutsch
+it = Italiano
+es = Español
+cn = 简体中文
+zh = 繁體中文
 
 [ui style]
-text = Tema
+text = Stile Interfaccia Utente
 
 [help window]
-title = Aiuto
-item0 = %c Scelta Programmi
-item1 = %c Sì/Start/OK
-item2 = %c No/Indietro/Annulla
-item3 = %c Vedi file info/Seleziona tipo save
-item4 = %c Selezione Memoria: microSD/Flash
-item5 = %c Back to parent directory
-item6 = %c Regola Luminosità: 1/2/3/4
-item7 = %s Apri "START" Menu
-item8 = %s Stile Menù nuovo/classico
+title = Informazioni di aiuto
+item0 = %c  Scegli programmi
+item1 = %c  Start/OK/SI
+item2 = %c  Indietro/Annulla/NO
+item3 = %c  Vedi info file/Scegli tipo di salvataggio
+item4 = %c  Cambia SD/FLASH o SD/Preferiti
+item5 = %c  Ritorna alla root
+item6 = %c  Imposta Luminosità
+item7 = %s  Menù Start
+item8 = %s  Stile menù nuovo/classico
 
 [exp window]
 button = 3in1
-title = Impostazioni 3in1
+title = Impostazioni 3in1 expansion pack
 ram = RAM
 sram = sRAM
-off = Spento
-low = Basso
-mid = Medio
-high = Alto
-strength = Livello vibrazione
-flash to nor = su NOR
-copy to psram = su RAM
+off = off
+low = bassa
+mid = media
+high = alta
+strength = Potenza vibrazione
+flash to nor = Copia in NOR
+copy to psram = Copia in RAM
 
 [abort save]
-title = Annulla Salvataggio
-text = Sei sicuro di voler annullare il salvataggio?
+title = Annulla salvataggio
+text = Vuoi annullare il salvataggio in corso?
 
 [gba warn]
-title = Attenzione!: Dimensione ROM GBA
-text = Le ROM GBA più grandi di 32M non sono al momento supportate!
+title = Attenzione
+text = Non sono supportate le rom GBA maggiori di 32M!
 
 [patches]
-download play = DS Download Play
-cheating system = Cheat/Action Replay
-reset in game = Soft-Reset
-dma = Modo DMA
-protection = Bypass Protection
-linkage = Link with GBA
-sd save = Save directly to SD
-homebrew reset = Reset in Homebrew
+download play = Supporto Download Play
+cheating system = Codici trucchi(AR)
+reset in game = Reset durante il gioco
+dma = Modalità DMA
+protection = Bypassa Protezione
+linkage = Link con GBA
+sd save = Salva direttamente nella SD
+homebrew reset = Reset durante l'Homebrew
+reset hotkey = Combinazione di Reset
+rts = Real Time Save
+carddma = Card read DMA
 
 [switches]
-Enable = Abilita
-Disable = Disabilita
-Global = Globali(%s)
+Enable = on
+Disable = off
+Global = globale(%s)
 
 [ram allocation]
-title = Errore RAM
+title = Errore
 memory allocation error = Errore di allocazione della memoria
 
 [scrolling]
@@ -225,54 +228,99 @@ medium = Medio
 slow = Lento
 
 [file settings]
-title = Impostazioni dei files
-show hidden files = Mostra files nascosti
-save extension = Estensione
+title = Impostazioni file system
+show hidden files = Mostra file nascosti
+save extension = Estensione del salvataggio
+use saves folder = Usa cartella 'saves'
 
 [interface settings]
-title = Impostazioni dell'Interfaccia
-scrolling speed = Velocità scorrimento
-filelist style = Stile vista
-oldschool = Old school
+title = Impostazioni interfaccia
+scrolling speed = Velocità di scorrimento
+filelist style = Stile della lista dei file
+oldschool = Vecchia scuola
 modern = Moderno
-internal = Nome Interno
+internal = Interno
+small = Small icons
 animation = Animazione
-12 hour = 12-hour clock
+12 hour = Orologio 12-ore
 
 [gba settings]
 title = Impostazioni GBA
-sleephack = Universal sleep
-autosave = Backup salvataggio all'avvio
-mode = Slot-2 mode
+sleephack = Sleep Universale
+autosave = Backup del salvataggio all'avvio
+mode = Modalità Slot-2
 modegba = gba
 modends = nds
-modeask = ask
-modetext = Launch slot-2 in NDS mode?
+modeask = chiedi
+modetext = Avviare lo slot-2 in modalità NDS?
 
 [sd save]
-title = Warning
-text = This game cannot be launched from Acekard Internal Flash Memory, please copy game from Acekard Internal Flash Memory to SD card and try again.
+title = Attenzione
+text = Questo gioco non può essere avviato dalla memoria interna, si prega di copiare il file nella SD e provare ancora.
 
 [icon]
-icon = Show icon
-transparent = transparent
-as is = as is
+icon = Mostra icona
+transparent = trasparente
+as is = normale
 firmware = firmware
 
 [cheats]
-title = Cheats
-info = More…
-deselect = Deselect all
+title = Codici
+info = Altro…
+deselect = Deseleziona
 
 [saveslot]
-title = Copia Save Slot
-confirm = Sei sicuro di voler copiare il save slot?
-target slot = Save Slot di destinazione
+title = Copia Slot Salvataggio
+confirm = Sei sicuro di voler copiare lo slot?
+target slot = Slot Salvataggio di destinazione
 
 [mainlist]
-flash memory = Flash Memory
-microsd card = microSD Card
-slot2 card = Slot2 Card
-favorites = Favorites
+flash memory = Memoria Flash
+microsd card = MicroSD
+slot2 card = Slot2
+favorites = Preferiti
+
+[hotkeys]
+l-r-a-b-↓ = l-r-a-b-↓
+l-r-b-y-↓ = l-r-b-y-↓
+l-r-a-b-x-y = l-r-a-b-x-y
+b-y-touch = b-y-tocco
+start-r-touch = start-r-tocco
+
+[updater]
+update = Aggiorna
+update ? = Vuoi aggiornare?
+updater = Modulo di aggiornamento
+menu = Modulo principale
+savesize.bin = savesize.bin
+cheats = Database dei Codici
+connecting = Connessione in corso
+failed = Aggiornamento fallito
+updated = File aggiornato
+fresh = Il file è già aggiornato
+stop = Vuoi interrompere il trasferimento?
+download = Scaricati %d byte
+unpack = Decompressione
+
+[crc32]
+crc32 = CRC32
+calculation = Calcolo del CRC32 in Corso
+
+[loader]
+text = Utilizzare il caricatore ROM
+not found = Caricatore non trovato
+error = Error
+info = Information
+
+[loading]
+load text = Attendere prego…
+
+[nds bootstrap]
+text = nds-bootstrap version
+item0 = release
+item1 = nightly
+firsttimetitle = Inizializzazione di nds-bootstrap
+firsttime = Premere OK per avviare la configurazione iniziale di nds-bootstrap. Questa operazione potrebbe richiedere un minuto ed è un'operazione da eseguire una sola volta.
+dsmode = DS-Only Mode
 
 [end]

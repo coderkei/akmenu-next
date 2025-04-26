@@ -104,7 +104,7 @@ cRomInfoWnd::~cRomInfoWnd() {}
 void cRomInfoWnd::draw() {
     _renderDesc.draw(windowRectangle(), _engine);
 
-    _romInfo.drawDSRomIcon(position().x + 8, position().y + 24, selectedEngine());
+    _romInfo.drawDSRomIcon(position().x + 8, position().y + 24, selectedEngine(), false);
 
     gdi().setPenColor(uiSettings().formTextColor, selectedEngine());
     gdi().textOutRect(position().x + 48, position().y + 22, size().x - 40, 40, _romInfoText.c_str(),

@@ -1,15 +1,20 @@
-﻿// Spanish language file for the Wood Firmwares by Yellow Wood Goblin. Modified and updated by PabloACZ. Very thanks to germich3, pichon64, Mhetralla and pepeluis33, for starting the translation project.
+﻿// Spanish language file for the Wood Firmwares by Yellow Wood Goblin:
+// Modified and updated by PabloACZ.
+// Very thanks to germich3, pichon64, Mhetralla and pepeluis33, for starting the translation project.
+// ______________________________________________________________
+//
+// Archivo de idioma español para los Firmwares Wood de Yellow Wood Goblin:
+// Modificado y actualizado por PabloACZ.
+// Agradecimientos a germich3, pichon64, Mhetralla y pepeluis33 por comenzar este proyecto.
 
 [font]
 main = liberation.pcf
 language = 5
 
 [start menu]
-Copy = Copiar
-Cut = Cortar
-Paste = Pegar
-Delete = Eliminar
 Setting = Opciones
+Set favorite = Añadir a favoritos
+Unset favorite = Eliminar de favoritos
 Info = Información
 Help = Ayuda
 Tools = Herramientas
@@ -60,7 +65,7 @@ text = El elemento no podrá ser recuperado si se elimina. ¿Borrar "%s" de toda
 
 [do not delete directory]
 title = Error
-text = El directorio no está vacío. No puede eliminarse.
+text = Eliminación de datos abortada.
 
 [restore save fail]
 title = Error
@@ -163,6 +168,8 @@ fr = français
 de = deutsch
 it = italiano
 es = español
+cn = 简体中文
+zh = 繁體中文
 
 [ui style]
 text = Interfaz gráfica
@@ -209,6 +216,9 @@ protection = Sobrepasar la protección AP
 linkage = Enlazar con GBA (SLOT-2)
 sd save = Guardar directamente en la SD
 homebrew reset = SoftReset en apps. homebrew
+reset hotkey = Comb. botones del SoftReset
+rts = Real Time Save
+carddma = Card read DMA
 
 [switches]
 Enable = sí
@@ -228,6 +238,7 @@ slow = lenta
 title = Ajustes del sistema de archivos
 show hidden files = Mostrar archivos ocultos
 save extension = Extensión de saves
+use saves folder = Usar carpeta 'saves'
 
 [interface settings]
 title = Ajustes de la interfaz
@@ -236,6 +247,7 @@ filelist style = Estilo de la lista de archivos
 oldschool = antiguo
 modern = moderno
 internal = detallado
+small = íconos pequeños
 animation = Animación de íconos
 12 hour = Sistema horario de 12 horas
 
@@ -274,5 +286,48 @@ flash memory = Memoria flash
 microsd card = Tarjeta micro SD
 slot2 card = Flashcard de SLOT-2
 favorites = Favoritos
+
+[hotkeys]
+l-r-a-b-↓ = l+r+a+b+↓
+l-r-b-y-↓ = l+r+b+y+↓
+l-r-a-b-x-y = l+r+a+b+x+y
+b-y-touch = b+y+p.táctil
+start-r-touch = start+r+p.táctil
+
+[updater]
+update = Actualizar
+update ? = ¿Seguro de que quieres actualizar estos datos?
+updater = Módulo updater.dat
+menu = Firmware Wood
+savesize.bin = savesize.bin
+cheats = USRCHEAT.DAT
+connecting = Conectando
+failed = actualización fallida
+updated = actualizado correctamente
+fresh = ya tienes la última versión
+stop = ¿Quieres parar la transferencia?
+download = %d bytes descargados
+unpack = Descomprimiendo
+
+[crc32]
+crc32 = CRC32
+calculation = Calculando CRC32…
+
+[loader]
+text = Utilice el cargador de ROM
+not found = Cargador no encontrado
+error = Error
+info = Information
+
+[loading]
+load text = Espere por favor…
+
+[nds bootstrap]
+text = nds-bootstrap version
+item0 = release
+item1 = nightly
+firsttimetitle = Inicializando nds-bootstrap
+firsttime = Pulsa "Aceptar" para iniciar la configuración inicial de nds-bootstrap. Este proceso puede tardar un minuto y se realiza una sola vez.
+dsmode = DS-Only Mode
 
 [end]

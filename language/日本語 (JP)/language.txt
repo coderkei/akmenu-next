@@ -5,11 +5,9 @@ main = liberation.pcf
 language = 0
 
 [start menu]
-Copy = コピー
-Cut = カット
-Paste = ペースト
-Delete = 削除
 Setting = 設定
+Set favorite = お気に入りに設定
+Unset favorite = お気に入りを解除
 Info = ファイル詳細
 Help = ヘルプ
 Tools = ツール
@@ -163,6 +161,8 @@ fr = français
 de = deutsch
 it = italiano
 es = español
+cn = 简体中文
+zh = 繁體中文
 
 [ui style]
 text = ユーザー設定 スタイル
@@ -209,6 +209,9 @@ protection = プロテクト回避
 linkage = GBAとリンク
 sd save = SDに直接セーブ
 homebrew reset = Reset in Homebrew
+reset hotkey = Reset Hotkey
+rts = Real Time Save
+carddma = Card read DMA
 
 [switches]
 Enable = オン
@@ -227,7 +230,8 @@ slow = 低速
 [file settings]
 title = ファイルシステムの設定
 show hidden files = 隠しファイルを表示する
-save extension = Save extension
+save extension = ファイル拡張子を保存する
+use saves folder = saves フォルダを使用する
 
 [interface settings]
 title = インターフェイスの設定
@@ -236,6 +240,7 @@ filelist style = ファイルリストのスタイル
 oldschool = 簡易
 modern = アイコン
 internal = 内部情報
+small = Small icons
 animation = アニメ
 12 hour = 12-hour clock
 
@@ -274,5 +279,48 @@ flash memory = Flash Memory
 microsd card = microSD Card
 slot2 card = Slot2 Card
 favorites = Favorites
+
+[hotkeys]
+l-r-a-b-↓ = l-r-a-b-↓
+l-r-b-y-↓ = l-r-b-y-↓
+l-r-a-b-x-y = l-r-a-b-x-y
+b-y-touch = b-y-touch
+start-r-touch = start-r-touch
+
+[updater]
+update = Update
+update ? = Do you want to update?
+updater = Update module
+menu = Main module
+savesize.bin = savesize.bin
+cheats = Cheats DB
+connecting = Connecting
+failed = failed
+updated = updated
+fresh = already updated
+stop = Do you want to stop transfer?
+download = Downloaded %d bytes
+unpack = Unpacking
+
+[crc32]
+crc32 = CRC32
+calculation = CRC32を計算する
+
+[loader]
+text = ROMローダーを使用する
+not found = ローダーが見つかりません
+error = Error
+info = Information
+
+[loading]
+load text = お待ちください...
+
+[nds bootstrap]
+text = nds-bootstrap version
+item0 = release
+item1 = nightly
+firsttimetitle = nds-bootstrapの初期化
+firsttime = 「OK」を押すと、nds-bootstrapの初回セットアップが開始されます。このプロセスは1分ほどかかる場合があり、一度だけ実行されます。
+dsmode = DS-Only Mode
 
 [end]

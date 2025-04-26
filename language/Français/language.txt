@@ -5,11 +5,9 @@ main = liberation.pcf
 language = 2
 
 [start menu]
-Copy = Copier
-Cut = Couper
-Paste = Coller
-Delete = Supprimer
 Setting = Paramètres
+Set favorite = Ajouter aux favoris
+Unset favorite = Supprimer des favoris
 Info = Infos Fichier
 Help = Aide
 Tools = Outils
@@ -163,6 +161,8 @@ fr = français
 de = deutsch
 it = italiano
 es = español
+cn = 简体中文
+zh = 繁體中文
 
 [ui style]
 text = Interface utilisateur
@@ -209,6 +209,9 @@ protection = Protection bypass
 linkage = Lien GBA
 sd save = Sauvegarder sur microSD
 homebrew reset = Reset in Homebrew
+reset hotkey = Reset Hotkey
+rts = Real Time Save
+carddma = Card read DMA
 
 [switches]
 Enable = on
@@ -228,6 +231,7 @@ slow = Faible
 title = Paramêtres des fichiers
 show hidden files = Afficher les fichiers cachés
 save extension = Extension de la sauvegarde
+use saves folder = Utiliser le dossier 'saves'
 
 [interface settings]
 title = Interface de réglages
@@ -236,6 +240,7 @@ filelist style = Affichage fichiers
 oldschool = Simple
 modern = Icônes
 internal = Internal
+small = Small icons
 animation = Animation
 12 hour = Horaire sur 12 heures
 
@@ -274,5 +279,49 @@ flash memory = Flash Memory
 microsd card = microSD Card
 slot2 card = Slot2 Card
 favorites = Favorites
+
+[hotkeys]
+l-r-a-b-↓ = l-r-a-b-↓
+l-r-b-y-↓ = l-r-b-y-↓
+l-r-a-b-x-y = l-r-a-b-x-y
+b-y-touch = b-y-touch
+start-r-touch = start-r-touch
+
+[updater]
+update = Update
+update ? = Do you want to update?
+updater = Update module
+menu = Main module
+savesize.bin = savesize.bin
+cheats = Cheats DB
+connecting = Connecting
+failed = failed
+updated = updated
+fresh = already updated
+stop = Do you want to stop transfer?
+download = Downloaded %d bytes
+unpack = Unpacking
+
+[crc32]
+crc32 = CRC32
+calculation = calcul CRC32
+
+[loader]
+text = Utiliser le chargeur ROM
+not found = Chargeur non trouvé
+error = Error
+info = Information
+
+[loading]
+load text = S'il vous plaît, attendez…
+
+[nds bootstrap]
+text = nds-bootstrap version
+item0 = release
+item1 = nightly
+firsttimetitle = Initialisation de nds-bootstrap
+firsttime = Appuyez sur OK pour lancer la première configuration de nds-bootstrap. Cette opération peut prendre une minute et est unique.
+dsmode = DS-Only Mode
+
 
 [end]

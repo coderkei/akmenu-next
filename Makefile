@@ -77,11 +77,18 @@ arm9_dsi/$(TARGET).elf:
 
 #---------------------------------------------------------------------------------
 organize_files:
-	@mkdir -p build
-	@mv -f $(TARGET).nds $(TARGET).dsi build/
-	@cd build && \
-	cp $(TARGET).nds launcher_$(TARGET).nds && \
-	cp $(TARGET).dsi launcher_$(TARGET).dsi
+	@mv -f $(TARGET).nds $(TARGET).dsi package/
+	cp package/$(TARGET).nds package/_nds/akmenunext/launcher_nds.nds
+	cp package/$(TARGET).dsi package/_nds/akmenunext/launcher_dsi.nds
+	cp package/$(TARGET).nds package/boot_nds.nds
+	cp package/$(TARGET).dsi package/boot_dsi.nds
+	@$(MAKE) make_cia
+	rm -f package/$(TARGET).nds package/$(TARGET).dsi
+	cp -r language package/_nds/akmenunext/language
+
+#---------------------------------------------------------------------------------
+make_cia:
+	./tools/make_cia.exe --srl=$(CURDIR)/package/$(TARGET).dsi -o $(CURDIR)/package/$(TARGET).cia
 
 #---------------------------------------------------------------------------------
 clean:
@@ -89,5 +96,9 @@ clean:
 	$(MAKE) -C arm9_dsi clean
 	$(MAKE) -C nds-bootloader clean
 	$(MAKE) -C arm7 clean
-	rm -rf data build
+	rm -rf data
+	rm -f package/*.nds package/*.dsi package/*.cia
+	rm -f package/_nds/akmenunext/launcher_nds.nds package/_nds/akmenunext/launcher_dsi.nds
+	rm -f package/_nds/akmenunext/globalsettings.ini
 	rm -f *.nds *.dsi
+	rm -rf package/_nds/akmenunext/language

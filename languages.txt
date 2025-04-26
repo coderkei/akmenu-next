@@ -1,6 +1,0 @@
-0 - japan
-1 - english
-2 - french
-3 - italian
-4 - german
-5 - spain

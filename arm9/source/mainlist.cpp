@@ -378,7 +378,24 @@ void cMainList::draw() {
 
 void cMainList::drawIcons()  // 直接画家算法画 icons
 {
-    if (VM_LIST != _viewMode) {
+    if (VM_LIST_ICON == _viewMode){
+        size_t total = _visibleRowCount;
+        if (total > _rows.size() - _firstVisibleRowId) total = _rows.size() - _firstVisibleRowId;
+
+        for (size_t i = 0; i < total; ++i) {
+            // 这里图像呈现比真正的 MAIN buffer 翻转要早，所以会闪一下
+            // 解决方法是在 gdi().present 里边统一呈现翻转
+            if (_firstVisibleRowId + i == _selectedRowId) {
+                if (_activeIcon.visible()) {
+                    continue;
+                }
+            }
+            s32 itemX = _position.x + 1;
+            s32 itemY = _position.y + i * _rowHeight + ((_rowHeight - 16) >> 1) - 1;
+            _romInfoList[_firstVisibleRowId + i].drawDSRomIcon(itemX, itemY, _engine, true);
+        }
+    }
+    else if (VM_LIST != _viewMode) {
         size_t total = _visibleRowCount;
         if (total > _rows.size() - _firstVisibleRowId) total = _rows.size() - _firstVisibleRowId;
 
@@ -392,7 +409,7 @@ void cMainList::drawIcons()  // 直接画家算法画 icons
             }
             s32 itemX = _position.x + 1;
             s32 itemY = _position.y + i * _rowHeight + ((_rowHeight - 32) >> 1) - 1;
-            _romInfoList[_firstVisibleRowId + i].drawDSRomIcon(itemX, itemY, _engine);
+            _romInfoList[_firstVisibleRowId + i].drawDSRomIcon(itemX, itemY, _engine, false);
         }
     }
 }
@@ -403,6 +420,13 @@ void cMainList::setViewMode(VIEW_MODE mode) {
     switch (_viewMode) {
         case VM_LIST:
             _columns[ICON_COLUMN].width = 0;
+            _columns[SHOWNAME_COLUMN].width = 250;
+            _columns[INTERNALNAME_COLUMN].width = 0;
+            arangeColumnsSize();
+            setRowHeight(15);
+            break;
+        case VM_LIST_ICON:
+            _columns[ICON_COLUMN].width = 18;
             _columns[SHOWNAME_COLUMN].width = 250;
             _columns[INTERNALNAME_COLUMN].width = 0;
             arangeColumnsSize();
@@ -433,7 +457,11 @@ void cMainList::updateActiveIcon(bool updateContent) {
 
     // do not show active icon when hold key to list files. Otherwise the icon will not show
     // correctly.
-    if (getInputIdleMs() > 1000 && VM_LIST != _viewMode && allowAnimation && _romInfoList.size() &&
+    if (VM_LIST_ICON == _viewMode){
+        _activeIcon.hide();
+        cwl();
+    }
+    else if (getInputIdleMs() > 1000 && VM_LIST != _viewMode && allowAnimation && _romInfoList.size() &&
         0 == temp.keysHeld && gs().Animation) {
         if (!_activeIcon.visible()) {
             u8 backBuffer[32 * 32 * 2];

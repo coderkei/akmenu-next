@@ -68,30 +68,16 @@ cheat_failed:
 
 bool NdsBootstrapLauncher::prepareIni() {
     CIniFile ini;
-    tDSiHeader header;
-    char sfnSrl[62];
-	char sfnPub[62];
-    char sfnPrv[62];
-    _romInfo.MayBeDSRom(mRomPath);
-    bool dsiWare = _romInfo.isDSiWare();
-    
+
     ini.SetString("NDS-BOOTSTRAP", "NDS_PATH", mRomPath);
-    // check for DSiWare
-    if(dsiWare){
-        //TODO create pub & prv savwe
-        #ifdef __DSIMODE__
-        /*fatGetAliasPath("sd:/", mRomPath, sfnSrl);
-        fatGetAliasPath("sd:/", pubPath, sfnPub);
-        fatGetAliasPath("sd:/", prvPath, sfnPrv);
-        ini.SetString("NDS-BOOTSTRAP", "APP_PATH", sfnSrl);
-        ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", sfnPub);
-        ini.SetString("NDS-BOOTSTRAP", "PRV_PATH", sfnPrv);*/
-        #else
-        //TODO flashcart
-        #endif
+    ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", mSavePath);
+    if(gs().dsOnly)
+    {
+        ini.SetString("NDS-BOOTSTRAP", "DSI_MODE", "0");
     }
-    else{
-        ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", mSavePath);
+    if (access("/_nds/debug.txt", F_OK) == 0) {
+        ini.SetString("NDS-BOOTSTRAP", "LOGGING", "1");
+        ini.SetString("NDS-BOOTSTRAP", "DEBUG", "1");
     }
 
     ini.SaveIniFile("/_nds/nds-bootstrap.ini");
@@ -109,6 +95,15 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
     //has the user used nds-bootstrap before?
     if(access(ndsBootstrapCheck, F_OK) != 0){
         akui::messageBox(NULL, LANG("nds bootstrap", "firsttimetitle"), LANG("nds bootstrap", "firsttime"), MB_OK);
+    }
+
+    _romInfo.MayBeDSRom(romPath);
+    bool dsiWare = _romInfo.isDSiWare();
+
+    // check for DSiWare
+    if(dsiWare){
+        printError("Unsupported application. DSiWare is not supported.");
+        return false;
     }
 
     progressWnd().setTipText("Initializing nds-bootstrap...");
@@ -167,6 +162,11 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
     }
     progressWnd().setTipText("Initializing nds-bootstrap...");
     progressWnd().setPercent(75);
+
+    //Clean up old INI
+    if (access("/_nds/nds-bootstrap/nds-bootstrap.ini", F_OK) == 0) {
+        remove("/_nds/nds-bootstrap/nds-bootstrap.ini");
+    }
 
     // Setup nds-bootstrap INI parameters
     if (!prepareIni()) return false;

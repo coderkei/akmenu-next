@@ -27,7 +27,7 @@
 // 显示游戏列表，文件列表等等
 class cMainList : public akui::cListView {
   public:
-    enum VIEW_MODE { VM_LIST = 0, VM_ICON, VM_INTERNAL };
+    enum VIEW_MODE { VM_LIST = 0, VM_ICON, VM_INTERNAL, VM_LIST_ICON };
 
     enum  // COLUMN_LIST
     {

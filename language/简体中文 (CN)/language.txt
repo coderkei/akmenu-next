@@ -161,6 +161,9 @@ item1 = 禁用
 text = nds-bootstrap版本
 item0 = 正式版
 item1 = 每夜版
+firsttimetitle = 初始化 nds-bootstrap
+firsttime = 按“确定”开始 nds-bootstrap 的首次设置。此过程可能需要一分钟，并且是一次性过程。
+dsmode = DS-Only Mode
 
 [language]
 text = 系统语言
@@ -170,6 +173,8 @@ fr = 法语
 de = 德语
 it = 意大利语
 es = 西班牙语
+cn = 简体中文
+zh = 繁體中文
 
 [ui style]
 text = 界面风格
@@ -244,6 +249,7 @@ scrolling speed = 滚屏速度
 filelist style = 图标风格
 oldschool = 简洁
 modern = 图标
+small = 小图标
 internal = 游戏标题
 animation = 动画
 12 hour = 12小时制
@@ -287,6 +293,8 @@ favorites = 收藏夹
 [loader]
 text = 使用ROM引导器
 not found = 找不到引导器
+error = 错误
+info = 信息
 
 [loading]
 load text = 请稍候...

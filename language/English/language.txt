@@ -148,10 +148,13 @@ item0 = NDS
 item1 = NDS + SAV
 item2 = ALL
 
-[rom trim]
-text = Trim rom when copy
-item0 = No
-item1 = Yes
+[nds bootstrap]
+text = nds-bootstrap version
+item0 = release
+item1 = nightly
+firsttimetitle = Initializing nds-bootstrap
+firsttime = Press OK to start first-time setup of nds-bootstrap. This may take a minute and is a one-time process.
+dsmode = DS-Only Mode
 
 [language]
 text = Language
@@ -161,6 +164,8 @@ fr = français
 de = deutsch
 it = italiano
 es = español
+cn = 简体中文
+zh = 繁體中文
 
 [ui style]
 text = User Interface style
@@ -207,6 +212,7 @@ protection = Bypass Protection
 linkage = Link with GBA
 sd save = Save directly to SD
 homebrew reset = Reset in Homebrew
+carddma = Card read DMA
 
 [switches]
 Enable = on
@@ -226,12 +232,14 @@ slow = Slow
 title = File system settings
 show hidden files = Show hidden files
 save extension = Save extension
+use saves folder = Use 'saves' folder
 
 [interface settings]
 title = Interface settings
 scrolling speed = Scrolling speed
 filelist style = Filelist style
 oldschool = Old school
+small = Small Icons
 modern = Modern
 internal = Internal
 animation = Animation
@@ -276,5 +284,11 @@ favorites = Favorites
 [loader]
 text = Use ROM loader
 not found = Loader not found
+error = Error
+info = Information
+
+[loading]
+load text = Please wait...
+
 
 [end]
