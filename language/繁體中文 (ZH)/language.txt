@@ -1,4 +1,4 @@
-// Thanks to s223355 for the translation.
+﻿
 
 [font]
 main = wenquanyi_9pt.pcf
@@ -10,6 +10,8 @@ Cut = 剪下
 Paste = 貼上
 Delete = 刪除
 Setting = 設定
+Set favorite = 設為喜愛的
+Unset favorite = 取消設為喜愛的
 Info = 檔案資訊
 Help = 說明
 Tools = 工具
@@ -155,6 +157,11 @@ text = 複製時自動縮減ROM
 item0 = 否
 item1 = 是
 
+[nds bootstrap]
+text = nds-bootstrap版本
+item0 = release版
+item1 = nightly版
+
 [language]
 text = 系統語言
 ja = 日文
@@ -209,6 +216,7 @@ protection = 反制燒錄保護
 linkage = 與GBA連結
 sd save = 直接存儲到SD
 homebrew reset = 在HomeBrew中暖開機
+carddma = 遊戲卡讀取DMA
 
 [switches]
 Enable = 開啟
@@ -228,6 +236,7 @@ slow = 慢
 title = 檔案系統設定
 show hidden files = 顯示隱藏檔案
 Save Extension = 存檔副檔名
+use saves folder = 使用 'saves' 資料夾
 
 [interface settings]
 title = 介面設定
@@ -274,5 +283,13 @@ flash memory = 內建記憶體
 microsd card = microSD卡
 slot2 card = Slot2卡
 favorites = 喜愛的
+
+[loader]
+text = 使用ROM引導器
+not found = 找不到引導器
+
+[loading]
+load text = 請稍後...
+
 
 [end]

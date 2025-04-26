@@ -10,6 +10,8 @@ Cut = 剪切
 Paste = 粘贴
 Delete = 删除
 Setting = 设置
+Set favorite = 放入收藏夹
+Unset favorite = 移出收藏夹
 Info = 文件信息
 Help = 帮助信息
 Tools = 工具
@@ -105,7 +107,7 @@ No Save = 没有存档
 default = 预设
 save slot = 选择存档位置
 tab1 = 兼容性
-tab2 = 特殊选项
+tab2 = 功能
 
 [system setting]
 title = 系统选项
@@ -154,6 +156,11 @@ item2 = 显示所有
 text = 拷贝时自动裁剪ROM
 item0 = 启用
 item1 = 禁用
+
+[nds bootstrap]
+text = nds-bootstrap版本
+item0 = 正式版
+item1 = 每夜版
 
 [language]
 text = 系统语言
@@ -209,6 +216,7 @@ protection = 自动反烧录
 linkage = 与GBA联动
 sd save = 直接存储至SD卡
 homebrew reset = 在自制程序中复位
+carddma = 卡带读取DMA
 
 [switches]
 Enable = 启用
@@ -228,6 +236,7 @@ slow = 慢
 title = 文件系统设置
 show hidden files = 显示隐藏文件
 save extension = 存档格式
+use saves folder = 使用'saves'文件夹
 
 [interface settings]
 title = 文件系统设置
@@ -274,5 +283,13 @@ flash memory = 内置闪存
 microsd card = 内存卡
 slot2 card = Slot2扩展卡
 favorites = 收藏夹
+
+[loader]
+text = 使用ROM引导器
+not found = 找不到引导器
+
+[loading]
+load text = 请稍候...
+
 
 [end]
