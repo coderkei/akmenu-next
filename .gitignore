@@ -1,5 +1,6 @@
 themes
 data/load.bin
+build
 .vscode
 *.elf
 *.nds
