@@ -99,6 +99,5 @@ clean:
 	rm -rf data
 	rm -f package/*.nds package/*.dsi package/*.cia
 	rm -f package/_nds/akmenunext/launcher_nds.nds package/_nds/akmenunext/launcher_dsi.nds
-	rm -f package/_nds/akmenunext/globalsettings.ini
 	rm -f *.nds *.dsi
 	rm -rf package/_nds/akmenunext/language
