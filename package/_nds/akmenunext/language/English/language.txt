@@ -154,6 +154,7 @@ item0 = release
 item1 = nightly
 firsttimetitle = Initializing nds-bootstrap
 firsttime = Press OK to start first-time setup of nds-bootstrap. This may take a minute and is a one-time process.
+dsmode = DS-Only Mode
 
 [language]
 text = Language
@@ -238,6 +239,7 @@ title = Interface settings
 scrolling speed = Scrolling speed
 filelist style = Filelist style
 oldschool = Old school
+small = Small Icons
 modern = Modern
 internal = Internal
 animation = Animation
@@ -288,5 +290,13 @@ info = Information
 [loading]
 load text = Please wait...
 
+[resethotkey]
+text = Menu Hotkey
+0 = l-↓-select
+1 = l-r-start
+2 = l-r-select
+3 = l-r-a-b-↓
+4 = l-r-b-y-↓
+5 = l-r-a-b-x-y
 
 [end]

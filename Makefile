@@ -84,7 +84,7 @@ organize_files:
 	cp package/$(TARGET).dsi package/boot_dsi.nds
 	@$(MAKE) make_cia
 	rm -f package/$(TARGET).nds package/$(TARGET).dsi
-	cp -r language package/_nds/akmenunext/language
+	cp -r language package/_nds/akmenunext/
 
 #---------------------------------------------------------------------------------
 make_cia:

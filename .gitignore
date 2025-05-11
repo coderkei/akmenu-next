@@ -1,9 +1,12 @@
 themes
 data/load.bin
 build
+temp
 .vscode
 *.elf
 *.nds
 *.dsi
 *.pcf
 *.dldi
+*.zip
+*.cia

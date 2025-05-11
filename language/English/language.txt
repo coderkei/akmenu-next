@@ -290,5 +290,13 @@ info = Information
 [loading]
 load text = Please wait...
 
+[resethotkey]
+text = Menu Hotkey
+0 = l-↓-select
+1 = l-r-start
+2 = l-r-select
+3 = l-r-a-b-↓
+4 = l-r-b-y-↓
+5 = l-r-a-b-x-y
 
 [end]

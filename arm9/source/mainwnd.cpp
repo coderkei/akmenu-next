@@ -489,10 +489,15 @@ void cMainWnd::setParam(void) {
     }
     settingWnd.addSettingItem(LANG("filelist type", "text"), _values, gs().fileListType);
 
+    // reset hotkey
     _values.clear();
-    _values.push_back(LANG("switches", "Disable"));
-    _values.push_back(LANG("switches", "Enable"));
-    settingWnd.addSettingItem(LANG("system setting", "safe mode"), _values, gs().safeMode);
+    _values.push_back(LANG("resethotkey", "0"));
+    _values.push_back(LANG("resethotkey", "1"));
+    _values.push_back(LANG("resethotkey", "2"));
+    _values.push_back(LANG("resethotkey", "3"));
+    _values.push_back(LANG("resethotkey", "4"));
+    _values.push_back(LANG("resethotkey", "5"));
+    settingWnd.addSettingItem(LANG("resethotkey", "text"), _values, gs().resetHotKey);
 
     // page 2: interface
     settingWnd.addSettingTab(LANG("interface settings", "title"));
@@ -582,7 +587,7 @@ void cMainWnd::setParam(void) {
     u32 uiIndexAfter = settingWnd.getItemSelection(0, 0);
     u32 langIndexAfter = settingWnd.getItemSelection(0, 1);
     gs().fileListType = settingWnd.getItemSelection(0, 2);
-    gs().safeMode = settingWnd.getItemSelection(0, 3);
+    gs().resetHotKey = settingWnd.getItemSelection(0, 3);
 
     // page 2: interface
     switch (settingWnd.getItemSelection(1, 0)) {

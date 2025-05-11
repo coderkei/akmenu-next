@@ -45,6 +45,7 @@ cGlobalSettings::cGlobalSettings() {
     show12hrClock = false;
     autorunWithLastRom = false;
     homebrewreset = false;
+    resetHotKey = 0;
 #ifndef __KERNEL_LAUNCHER_SUPPORT__
     romLauncher = EKernelLauncher;
 #else
@@ -78,6 +79,7 @@ void cGlobalSettings::loadSettings() {
     show12hrClock = ini.GetInt("system", "Show12hrClock", show12hrClock);
     autorunWithLastRom = ini.GetInt("system", "autorunWithLastRom", autorunWithLastRom);
     homebrewreset = ini.GetInt("system", "homebrewreset", homebrewreset);
+    resetHotKey = ini.GetInt("system", "resethotkey", resetHotKey);
 
     temp = ini.GetString("system", "scrollSpeed", "fast");
     scrollSpeed =
@@ -130,6 +132,7 @@ void cGlobalSettings::saveSettings() {
     ini.SetInt("system", "nightly", nightly);
     ini.SetInt("system", "Show12hrClock", show12hrClock);
     ini.SetInt("system", "homebrewreset", homebrewreset);
+    ini.SetInt("system", "resethotkey", resetHotKey);
     ini.SetInt("system", "dsonly", dsOnly);
 
     ini.SetString("system", "scrollSpeed",

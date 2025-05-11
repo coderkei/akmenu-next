@@ -1,5 +1,6 @@
 /*
     Copyright (C) 2024 lifehackerhansol
+    Additional modifications Copyright (C) 2015 coderkei
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -71,6 +72,40 @@ bool NdsBootstrapLauncher::prepareIni() {
 
     ini.SetString("NDS-BOOTSTRAP", "NDS_PATH", mRomPath);
     ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", mSavePath);
+
+
+    /*
+    0 = l-↓-select : 200 80 4
+    1 = l-r-start : 200 100 8
+    2 = l-r-select : 200 100 4
+    3 = l-r-a-b-↓ : 200 100 1 2 80
+    4 = l-r-b-y-↓ : 200 100 2 800 80
+    5 = l-r-a-b-x-y : 200 100 1 2 400 800
+    */
+
+    switch(gs().resetHotKey)
+    {
+        case 0:
+            ini.SetString("NDS-BOOTSTRAP", "HOTKEY", "284");
+            break;
+        case 1:
+            ini.SetString("NDS-BOOTSTRAP", "HOTKEY", "218");
+            break;
+        case 2:
+            ini.SetString("NDS-BOOTSTRAP", "HOTKEY", "214");
+            break;
+        case 3:
+            ini.SetString("NDS-BOOTSTRAP", "HOTKEY", "383");
+            break;
+        case 4:
+            ini.SetString("NDS-BOOTSTRAP", "HOTKEY", "B82");
+            break;
+        case 5:
+            ini.SetString("NDS-BOOTSTRAP", "HOTKEY", "F03");
+            break;
+        default:
+            break;
+    }
     if(gs().dsOnly)
     {
         ini.SetString("NDS-BOOTSTRAP", "DSI_MODE", "0");

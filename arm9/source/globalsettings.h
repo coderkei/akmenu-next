@@ -43,11 +43,14 @@ class cGlobalSettings {
     std::string langDirectory;
     std::string uiName;
     std::string startupFolder;
+    int resetHotKey;
+    int scrollSpeed;
+    int romLauncher;
+    int viewMode;
+    int slot2mode;
     bool showHiddenFiles;
     bool enterLastDirWhenBoot;
-    int scrollSpeed;
     bool showGbaRoms;
-    int viewMode;
     bool gbaSleepHack;
     bool gbaAutoSave;
     bool Animation;
@@ -55,7 +58,6 @@ class cGlobalSettings {
     bool softreset;
     bool sdsave;
     bool cheatDB;
-    int slot2mode;
     bool saveExt;
     bool saveDir;
     bool nightly;
@@ -65,7 +67,6 @@ class cGlobalSettings {
     bool autorunWithLastRom;
     bool homebrewreset;
     bool dsOnly;
-    int romLauncher;
 };
 
 typedef t_singleton<cGlobalSettings> globalSettings_s;
