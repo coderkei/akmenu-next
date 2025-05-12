@@ -89,10 +89,10 @@ bool NdsBootstrapLauncher::prepareIni() {
             ini.SetString("NDS-BOOTSTRAP", "HOTKEY", "284");
             break;
         case 1:
-            ini.SetString("NDS-BOOTSTRAP", "HOTKEY", "218");
+            ini.SetString("NDS-BOOTSTRAP", "HOTKEY", "308");
             break;
         case 2:
-            ini.SetString("NDS-BOOTSTRAP", "HOTKEY", "214");
+            ini.SetString("NDS-BOOTSTRAP", "HOTKEY", "304");
             break;
         case 3:
             ini.SetString("NDS-BOOTSTRAP", "HOTKEY", "383");
