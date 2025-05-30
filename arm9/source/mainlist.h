@@ -120,9 +120,11 @@ class cMainList : public akui::cListView {
   protected:
     u32 _topCount;
     u32 _topuSD;
+    u32 _topSlot1;
     u32 _topSlot2;
     u32 _topFavorites;
 
   public:
+    u32 Slot1(void) { return _topSlot1; }
     u32 Slot2(void) { return _topSlot2; }
 };

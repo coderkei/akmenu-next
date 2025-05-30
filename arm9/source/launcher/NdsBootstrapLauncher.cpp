@@ -69,9 +69,36 @@ cheat_failed:
 
 bool NdsBootstrapLauncher::prepareIni() {
     CIniFile ini;
+    hotkeyCheck = false;
 
     ini.SetString("NDS-BOOTSTRAP", "NDS_PATH", mRomPath);
     ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", mSavePath);
+
+    #ifdef __DSIMODE__
+        const char* custIniPath = "sd:/_nds/akmenunext/ndsbs.ini";
+    #else
+        const char* custIniPath = "fat:/_nds/akmenunext/ndsbs.ini";
+    #endif
+
+    if(access(custIniPath, F_OK) != 0){
+            akui::messageBox(NULL, LANG("nds bootstrap", "inimissingtitle"), LANG("nds bootstrap", "inimissing"), MB_OK);
+            return false;
+        }
+
+    std::string externalHotkey;
+    {
+        CIniFile extIni;
+        if (extIni.LoadIniFile(custIniPath)) {
+            externalHotkey = extIni.GetString("ndsbs", "hotkey", "");
+            if (!externalHotkey.empty()) {
+                hotkeyCheck = true;
+            } else {
+                hotkeyCheck = false;
+            }
+        } else {
+            akui::messageBox(NULL, LANG("nds bootstrap", "inimissingtitle"), LANG("nds bootstrap", "inimissing"), MB_OK);
+        }
+    }
 
 
     /*
@@ -102,6 +129,11 @@ bool NdsBootstrapLauncher::prepareIni() {
             break;
         case 5:
             ini.SetString("NDS-BOOTSTRAP", "HOTKEY", "F03");
+            break;
+        case 6:
+            if(hotkeyCheck){
+                ini.SetString("NDS-BOOTSTRAP", "HOTKEY", externalHotkey.c_str());
+            }
             break;
         default:
             break;

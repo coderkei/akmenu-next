@@ -322,6 +322,8 @@ item1 = nightly
 firsttimetitle = Inizializzazione di nds-bootstrap
 firsttime = Premere OK per avviare la configurazione iniziale di nds-bootstrap. Questa operazione potrebbe richiedere un minuto ed è un'operazione da eseguire una sola volta.
 dsmode = DS-Only Mode
+inimissingtitle = Errore INI
+inimissing = Il file ndsbs.ini manca da _nds/akmenunext o è danneggiato. Ripristinare questo file o reinstallare akmenu-next.
 
 [resethotkey]
 text = Pulsanti del menu
@@ -331,5 +333,6 @@ text = Pulsanti del menu
 3 = l-r-a-b-↓
 4 = l-r-b-y-↓
 5 = l-r-a-b-x-y
+6 = Costume
 
 [end]

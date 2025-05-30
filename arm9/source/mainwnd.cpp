@@ -35,6 +35,7 @@
 #include "launcher/HomebrewLauncher.h"
 #include "launcher/NdsBootstrapLauncher.h"
 #include "launcher/PassMeLauncher.h"
+#include "launcher/Slot1Launcher.h"
 
 using namespace akui;
 
@@ -497,6 +498,7 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("resethotkey", "3"));
     _values.push_back(LANG("resethotkey", "4"));
     _values.push_back(LANG("resethotkey", "5"));
+    _values.push_back(LANG("resethotkey", "6"));
     settingWnd.addSettingItem(LANG("resethotkey", "text"), _values, gs().resetHotKey);
 
     // page 2: interface
@@ -726,6 +728,9 @@ void cMainWnd::onFolderChanged() {
         } else {
             CGbaLoader::StartGBA();
         }
+    }
+    if ("favorites:/" != dirShowName && "slot1:/" == _mainList->getSelectedFullPath()) {
+        Slot1Launcher().launchRom("slot1:/", "", 0, 0, 0);
     }
 
     dbg_printf("%s\n", _mainList->getSelectedFullPath().c_str());

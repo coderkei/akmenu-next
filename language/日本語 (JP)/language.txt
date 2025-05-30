@@ -322,6 +322,8 @@ item1 = nightly
 firsttimetitle = nds-bootstrapの初期化
 firsttime = 「OK」を押すと、nds-bootstrapの初回セットアップが開始されます。このプロセスは1分ほどかかる場合があり、一度だけ実行されます。
 dsmode = DS-Only Mode
+inimissingtitle = INI エラー
+inimissing = ndsbs.ini が _nds/akmenunext に存在しないか、破損しています。このファイルを復元するか、akmenu-next を再インストールしてください。
 
 [resethotkey]
 text = メニューホットキー
@@ -331,5 +333,6 @@ text = メニューホットキー
 3 = l-r-a-b-↓
 4 = l-r-b-y-↓
 5 = l-r-a-b-x-y
+6 = カスタム
 
 [end]

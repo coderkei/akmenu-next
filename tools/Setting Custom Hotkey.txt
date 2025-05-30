@@ -1,0 +1,3 @@
+1) Run "Hotkey Generator.cmd" or "Hotkey Generator.sh" depending on your OS.
+2) Input your desired hotkey according to the table.
+3) Place the generator value in the "hotkey" section in ndsbs.ini

@@ -164,6 +164,8 @@ item1 = nightly版
 firsttimetitle = 初始化 nds-bootstrap
 firsttime = 按“OK”開始 nds-bootstrap 的首次設定。這可能需要一分鐘，並且是一次性過程。
 dsmode = DS-Only Mode
+inimissingtitle = INI 錯誤
+inimissing = _nds/akmenunext 中缺少 ndsbs.ini 檔案或該檔案已損壞。請恢復此檔案或重新安裝 akmenu-next。
 
 [language]
 text = 系統語言
@@ -307,5 +309,6 @@ text = 選單熱鍵
 3 = l-r-a-b-↓
 4 = l-r-b-y-↓
 5 = l-r-a-b-x-y
+6 = 風俗
 
 [end]

@@ -6,22 +6,12 @@
 
 #pragma once
 
-#include <nds/ndstypes.h>
+#include <string>
 
-#include "../dsrom.h"
 #include "ILauncher.h"
 
-class NdsBootstrapLauncher : public ILauncher {
+class Slot1Launcher : public ILauncher {
   public:
     bool launchRom(std::string romPath, std::string savePath, u32 flags, u32 cheatOffset,
                    u32 cheatSize) override;
-
-  private:
-    bool prepareCheats(void);
-    bool prepareIni(void);
-    bool hotkeyCheck;
-    std::string mRomPath;
-    std::string mSavePath;
-    u32 mFlags;
-    DSRomInfo _romInfo;
 };

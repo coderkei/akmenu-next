@@ -34,10 +34,11 @@ using namespace akui;
 cMainList::cMainList(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::string& text)
     : cListView(x, y, w, h, parent, text),
       _showAllFiles(false),
-      _topCount(3),
+      _topCount(4),
       _topuSD(0),
-      _topSlot2(1),
-      _topFavorites(2) {
+      _topSlot1(1),
+      _topSlot2(2),
+      _topFavorites(3) {
     _viewMode = VM_LIST;
     _activeIconScale = 1;
     _activeIcon.hide();
@@ -50,8 +51,9 @@ cMainList::cMainList(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::str
     u32 system = fifoGetValue32(FIFO_USER_02);
     if (2 == system)  // dsi
     {
-        _topCount = 2;
-        _topSlot2 = 2;
+        _topCount = 3;
+        _topSlot2 = 3;
+        _topSlot1 = 2;
         _topFavorites = 1;
     }
 }
@@ -122,6 +124,11 @@ bool cMainList::enterDir(const std::string& dirName) {
                 a_row.push_back("");
                 a_row.push_back(SD_ROOT);
                 rominfo.setBanner("usd", microsd_banner_bin);
+            } else if (_topSlot1 == i) {
+                a_row.push_back(LANG("mainlist", "slot1 card"));
+                a_row.push_back("");
+                a_row.push_back("slot1:/");
+                rominfo.setBanner("slot1", nand_banner_bin);
             } else if (_topSlot2 == i) {
                 a_row.push_back(LANG("mainlist", "slot2 card"));
                 a_row.push_back("");
@@ -142,6 +149,12 @@ bool cMainList::enterDir(const std::string& dirName) {
     }
 
     if ("slot2:/" == dirName) {
+        _currentDir = "";
+        directoryChanged();
+        return true;
+    }
+
+    if ("slot1:/" == dirName) {
         _currentDir = "";
         directoryChanged();
         return true;
@@ -210,6 +223,11 @@ bool cMainList::enterDir(const std::string& dirName) {
         } else if (dir) {
             while ((entry = readdir(dir)) != NULL) {
                 std::string lfn(entry->d_name);
+
+                // Don't show MacOS dotfiles
+                if (!gs().showHiddenFiles && lfn[0] == '.') {
+                    continue;
+                }
 
                 // entry->d_type == DT_DIR indicates a directory
                 size_t lastDotPos = lfn.find_last_of('.');

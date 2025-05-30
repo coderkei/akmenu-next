@@ -155,6 +155,8 @@ item1 = nightly
 firsttimetitle = Initializing nds-bootstrap
 firsttime = Press OK to start first-time setup of nds-bootstrap. This may take a minute and is a one-time process.
 dsmode = DS-Only Mode
+inimissingtitle = INI error
+inimissing = ndsbs.ini is missing from _nds/akmenunext or is corrupt. Please restore this file or reinstall akmenu-next.
 
 [language]
 text = Language
@@ -298,5 +300,6 @@ text = Menu Hotkey
 3 = l-r-a-b-↓
 4 = l-r-b-y-↓
 5 = l-r-a-b-x-y
+6 = Custom
 
 [end]
