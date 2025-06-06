@@ -138,10 +138,13 @@ bool NdsBootstrapLauncher::prepareIni() {
         default:
             break;
     }
-    if(gs().dsOnly)
-    {
+    if(gs().dsOnly) {
         ini.SetString("NDS-BOOTSTRAP", "DSI_MODE", "0");
     }
+    if(gs().phatCol) {
+        ini.SetString("NDS-BOOTSTRAP", "PHAT_COLORS", "1");
+    }
+
     if (access("/_nds/debug.txt", F_OK) == 0) {
         ini.SetString("NDS-BOOTSTRAP", "LOGGING", "1");
         ini.SetString("NDS-BOOTSTRAP", "DEBUG", "1");

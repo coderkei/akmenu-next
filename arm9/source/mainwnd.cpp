@@ -540,10 +540,6 @@ void cMainWnd::setParam(void) {
     settingWnd.addSettingItem(LANG("file settings", "show hidden files"), _values,
                               gs().showHiddenFiles);
     _values.clear();
-    _values.push_back("release");
-    _values.push_back("nightly");
-    settingWnd.addSettingItem(LANG("nds bootstrap", "text"), _values, gs().nightly);
-    _values.clear();
     _values.push_back(".nds.sav");
     _values.push_back(".sav");
     settingWnd.addSettingItem(LANG("file settings", "save extension"), _values, gs().saveExt);
@@ -552,16 +548,20 @@ void cMainWnd::setParam(void) {
     _values.push_back("yes");
     settingWnd.addSettingItem(LANG("file settings", "use saves folder"), _values, gs().saveDir);
 
-    // page 4: patches
+    // page 4: ndsbs
     settingWnd.addSettingTab(LANG("setting window", "patches"));
-    _values.clear();
-    _values.push_back(LANG("switches", "Disable"));
-    _values.push_back(LANG("switches", "Enable"));
-    settingWnd.addSettingItem(LANG("patches", "cheating system"), _values, gs().cheats);
     _values.clear();
     _values.push_back("disable");
     _values.push_back("enable");
     settingWnd.addSettingItem(LANG("nds bootstrap", "dsmode"), _values, gs().dsOnly);
+    _values.clear();
+    _values.push_back("disable");
+    _values.push_back("enable");
+    settingWnd.addSettingItem(LANG("nds bootstrap", "phatCol"), _values, gs().phatCol);
+    _values.clear();
+    _values.push_back("release");
+    _values.push_back("nightly");
+    settingWnd.addSettingItem(LANG("nds bootstrap", "text"), _values, gs().nightly);
 #ifdef __KERNEL_LAUNCHER_SUPPORT__
     _values.clear();
     _values.push_back("Kernel");
@@ -569,13 +569,12 @@ void cMainWnd::setParam(void) {
     settingWnd.addSettingItem(LANG("loader", "text"), _values, gs().romLauncher);
 #endif
 
-    // page 5: gba
+    // page 5: other
     settingWnd.addSettingTab(LANG("gba settings", "title"));
     _values.clear();
     _values.push_back(LANG("switches", "Disable"));
     _values.push_back(LANG("switches", "Enable"));
-    settingWnd.addSettingItem(LANG("gba settings", "sleephack"), _values, gs().gbaSleepHack);
-    settingWnd.addSettingItem(LANG("gba settings", "autosave"), _values, gs().gbaAutoSave);
+    settingWnd.addSettingItem(LANG("patches", "cheating system"), _values, gs().cheats);
     _values.clear();
     _values.push_back(LANG("gba settings", "modeask"));
     _values.push_back(LANG("gba settings", "modegba"));
@@ -609,20 +608,17 @@ void cMainWnd::setParam(void) {
 
     // page 3: filesystem
     gs().showHiddenFiles = settingWnd.getItemSelection(2, 0);
-    gs().nightly = settingWnd.getItemSelection(2, 1);
     gs().saveExt = settingWnd.getItemSelection(2, 2);
     gs().saveDir = settingWnd.getItemSelection(2, 3);
 
-    // page 4: patches
-    gs().cheats = settingWnd.getItemSelection(3, 0);
-    gs().dsOnly = settingWnd.getItemSelection(3, 1);
-    gs().softreset = settingWnd.getItemSelection(3, 2);
-    gs().homebrewreset = settingWnd.getItemSelection(3, 3);
+    // page 4: ndsbs
+    gs().dsOnly = settingWnd.getItemSelection(3, 0);
+    gs().phatCol = settingWnd.getItemSelection(3, 1);
+    gs().nightly = settingWnd.getItemSelection(3, 2);
 
-    // page 5: gba
-    gs().gbaSleepHack = settingWnd.getItemSelection(4, 0);
-    gs().gbaAutoSave = settingWnd.getItemSelection(4, 1);
-    gs().slot2mode = settingWnd.getItemSelection(4, 2);
+    // page 5: other
+    gs().cheats = settingWnd.getItemSelection(4, 0);
+    gs().slot2mode = settingWnd.getItemSelection(4, 1);
 
     if (uiIndex != uiIndexAfter) {
         u32 ret = messageBox(this, LANG("ui style changed", "title"),

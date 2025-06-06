@@ -134,8 +134,6 @@ cMessageBox::cMessageBox(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std:
     if (_style & MB_NONE) {
         buttonPitch = _buttonCANCEL->size().x + 8;
         nextButtonX -= buttonPitch;
-        _buttonOK->setRelativePosition(cPoint(nextButtonX, buttonY));
-        //_buttonOK->show();
     }
 
     arrangeChildren();

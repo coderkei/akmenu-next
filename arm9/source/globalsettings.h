@@ -67,6 +67,7 @@ class cGlobalSettings {
     bool autorunWithLastRom;
     bool homebrewreset;
     bool dsOnly;
+    bool phatCol;
 };
 
 typedef t_singleton<cGlobalSettings> globalSettings_s;
