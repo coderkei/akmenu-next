@@ -81,7 +81,7 @@ void cGlobalSettings::loadSettings() {
     autorunWithLastRom = ini.GetInt("system", "autorunWithLastRom", autorunWithLastRom);
     homebrewreset = ini.GetInt("system", "homebrewreset", homebrewreset);
     resetHotKey = ini.GetInt("system", "resethotkey", resetHotKey);
-    phatCol = ini.GetInt("system", "phatcol", phatCol);
+    phatCol = ini.GetInt("system", "phatCol", phatCol);
 
     temp = ini.GetString("system", "scrollSpeed", "fast");
     scrollSpeed =

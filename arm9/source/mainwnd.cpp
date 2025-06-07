@@ -543,7 +543,7 @@ void cMainWnd::setParam(void) {
     _values.push_back(".nds.sav");
     _values.push_back(".sav");
     settingWnd.addSettingItem(LANG("file settings", "save extension"), _values, gs().saveExt);
-        _values.clear();
+    _values.clear();
     _values.push_back("no");
     _values.push_back("yes");
     settingWnd.addSettingItem(LANG("file settings", "use saves folder"), _values, gs().saveDir);
@@ -554,10 +554,12 @@ void cMainWnd::setParam(void) {
     _values.push_back("disable");
     _values.push_back("enable");
     settingWnd.addSettingItem(LANG("nds bootstrap", "dsmode"), _values, gs().dsOnly);
+#ifdef __DSIMODE__
     _values.clear();
     _values.push_back("disable");
     _values.push_back("enable");
     settingWnd.addSettingItem(LANG("nds bootstrap", "phatCol"), _values, gs().phatCol);
+#endif
     _values.clear();
     _values.push_back("release");
     _values.push_back("nightly");
@@ -613,8 +615,8 @@ void cMainWnd::setParam(void) {
 
     // page 4: ndsbs
     gs().dsOnly = settingWnd.getItemSelection(3, 0);
-    gs().phatCol = settingWnd.getItemSelection(3, 1);
-    gs().nightly = settingWnd.getItemSelection(3, 2);
+    gs().nightly = settingWnd.getItemSelection(3, 1);
+    gs().phatCol = settingWnd.getItemSelection(3, 2);
 
     // page 5: other
     gs().cheats = settingWnd.getItemSelection(4, 0);
