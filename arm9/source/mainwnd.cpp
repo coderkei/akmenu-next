@@ -553,16 +553,16 @@ void cMainWnd::setParam(void) {
     _values.push_back("disable");
     _values.push_back("enable");
     settingWnd.addSettingItem(LANG("nds bootstrap", "dsmode"), _values, gs().dsOnly);
+    _values.clear();
+    _values.push_back("release");
+    _values.push_back("nightly");
+    settingWnd.addSettingItem(LANG("nds bootstrap", "text"), _values, gs().nightly);
 #ifdef __DSIMODE__
     _values.clear();
     _values.push_back("enable");
     _values.push_back("disable");
     settingWnd.addSettingItem(LANG("nds bootstrap", "phatCol"), _values, gs().phatCol);
 #endif
-    _values.clear();
-    _values.push_back("release");
-    _values.push_back("nightly");
-    settingWnd.addSettingItem(LANG("nds bootstrap", "text"), _values, gs().nightly);
 #ifdef __KERNEL_LAUNCHER_SUPPORT__
     _values.clear();
     _values.push_back("Kernel");
