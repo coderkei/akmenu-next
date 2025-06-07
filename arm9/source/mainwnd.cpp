@@ -537,8 +537,7 @@ void cMainWnd::setParam(void) {
     _values.clear();
     _values.push_back(LANG("switches", "Disable"));
     _values.push_back(LANG("switches", "Enable"));
-    settingWnd.addSettingItem(LANG("file settings", "show hidden files"), _values,
-                              gs().showHiddenFiles);
+    settingWnd.addSettingItem(LANG("file settings", "show hidden files"), _values, gs().showHiddenFiles);
     _values.clear();
     _values.push_back(".nds.sav");
     _values.push_back(".sav");
@@ -556,8 +555,8 @@ void cMainWnd::setParam(void) {
     settingWnd.addSettingItem(LANG("nds bootstrap", "dsmode"), _values, gs().dsOnly);
 #ifdef __DSIMODE__
     _values.clear();
-    _values.push_back("disable");
     _values.push_back("enable");
+    _values.push_back("disable");
     settingWnd.addSettingItem(LANG("nds bootstrap", "phatCol"), _values, gs().phatCol);
 #endif
     _values.clear();
@@ -610,8 +609,8 @@ void cMainWnd::setParam(void) {
 
     // page 3: filesystem
     gs().showHiddenFiles = settingWnd.getItemSelection(2, 0);
-    gs().saveExt = settingWnd.getItemSelection(2, 2);
-    gs().saveDir = settingWnd.getItemSelection(2, 3);
+    gs().saveExt = settingWnd.getItemSelection(2, 1);
+    gs().saveDir = settingWnd.getItemSelection(2, 2);
 
     // page 4: ndsbs
     gs().dsOnly = settingWnd.getItemSelection(3, 0);

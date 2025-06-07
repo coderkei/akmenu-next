@@ -190,29 +190,30 @@ bool CIniFile::SaveIniFileModified(const std::string& FileName) {
 bool CIniFile::SaveIniFile(const std::string& FileName) {
     if (FileName != "") m_sFileName = FileName;
 
-    FILE* f = fopen(m_sFileName.c_str(), "wb");
-    if (NULL == f) {
+    FILE* f = fopen(m_sFileName.c_str(), "w");
+    if (f == NULL) {
         return false;
     }
 
     for (size_t ii = 0; ii < m_FileContainer.size(); ii++) {
         std::string& strline = m_FileContainer[ii];
         size_t notSpace = strline.find_first_not_of(' ');
-        strline = strline.substr(notSpace);
-        if (strline.find('[') == 0 && ii > 0) {
-            if (!m_FileContainer[ii - 1].empty() && m_FileContainer[ii - 1] != "")
-                fwrite("\r\n", 1, 2, f);
+        if (notSpace != std::string::npos) {
+            strline = strline.substr(notSpace);
         }
-        if (!strline.empty() && strline != "") {
-            fwrite(strline.c_str(), 1, strline.length(), f);
-            fwrite("\r\n", 1, 2, f);
+
+        if (strline.find('[') == 0 && ii > 0) {
+            if (!m_FileContainer[ii - 1].empty())
+                fprintf(f, "\n");
+        }
+
+        if (!strline.empty()) {
+            fprintf(f, "%s\n", strline.c_str());
         }
     }
 
     fclose(f);
-
     m_bModified = false;
-
     return true;
 }
 

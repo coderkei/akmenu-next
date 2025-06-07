@@ -280,6 +280,7 @@ target slot = Ziel Speicher-Slot
 flash memory = Flash Memory
 microsd card = microSD Card
 slot2 card = Slot2 Card
+slot1 card = Slot1 Card
 favorites = Favoriten
 
 [hotkeys]

@@ -82,22 +82,23 @@ void cGlobalSettings::loadSettings() {
     homebrewreset = ini.GetInt("system", "homebrewreset", homebrewreset);
     resetHotKey = ini.GetInt("system", "resethotkey", resetHotKey);
     phatCol = ini.GetInt("system", "phatCol", phatCol);
-
-    temp = ini.GetString("system", "scrollSpeed", "fast");
-    scrollSpeed =
-            (temp == "slow") ? EScrollSlow : ((temp == "medium") ? EScrollMedium : EScrollFast);
-
-    temp = ini.GetString("system", "viewMode", "icon");
-    viewMode = (temp == "list") ? EViewList 
-         : (temp == "icon") ? EViewIcon 
-         : (temp == "small") ? EViewSmall
-         : EViewInternal;
-
-    temp = ini.GetString("system", "slot2mode", "ask");
-    slot2mode = (temp == "gba") ? ESlot2Gba : ((temp == "nds") ? ESlot2Nds : ESlot2Ask);
-
+    
     temp = ini.GetString("system", "saveext", ".sav");
     saveExt = (temp == ".sav");
+    temp = ini.GetString("system", "scrollSpeed", "fast");
+    scrollSpeed = (temp == "slow") ? EScrollSlow
+                : (temp == "medium") ? EScrollMedium
+                : EScrollFast;
+    temp = ini.GetString("system", "viewMode", "icon");
+    viewMode = (temp == "list") ? EViewList
+            : (temp == "icon") ? EViewIcon
+            : (temp == "small") ? EViewSmall
+            : (temp == "internal") ? EViewInternal
+            : EViewInternal;
+    temp = ini.GetString("system", "slot2mode", "ask");
+    slot2mode = (temp == "gba") ? ESlot2Gba
+            : (temp == "nds") ? ESlot2Nds
+            : ESlot2Ask;
 
 #ifdef __KERNEL_LAUNCHER_SUPPORT__
     temp = ini.GetString("system", "nds-bootstrap", "false");
@@ -137,11 +138,16 @@ void cGlobalSettings::saveSettings() {
     ini.SetInt("system", "resethotkey", resetHotKey);
     ini.SetInt("system", "dsonly", dsOnly);
     ini.SetInt("system", "phatCol", phatCol);
-
-    ini.SetString("system", "scrollSpeed",
-                  (scrollSpeed == EScrollSlow)
-                          ? "slow"
-                          : ((scrollSpeed == EScrollMedium) ? "medium" : "fast"));
+    ini.SetString(
+        "system", "saveext",
+        saveExt ? ".sav" 
+        : ".nds.sav");
+    ini.SetString(
+        "system", "scrollSpeed",
+        (scrollSpeed == EScrollSlow) ? "slow"
+        : (scrollSpeed == EScrollMedium) ? "medium"
+        : (scrollSpeed == EScrollFast) ? "fast"
+        : "fast");
     ini.SetString(
         "system", "viewMode",
         (viewMode == EViewList) ? "list" 
@@ -149,9 +155,12 @@ void cGlobalSettings::saveSettings() {
         : (viewMode == EViewSmall) ? "small" 
         : (viewMode == EViewInternal) ? "internal"
         : "internal");
-    ini.SetString("system", "slot2mode",
-                  (slot2mode == ESlot2Gba) ? "gba" : ((slot2mode == ESlot2Nds) ? "nds" : "ask"));
-    ini.SetString("system", "saveext", saveExt ? ".sav" : ".nds.sav");
+    ini.SetString(
+        "system", "slot2mode",
+        (slot2mode == ESlot2Gba) ? "gba"
+        : (slot2mode == ESlot2Nds) ? "nds"
+        : (slot2mode == ESlot2Ask) ? "ask"
+        : "ask" );
 
 #ifdef __KERNEL_LAUNCHER_SUPPORT__
     ini.SetString("system", "nds-bootstrap",
