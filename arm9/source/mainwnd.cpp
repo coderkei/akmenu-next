@@ -559,8 +559,8 @@ void cMainWnd::setParam(void) {
     settingWnd.addSettingItem(LANG("nds bootstrap", "text"), _values, gs().nightly);
 #ifdef __DSIMODE__
     _values.clear();
-    _values.push_back("enable");
     _values.push_back("disable");
+    _values.push_back("enable");
     settingWnd.addSettingItem(LANG("nds bootstrap", "phatCol"), _values, gs().phatCol);
 #endif
 #ifdef __KERNEL_LAUNCHER_SUPPORT__

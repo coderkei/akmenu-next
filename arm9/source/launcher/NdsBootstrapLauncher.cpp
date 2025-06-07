@@ -142,7 +142,9 @@ bool NdsBootstrapLauncher::prepareIni() {
         ini.SetString("NDS-BOOTSTRAP", "DSI_MODE", "0");
     }
     if(gs().phatCol) {
+    #ifdef __DSIMODE__
         ini.SetString("NDS-BOOTSTRAP", "PHAT_COLORS", "1");
+    #endif
     }
 
     if (access("/_nds/debug.txt", F_OK) == 0) {
