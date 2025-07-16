@@ -14,7 +14,9 @@ cp boot_nds.nds flashcart/boot.nds
 cp nds-bootstrap/nds-bootstrap-release.nds flashcart/_nds/nds-bootstrap-release.nds
 mv flashcart/_nds/akmenunext/launcher_nds.nds flashcart/_nds/akmenunext/launcher.nds
 rm -f flashcart/_nds/akmenunext/launcher_dsi.nds
-zip -r akmenu-next-flashcart.zip flashcart/*
+cd flashcart
+zip -r ../akmenu-next-flashcart.zip *
+cd ..
 
 #DSI
 mkdir -p dsi
@@ -25,7 +27,9 @@ cp nds-bootstrap/nds-bootstrap-release.nds dsi/_nds/nds-bootstrap-release.nds
 mv dsi/_nds/akmenunext/launcher_dsi.nds dsi/_nds/akmenunext/launcher.nds
 rm -f dsi/_nds/akmenunext/launcher_nds.nds
 rm -f dsi/_nds/akmenunext/PassMeLoader.nds
-zip -r akmenu-next-dsi.zip dsi/*
+cd dsi
+zip -r ../akmenu-next-dsi.zip *
+cd ..
 
 #3DS
 mkdir -p 3ds
@@ -36,7 +40,9 @@ cp nds-bootstrap/nds-bootstrap-release.nds 3ds/_nds/nds-bootstrap-release.nds
 mv 3ds/_nds/akmenunext/launcher_dsi.nds 3ds/_nds/akmenunext/launcher.nds
 rm -f 3ds/_nds/akmenunext/launcher_nds.nds
 rm -f 3ds/_nds/akmenunext/PassMeLoader.nds
-zip -r akmenu-next-3ds.zip 3ds/*
+cd 3ds
+zip -r ../akmenu-next-3ds.zip *
+cd ..
 
 #Cleanup
 rm -f nds-bootstrap.7z
