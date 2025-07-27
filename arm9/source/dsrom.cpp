@@ -32,6 +32,7 @@ DSRomInfo& DSRomInfo::operator=(const DSRomInfo& src) {
 bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
     _isDSRom = EFalse;
     _isHomebrew = EFalse;
+    _isDSiWare = EFalse;
     FILE* f = fopen(filename.c_str(), "rb");
     if (NULL == f)  // 锟斤拷锟侥硷拷失锟斤拷
     {
@@ -237,7 +238,6 @@ bool DSRomInfo::loadGbaRomInfo(const std::string& filename) {
 void DSRomInfo::load(void) {
     if (_isDSRom == EMayBe) loadDSRomInfo(_fileName, true);
     if (_isGbaRom == EMayBe) loadGbaRomInfo(_fileName);
-    if (_isDSiWare == EMayBe) loadDSRomInfo(_fileName, true);
 }
 
 tNDSBanner& DSRomInfo::banner(void) {
