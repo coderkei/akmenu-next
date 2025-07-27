@@ -71,6 +71,7 @@ bool NdsBootstrapLauncher::prepareIni() {
     CIniFile ini;
     hotkeyCheck = false;
 
+
     ini.SetString("NDS-BOOTSTRAP", "NDS_PATH", mRomPath);
     ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", mSavePath);
 
@@ -138,6 +139,37 @@ bool NdsBootstrapLauncher::prepareIni() {
         default:
             break;
     }
+    switch(gs().languageOverride)
+    {
+        case 0:
+            ini.SetString("NDS-BOOTSTRAP", "LANGUAGE", "-1");
+            break;
+        case 1:
+            ini.SetString("NDS-BOOTSTRAP", "LANGUAGE", "0");
+            break;
+        case 2:
+            ini.SetString("NDS-BOOTSTRAP", "LANGUAGE", "1");
+            break;
+        case 3:
+            ini.SetString("NDS-BOOTSTRAP", "LANGUAGE", "2");
+            break;
+        case 4:
+            ini.SetString("NDS-BOOTSTRAP", "LANGUAGE", "3");
+            break;
+        case 5:
+            ini.SetString("NDS-BOOTSTRAP", "LANGUAGE", "4");
+            break;
+        case 6:
+            ini.SetString("NDS-BOOTSTRAP", "LANGUAGE", "5");
+            break;
+        case 7:
+            ini.SetString("NDS-BOOTSTRAP", "LANGUAGE", "6");
+            break;
+        case 8:
+            ini.SetString("NDS-BOOTSTRAP", "LANGUAGE", "7");
+            break;
+    }
+
     if(gs().dsOnly) {
         ini.SetString("NDS-BOOTSTRAP", "DSI_MODE", "0");
     }

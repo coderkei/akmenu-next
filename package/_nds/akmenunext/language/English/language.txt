@@ -159,6 +159,7 @@ inimissingtitle = INI error
 inimissing = ndsbs.ini is missing from _nds/akmenunext or is corrupt. Please restore this file or reinstall akmenu-next.
 phatCol = DS Phat Colors
 
+
 [language]
 text = Language
 ja = 日本語
@@ -303,5 +304,17 @@ text = Menu Hotkey
 4 = l-r-b-y-↓
 5 = l-r-a-b-x-y
 6 = Custom
+
+[override]
+text = Language Override
+0 = System
+1 = 日本語
+2 = English
+3 = Français
+4 = Deutsch
+5 = Italiano
+6 = Español
+7 = 中文
+8 = Korean
 
 [end]

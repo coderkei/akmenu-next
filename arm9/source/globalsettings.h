@@ -43,6 +43,7 @@ class cGlobalSettings {
     std::string langDirectory;
     std::string uiName;
     std::string startupFolder;
+    int languageOverride;
     int resetHotKey;
     int scrollSpeed;
     int romLauncher;

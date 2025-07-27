@@ -337,4 +337,16 @@ text = メニューホットキー
 5 = l-r-a-b-x-y
 6 = カスタム
 
+[override]
+text = 言語のオーバーライド
+0 = System
+1 = 日本語
+2 = English
+3 = Français
+4 = Deutsch
+5 = Italiano
+6 = Español
+7 = 中文
+8 = Korean
+
 [end]

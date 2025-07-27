@@ -557,6 +557,19 @@ void cMainWnd::setParam(void) {
     _values.push_back("release");
     _values.push_back("nightly");
     settingWnd.addSettingItem(LANG("nds bootstrap", "text"), _values, gs().nightly);
+
+    _values.clear();
+    _values.push_back(LANG("override", "0"));
+    _values.push_back(LANG("override", "1"));
+    _values.push_back(LANG("override", "2"));
+    _values.push_back(LANG("override", "3"));
+    _values.push_back(LANG("override", "4"));
+    _values.push_back(LANG("override", "5"));
+    _values.push_back(LANG("override", "6"));
+    _values.push_back(LANG("override", "7"));
+    _values.push_back(LANG("override", "8"));
+    settingWnd.addSettingItem(LANG("override", "text"), _values, gs().languageOverride);
+
 #ifdef __DSIMODE__
     _values.clear();
     _values.push_back("disable");
@@ -615,7 +628,8 @@ void cMainWnd::setParam(void) {
     // page 4: ndsbs
     gs().dsOnly = settingWnd.getItemSelection(3, 0);
     gs().nightly = settingWnd.getItemSelection(3, 1);
-    gs().phatCol = settingWnd.getItemSelection(3, 2);
+    gs().languageOverride = settingWnd.getItemSelection(3,2);
+    gs().phatCol = settingWnd.getItemSelection(3, 3);
 
     // page 5: other
     gs().cheats = settingWnd.getItemSelection(4, 0);

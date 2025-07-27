@@ -34,11 +34,10 @@ using namespace akui;
 cMainList::cMainList(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::string& text)
     : cListView(x, y, w, h, parent, text),
       _showAllFiles(false),
-      _topCount(4),
+      _topCount(3),
       _topuSD(0),
-      _topSlot1(1),
-      _topSlot2(2),
-      _topFavorites(3) {
+      _topSlot2(1),
+      _topFavorites(2) {
     _viewMode = VM_LIST;
     _activeIconScale = 1;
     _activeIcon.hide();

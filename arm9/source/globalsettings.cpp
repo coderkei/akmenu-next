@@ -47,6 +47,7 @@ cGlobalSettings::cGlobalSettings() {
     homebrewreset = false;
     resetHotKey = 0;
     phatCol = false;
+    languageOverride = 0;
 #ifndef __KERNEL_LAUNCHER_SUPPORT__
     romLauncher = EKernelLauncher;
 #else
@@ -82,6 +83,7 @@ void cGlobalSettings::loadSettings() {
     homebrewreset = ini.GetInt("system", "homebrewreset", homebrewreset);
     resetHotKey = ini.GetInt("system", "resethotkey", resetHotKey);
     phatCol = ini.GetInt("system", "phatCol", phatCol);
+    languageOverride = ini.GetInt("system", "languageOverride", languageOverride);
     
     temp = ini.GetString("system", "saveext", ".sav");
     saveExt = (temp == ".sav");
@@ -137,6 +139,7 @@ void cGlobalSettings::saveSettings() {
     ini.SetInt("system", "homebrewreset", homebrewreset);
     ini.SetInt("system", "resethotkey", resetHotKey);
     ini.SetInt("system", "dsonly", dsOnly);
+    ini.SetInt("system", "languageOverride", languageOverride);
     ini.SetInt("system", "phatCol", phatCol);
     ini.SetString(
         "system", "saveext",
