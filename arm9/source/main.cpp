@@ -200,6 +200,11 @@ int main(void) {
 
     if (*(u32*)0x04000604) fifoSendValue32(FIFO_USER_01, MENU_MSG_SHUTDOWN);
 
+    *(u32*)(0xCFFFD0C) = 0x454D4D43;
+    while (*(u32*)(0xCFFFD0C) != 0) {
+        swiDelay(100);
+    }
+
     while (true) {
         timer().updateFps();
 
@@ -212,6 +217,8 @@ int main(void) {
         windowManager().update();
 
         gdi().present(GE_MAIN);
+
+
     }
 
     return 0;

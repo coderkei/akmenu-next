@@ -168,7 +168,13 @@ int main() {
 		i2cWriteRegister(0x4A, 0x12, 0x00);	// Press power-button for auto-reset
 		i2cWriteRegister(0x4A, 0x70, 0x01);	// Bootflag = Warmboot/SkipHealthSafety
 	}
-
-    while (true) swiWaitForVBlank();
+       
+    while (true) {
+        if (*(u32*)(0x2FFFD0C) == 0x454D4D43) {
+            sdmmc_get_cid(true, (u32*)0x2FFD7BC);    // Get eMMC CID
+            *(u32*)(0x2FFFD0C) = 0;
+        }
+        swiWaitForVBlank();
+    }
 }
 
