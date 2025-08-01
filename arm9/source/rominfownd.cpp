@@ -316,18 +316,18 @@ void cRomInfoWnd::pressSaveType(void) {
             cSaveManager::SaveTypeToDisplaySaveType((SAVE_TYPE)_romInfo.saveInfo().saveType));
 
     _values.clear();
-    _values.push_back(LANG("switches", "Disable"));
-    _values.push_back(LANG("switches", "Enable"));
-    settingWnd.addSettingItem(LANG("patches", "linkage"), _values,
-                              _romInfo.saveInfo().getLinkage());
+    //_values.push_back(LANG("switches", "Disable"));
+    //_values.push_back(LANG("switches", "Enable"));
+    //settingWnd.addSettingItem(LANG("patches", "linkage"), _values,
+    //                          _romInfo.saveInfo().getLinkage());
 
-    _values.clear();
-    const char* rumbleLang[] = {"off", "low", "mid", "high"};
-    for (size_t i = 0; i < 4; ++i) {
-        _values.push_back(LANG("exp window", rumbleLang[i]));
-    }
-    settingWnd.addSettingItem(LANG("exp window", "strength"), _values,
-                              _romInfo.saveInfo().getRumble());
+    //_values.clear();
+    //const char* rumbleLang[] = {"off", "low", "mid", "high"};
+    //for (size_t i = 0; i < 4; ++i) {
+    //    _values.push_back(LANG("exp window", rumbleLang[i]));
+    //}
+    //settingWnd.addSettingItem(LANG("exp window", "strength"), _values,
+     //                         _romInfo.saveInfo().getRumble());
 
 #ifdef __KERNEL_LAUNCHER_SUPPORT__
     _values.clear();
@@ -350,15 +350,15 @@ void cRomInfoWnd::pressSaveType(void) {
                               _romInfo.saveInfo().getCheat());
 
     _values.clear();
-    _values.push_back(LANG("switches", "Disable"));
-    _values.push_back(LANG("switches", "Enable"));
-    _values.push_back(formatString(LANG("switches", "Global").c_str(),
-                                   gs().softreset ? LANG("switches", "Enable").c_str()
-                                                  : LANG("switches", "Disable").c_str()));
-    settingWnd.addSettingItem(LANG("patches", "reset in game"), _values,
-                              _romInfo.saveInfo().getSoftReset());
+    //_values.push_back(LANG("switches", "Disable"));
+    //_values.push_back(LANG("switches", "Enable"));
+    //_values.push_back(formatString(LANG("switches", "Global").c_str(),
+    //                               gs().softreset ? LANG("switches", "Enable").c_str()
+    //                                              : LANG("switches", "Disable").c_str()));
+    //settingWnd.addSettingItem(LANG("patches", "reset in game"), _values,
+    //                          _romInfo.saveInfo().getSoftReset());
 
-    _values.clear();
+    //_values.clear();
     std::string slotValue;
     for (size_t ii = 0; ii < 4; ++ii) {
         if (ii)
@@ -377,15 +377,16 @@ void cRomInfoWnd::pressSaveType(void) {
     _values.push_back(LANG("icon", "firmware"));
     settingWnd.addSettingItem(LANG("icon", "icon"), _values, _romInfo.saveInfo().getIcon());
 
-    _values.clear();
-    _values.push_back(LANG("save type", "default"));
-    _values.push_back(LANG("language", "ja"));
-    _values.push_back(LANG("language", "en"));
-    _values.push_back(LANG("language", "fr"));
-    _values.push_back(LANG("language", "de"));
-    _values.push_back(LANG("language", "it"));
-    _values.push_back(LANG("language", "es"));
-    settingWnd.addSettingItem(LANG("language", "text"), _values, _romInfo.saveInfo().getLanguage());
+    // Refactor this to support nds-bs override in the future
+    //_values.clear();
+    //_values.push_back(LANG("save type", "default"));
+    //_values.push_back(LANG("language", "ja"));
+    //_values.push_back(LANG("language", "en"));
+    //_values.push_back(LANG("language", "fr"));
+    //_values.push_back(LANG("language", "de"));
+    //_values.push_back(LANG("language", "it"));
+    //_values.push_back(LANG("language", "es"));
+    //settingWnd.addSettingItem(LANG("language", "text"), _values, _romInfo.saveInfo().getLanguage());
 
     _settingWnd = &settingWnd;
 

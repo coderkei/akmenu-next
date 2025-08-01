@@ -225,21 +225,6 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
         }
         __NDSHeader->cardControl13 = 0x00406000 | speed;
 
-        // 3in1 support
-        fifoSendValue32(FIFO_USER_01, MENU_MSG_SYSTEM);
-        fifoWaitValue32(FIFO_USER_02);
-        if (2 != fifoGetValue32(FIFO_USER_02)) {  // not dsi
-            if (gameCode == 0x4a524255 || gameCode == 0x50524255) {
-                expansion().SoftReset();
-                cExpansion::SetRompage(0x300);
-                cExpansion::OpenNorWrite();
-                cExpansion::EnableBrowser();
-            }
-            if (aRomInfo.saveInfo().getRumble()) {
-                expansion().SoftReset();
-                cExpansion::SetShake(0xEF + aRomInfo.saveInfo().getRumble());
-            }
-        }
         if (aRomInfo.saveInfo().isDownloadPlay()) flags |= PATCH_DOWNLOAD_PLAY;
         if (aRomInfo.saveInfo().isCheat()) {
             u32 gameCode, crc32;
@@ -254,7 +239,6 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
             }
         }
         if (aRomInfo.saveInfo().isSoftReset()) flags |= PATCH_SOFT_RESET;
-        if (expansion().Rampage() == cExpansion::EPsramPage) flags |= PATCH_PSRAM;
         if (aRomInfo.saveInfo().isLinkage()) flags |= PATCH_LINKAGE;
         u8 language = aRomInfo.saveInfo().getLanguage();
         if (language) flags |= (language << PATCH_LANGUAGE_SHIFT) & PATCH_LANGUAGE_MASK;
