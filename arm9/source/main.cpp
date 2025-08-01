@@ -198,8 +198,6 @@ int main(void) {
     if (!wnd->_mainList->enterDir("..." != lastDirectory ? lastDirectory : gs().startupFolder))
         wnd->_mainList->enterDir("...");
 
-    if (*(u32*)0x04000604) fifoSendValue32(FIFO_USER_01, MENU_MSG_SHUTDOWN);
-
     *(u32*)(0xCFFFD0C) = 0x454D4D43;
     while (*(u32*)(0xCFFFD0C) != 0) {
         swiDelay(100);
