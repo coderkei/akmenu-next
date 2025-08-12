@@ -24,6 +24,7 @@ class DSRomInfo {
     TBool _isDSRom;
     TBool _isDSiWare;
     TBool _isHomebrew;
+    TBool _isModernHomebrew;
     TBool _isGbaRom;
     std::string _fileName;
     s32 _extIcon;
@@ -36,7 +37,7 @@ class DSRomInfo {
 
   public:
     DSRomInfo()
-        : _isDSRom(EFalse), _isDSiWare(EFalse), _isHomebrew(EFalse), _isGbaRom(EFalse), _extIcon(-1), _romVersion(0) {
+        : _isDSRom(EFalse), _isDSiWare(EFalse), _isHomebrew(EFalse), _isModernHomebrew(EFalse), _isGbaRom(EFalse), _extIcon(-1), _romVersion(0) {
         // memcpy(&_banner,unknown_banner_bin,unknown_banner_bin_size);
         memset(&_banner, 0, sizeof(_banner));
         memset(&_saveInfo, 0, sizeof(_saveInfo));
@@ -53,11 +54,13 @@ class DSRomInfo {
     bool isDSRom(void);
     bool isDSiWare(void);
     bool isHomebrew(void);
+    bool isModernHomebrew(void);
     bool isGbaRom(void);
     DSRomInfo& operator=(const DSRomInfo& src);
     void MayBeDSRom(const std::string& filename) {
         _isDSRom = EMayBe;
         _isHomebrew = EMayBe;
+        _isModernHomebrew = EMayBe;
         _isDSiWare = EMayBe;
         _fileName = filename;
     };

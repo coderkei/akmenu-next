@@ -22,6 +22,7 @@ DSRomInfo& DSRomInfo::operator=(const DSRomInfo& src) {
     memcpy(&_saveInfo, &src._saveInfo, sizeof(_saveInfo));
     _isDSRom = src._isDSRom;
     _isHomebrew = src._isHomebrew;
+    _isModernHomebrew = src._isModernHomebrew;
     _isGbaRom = src._isGbaRom;
     _fileName = src._fileName;
     _romVersion = src._romVersion;
@@ -33,6 +34,7 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
     _isDSRom = EFalse;
     _isHomebrew = EFalse;
     _isDSiWare = EFalse;
+    _isModernHomebrew = EFalse;
     FILE* f = fopen(filename.c_str(), "rb");
     if (NULL == f)  // 锟斤拷锟侥硷拷失锟斤拷
     {
@@ -62,6 +64,69 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
         return true;
     } else {
         _isDSRom = ETrue;
+
+        //check for modern homebrew
+        //Assume homebrew until proven otherwise
+        _isHomebrew = ETrue;
+        _isModernHomebrew = ETrue;
+        u32 arm9StartSig[4] = {0};
+        //Seek to ARM9 entry point and read first 4 instructions
+        fseek(f, (u32)header.arm9romOffset + (u32)header.arm9executeAddress - (u32)header.arm9destination, SEEK_SET);
+        fread(arm9StartSig, sizeof(u32), 4, f);
+
+         //Check for Nintendo SDK style retail builds
+        if ((arm9StartSig[0] == 0xE3A0C301 || (arm9StartSig[0] >= 0xEA000000 && arm9StartSig[0] < 0xEC000000))
+        && arm9StartSig[1] == 0xE58CC208) {
+        if ((arm9StartSig[2] >= 0xEB000000 && arm9StartSig[2] < 0xEC000000)
+        && (arm9StartSig[3] >= 0xE3A00000 && arm9StartSig[3] < 0xE3A01000)) {
+            _isHomebrew = EFalse;
+            _isModernHomebrew = EFalse;
+        } else if (arm9StartSig[2] == 0xE1DC00B6 && arm9StartSig[3] == 0xE3500000) {
+            _isHomebrew = EFalse;
+            _isModernHomebrew = EFalse;
+        } else if (arm9StartSig[2] == 0xEAFFFFFF && arm9StartSig[3] == 0xE1DC00B6) {
+            _isHomebrew = EFalse;
+            _isModernHomebrew = EFalse;
+        }
+        } else if (strncmp(header.gameCode, "HNA", 3) == 0) {
+            //Modcrypted retail game
+            _isHomebrew = EFalse;
+            _isModernHomebrew = EFalse;
+        }
+
+        //If still homebrew, check for old vs modern
+        if (_isHomebrew) {
+            if (arm9StartSig[0] == 0xE3A00301
+            && arm9StartSig[1] == 0xE5800208
+            && arm9StartSig[2] == 0xE3A00013
+            && arm9StartSig[3] == 0xE129F000) {
+                //Modern hb signature, but check some known old cases
+                if ((u32)header.arm7executeAddress >= 0x037F0000 && (u32)header.arm7destination >= 0x037F0000) {
+                    if ((header.arm9binarySize == 0xC9F68 && header.arm7binarySize == 0x12814) ||   // Colors! v1.1
+                        (header.arm9binarySize == 0x1B0864 && header.arm7binarySize == 0xDB50) ||  // Mario Paint Composer DS v2
+                        (header.arm9binarySize == 0xE78FC && header.arm7binarySize == 0xF068) ||   // SnowBros v2.2
+                        (header.arm9binarySize == 0xD45C0 && header.arm7binarySize == 0x2B7C) ||   // ikuReader v0.058
+                        (header.arm9binarySize == 0x7A124 && header.arm7binarySize == 0xEED0) ||   // PPSEDS r11
+                        (header.arm9binarySize == 0x54620 && header.arm7binarySize == 0x1538) ||   // XRoar 0.24fp3
+                        (header.arm9binarySize == 0x2C9A8 && header.arm7binarySize == 0xFB98) ||   // NitroGrafx v0.7
+                        (header.arm9binarySize == 0x22AE4 && header.arm7binarySize == 0xA764)) {   // It's 1975...
+                        _isModernHomebrew = EFalse;
+                    }
+                }
+            } else if ((header.unitCode == 0) &&
+                ((memcmp(header.gameTitle, "NMP4BOOT", 8) == 0) ||
+                    ((u32)header.arm7executeAddress >= 0x037F0000 && (u32)header.arm7destination >= 0x037F0000))) {
+                _isModernHomebrew = EFalse; // Old hb requiring DLDI
+            }
+
+            u8 accessControl = 0;
+            fseek(f, 0x1BF, SEEK_SET);
+            fread(&accessControl, 1, 1, f);
+
+            if (!_isHomebrew && (header.unitCode != 0) && (accessControl & BIT(4))) {
+                _isDSiWare = ETrue;
+            }
+    }
         if ((u32)(header.arm7destination) >= 0x037F8000 ||
             0x23232323 == gamecode(header.gameCode)) {  // 23->'#'
             _isHomebrew = ETrue;
@@ -268,6 +333,11 @@ bool DSRomInfo::isDSiWare(void) {
 bool DSRomInfo::isHomebrew(void) {
     load();
     return (_isHomebrew == ETrue) ? true : false;
+}
+
+bool DSRomInfo::isModernHomebrew(void) {
+    load();
+    return (_isModernHomebrew == ETrue) ? true : false;
 }
 
 bool DSRomInfo::isGbaRom(void) {

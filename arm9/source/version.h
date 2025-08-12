@@ -8,7 +8,7 @@
 */
 
 #define AKMENU_VERSION_MAIN "1"
-#define AKMENU_VERSION_SUB "7.2"
+#define AKMENU_VERSION_SUB "8"
 
 #ifndef __KERNEL_LAUNCHER_SUPPORT__
 #define AKMENU_LOADER_NAME "nds-bootstrap"

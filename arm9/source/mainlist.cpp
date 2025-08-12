@@ -182,7 +182,8 @@ bool cMainList::enterDir(const std::string& dirName) {
 
     std::vector<std::string> extNames;
     extNames.push_back(".nds");
-    extNames.push_back(".ids");
+    extNames.push_back(".dsi");
+    extNames.push_back(".srl");
     if (gs().showGbaRoms > 0) extNames.push_back(".gba");
     if (gs().fileListType > 0) extNames.push_back(".sav");
     if (_showAllFiles || gs().fileListType > 1) extNames.clear();
@@ -295,7 +296,7 @@ bool cMainList::enterDir(const std::string& dirName) {
                     memcpy(&rominfo.banner(), nds_save_banner_bin, sizeof(tNDSBanner));
                 } else if (".gba" == extName) {
                     rominfo.MayBeGbaRom(filename);
-                } else if (".nds" != extName && ".ids" != extName) {
+                } else if (".nds" != extName && ".dsi" != extName && ".srl" != extName) {
                     memcpy(&rominfo.banner(), unknown_banner_bin, sizeof(tNDSBanner));
                     allowUnknown = true;
                 } else {
