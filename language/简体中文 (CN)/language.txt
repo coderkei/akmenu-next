@@ -13,7 +13,7 @@ Setting = 设置
 Set favorite = 放入收藏夹
 Unset favorite = 移出收藏夹
 Info = 文件信息
-Help = 帮助信息
+Help = 帮助与关于
 Tools = 工具
 START = 菜单
 
@@ -163,9 +163,11 @@ item0 = 正式版
 item1 = 每夜版
 firsttimetitle = 初始化 nds-bootstrap
 firsttime = 按“确定”开始 nds-bootstrap 的首次设置。此过程可能需要一分钟，并且是一次性过程。
-dsmode = DS-Only Mode
+dsmode = DS-Only 模式
 inimissingtitle = INI 错误
 inimissing = _nds/akmenunext 中缺少 ndsbs.ini 文件或该文件已损坏。请恢复此文件或重新安装 akmenu-next。
+phatCol = 初版DS颜色
+
 
 [language]
 text = 系统语言
@@ -187,9 +189,9 @@ item0 = %c  选择游戏（上/下/翻页）
 item1 = %c  开始/确定/是
 item2 = %c  后退/取消/否
 item3 = %c  查看文件信息 / 选择存档类型
-item4 = %c  切换 tf卡 / NAND内存
+item4 = %c  收藏夹
 item5 = %c  返回上一级目录
-item6 = %c  调节亮度（四级亮度调节）
+item6 = %c  调节四级亮度（仅DS/DSL）
 item7 = %s  开始菜单
 item8 = %s  切换　新列表模式/经典模式
 
