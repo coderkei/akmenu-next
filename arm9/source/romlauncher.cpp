@@ -141,6 +141,8 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
     std::string useSavesPath;
     ILauncher* launcher = nullptr;
     bool isDsiWare;
+    bool hb = false;
+
     if (!aRomInfo.isHomebrew()) {
         u32 gameCode;
         memcpy(&gameCode, aRomInfo.saveInfo().gameCode, sizeof(gameCode));  // because alignment
@@ -242,7 +244,6 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
         if (aRomInfo.saveInfo().isLinkage()) flags |= PATCH_LINKAGE;
         u8 language = aRomInfo.saveInfo().getLanguage();
         if (language) flags |= (language << PATCH_LANGUAGE_SHIFT) & PATCH_LANGUAGE_MASK;
-
 #ifndef __KERNEL_LAUNCHER_SUPPORT__
         launcher = new NdsBootstrapLauncher();
 #else  // __KERNEL_LAUNCHER_SUPPORT__
@@ -257,9 +258,16 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
 #endif  // __KERNEL_LAUNCHER_SUPPORT__
     } else {
         if (!aMenu) saveManager().saveLastInfo(aFullPath);
-        launcher = new HomebrewLauncher();
+        if (gs().hbStrap == 1)
+        {
+            hb = true;
+            launcher = new NdsBootstrapLauncher();
+        }
+        else{
+            launcher = new HomebrewLauncher();
+        }
     }
-    launcher->launchRom(aFullPath, saveName, flags, cheatOffset, cheatSize);
+    launcher->launchRom(aFullPath, saveName, flags, cheatOffset, cheatSize, hb);
     return ELaunchRomOk;
 }
 

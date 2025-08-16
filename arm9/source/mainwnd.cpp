@@ -594,6 +594,12 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("gba settings", "modegba"));
     _values.push_back(LANG("gba settings", "modends"));
     settingWnd.addSettingItem(LANG("gba settings", "mode"), _values, gs().slot2mode);
+#ifdef __DSIMODE__
+    _values.clear(); 
+    _values.push_back(LANG("patches", "default"));
+    _values.push_back(LANG("patches", "ndshb"));
+    settingWnd.addSettingItem(LANG("patches", "hbstrap"), _values, gs().hbStrap);
+#endif
 
     u32 ret = settingWnd.doModal();
     if (ID_CANCEL == ret) return;
@@ -634,6 +640,7 @@ void cMainWnd::setParam(void) {
     // page 5: other
     gs().cheats = settingWnd.getItemSelection(4, 0);
     gs().slot2mode = settingWnd.getItemSelection(4, 1);
+    gs().hbStrap = settingWnd.getItemSelection(4, 2);
 
     if (uiIndex != uiIndexAfter) {
         u32 ret = messageBox(this, LANG("ui style changed", "title"),
@@ -643,9 +650,9 @@ void cMainWnd::setParam(void) {
             gs().langDirectory = langNames[langIndexAfter];
             gs().saveSettings();
             #ifdef __DSIMODE__ 
-            HomebrewLauncher().launchRom("sd:/_nds/akmenunext/launcher.nds", "", 0, 0, 0);
+            HomebrewLauncher().launchRom("sd:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
             #else
-            HomebrewLauncher().launchRom("fat:/_nds/akmenunext/launcher.nds", "", 0, 0, 0);
+            HomebrewLauncher().launchRom("fat:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
             #endif
         }
     }
@@ -657,9 +664,9 @@ void cMainWnd::setParam(void) {
             gs().langDirectory = langNames[langIndexAfter];
             gs().saveSettings();
             #ifdef __DSIMODE__ 
-            HomebrewLauncher().launchRom("sd:/_nds/akmenunext/launcher.nds", "", 0, 0, 0);
+            HomebrewLauncher().launchRom("sd:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
             #else
-            HomebrewLauncher().launchRom("fat:/_nds/akmenunext/launcher.nds", "", 0, 0, 0);
+            HomebrewLauncher().launchRom("fat:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
             #endif
         }
     }
@@ -735,13 +742,13 @@ void cMainWnd::onFolderChanged() {
             }
         }
         if (mode == cGlobalSettings::ESlot2Nds) {
-            PassMeLauncher().launchRom("slot2:/", "", 0, 0, 0);
+            PassMeLauncher().launchRom("slot2:/", "", 0, 0, 0, 0);
         } else {
             CGbaLoader::StartGBA();
         }
     }
     if ("favorites:/" != dirShowName && "slot1:/" == _mainList->getSelectedFullPath()) {
-        Slot1Launcher().launchRom("slot1:/", "", 0, 0, 0);
+        Slot1Launcher().launchRom("slot1:/", "", 0, 0, 0, 0);
     }
 
     dbg_printf("%s\n", _mainList->getSelectedFullPath().c_str());

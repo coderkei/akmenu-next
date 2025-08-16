@@ -157,7 +157,7 @@ bool TopToyLauncher::prepareTTSYS(void) {
 }
 
 bool TopToyLauncher::launchRom(std::string romPath, std::string savePath, u32 flags,
-                               u32 cheatOffset, u32 cheatSize) {
+                               u32 cheatOffset, u32 cheatSize, bool hb) {
     std::string loaderPath =
 #ifdef __TTLAUNCHER_M3__
             "fat:/TTMenu/m3patch.dat"

@@ -212,6 +212,9 @@ homebrew reset = Reset in Homebrew
 reset hotkey = Reset Hotkey
 rts = Real Time Save
 carddma = Card read DMA
+hbstrap = Homebrew Loader
+default = AKMenu-Next
+ndshb = nds-bootstrap
 
 [switches]
 Enable = on

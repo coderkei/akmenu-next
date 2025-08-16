@@ -26,5 +26,5 @@ class ILauncher {
   public:
     virtual ~ILauncher() {}
     virtual bool launchRom(std::string romPath, std::string savePath, u32 flags, u32 cheatOffset,
-                           u32 cheatSize) = 0;
+                           u32 cheatSize, bool hb) = 0;
 };

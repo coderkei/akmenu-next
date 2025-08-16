@@ -14,7 +14,7 @@
 class TopToyLauncher : public ILauncher {
   public:
     bool launchRom(std::string romPath, std::string savePath, u32 flags, u32 cheatOffset,
-                   u32 cheatSize) override;
+                   u32 cheatSize, bool hb) override;
 
   private:
     bool prepareCheats(void);

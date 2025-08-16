@@ -13,7 +13,7 @@
 #include "nds_loader_arm9.h"
 
 bool PassMeLauncher::launchRom(std::string romPath, std::string savePath, u32 flags,
-                               u32 cheatOffset, u32 cheatSize) {
+                               u32 cheatOffset, u32 cheatSize, bool hb) {
     const char passMeLoaderPath[] = "fat:/_nds/akmenunext/PassMeLoader.nds";
 
     if (access(passMeLoaderPath, F_OK) != 0) {

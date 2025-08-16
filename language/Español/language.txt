@@ -219,6 +219,9 @@ homebrew reset = SoftReset en apps. homebrew
 reset hotkey = Comb. botones del SoftReset
 rts = Real Time Save
 carddma = Card read DMA
+hbstrap = Homebrew Loader
+default = AKMenu-Next
+ndshb = nds-bootstrap
 
 [switches]
 Enable = sí

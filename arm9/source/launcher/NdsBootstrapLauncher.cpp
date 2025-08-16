@@ -67,12 +67,19 @@ cheat_failed:
     return false;
 }
 
-bool NdsBootstrapLauncher::prepareIni() {
+bool NdsBootstrapLauncher::prepareIni(bool hb) {
     CIniFile ini;
     hotkeyCheck = false;
 
-
     ini.SetString("NDS-BOOTSTRAP", "NDS_PATH", mRomPath);
+
+    if(hb == true)
+    {
+        ini.SetString("NDS-BOOTSTRAP", "DSI_MODE", 0);
+        ini.SaveIniFile("/_nds/nds-bootstrap.ini");
+        return true;
+    }
+
     ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", mSavePath);
 
     #ifdef __DSIMODE__
@@ -189,12 +196,46 @@ bool NdsBootstrapLauncher::prepareIni() {
     return true;
 }
 
+bool launchHbStrap(std::string romPath){
+    progressWnd().setPercent(100);
+    const char ndsHbBootstrapPath[] = SD_ROOT_0 "/_nds/nds-bootstrap-hb-release.nds";
+    std::vector<const char*> argv;
+    argv.push_back(ndsHbBootstrapPath);
+    progressWnd().hide();
+    eRunNdsRetCode rc = runNdsFile(argv[0], argv.size(), &argv[0]);
+    if (rc == RUN_NDS_OK) return true;
+    return false;
+}
+
 bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, u32 flags,
-                                     u32 cheatOffset, u32 cheatSize) {
+                                     u32 cheatOffset, u32 cheatSize, bool hb) {
     const char ndsBootstrapPath[] = SD_ROOT_0 "/_nds/nds-bootstrap-release.nds";
     const char ndsBootstrapPathNightly[] = SD_ROOT_0 "/_nds/nds-bootstrap-nightly.nds";
+    const char ndsHbBootstrapPath[] = SD_ROOT_0 "/_nds/nds-bootstrap-hb-release.nds";
     const char ndsBootstrapCheck[] = SD_ROOT_0 "/_nds/pagefile.sys";
     bool useNightly = false;
+    bool hbStrap = hb;
+
+    //check if rom is homebrew
+    if(hbStrap){
+        mRomPath = romPath;
+        if(access(ndsHbBootstrapPath, F_OK) != 0){
+            progressWnd().hide();
+            printLoaderNotFound(ndsHbBootstrapPath);
+            return false;
+        }
+        progressWnd().setTipText("Initializing nds-bootstrap...");
+        progressWnd().show();
+        progressWnd().setPercent(0);
+        //Clean up old INI
+        if (access("/_nds/nds-bootstrap/nds-bootstrap.ini", F_OK) == 0) {
+        remove("/_nds/nds-bootstrap/nds-bootstrap.ini");
+        }
+        // Setup nds-bootstrap INI parameters
+        if (!prepareIni(false)) return false;
+        progressWnd().setPercent(25);
+        launchHbStrap(romPath);
+    }
 
     //has the user used nds-bootstrap before?
     if(access(ndsBootstrapCheck, F_OK) != 0){
@@ -273,12 +314,11 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
     }
 
     // Setup nds-bootstrap INI parameters
-    if (!prepareIni()) return false;
+    if (!prepareIni(false)) return false;
     progressWnd().setPercent(100);
 
     // Launch
     eRunNdsRetCode rc = runNdsFile(argv[0], argv.size(), &argv[0]);
     if (rc == RUN_NDS_OK) return true;
-
-    return false;
+    return false; 
 }

@@ -48,6 +48,7 @@ cGlobalSettings::cGlobalSettings() {
     resetHotKey = 0;
     phatCol = false;
     languageOverride = 0;
+    hbStrap = 0;
 #ifndef __KERNEL_LAUNCHER_SUPPORT__
     romLauncher = EKernelLauncher;
 #else
@@ -84,6 +85,7 @@ void cGlobalSettings::loadSettings() {
     resetHotKey = ini.GetInt("system", "resethotkey", resetHotKey);
     phatCol = ini.GetInt("system", "phatCol", phatCol);
     languageOverride = ini.GetInt("system", "languageOverride", languageOverride);
+    hbStrap = ini.GetInt("system", "hbstrap", hbStrap);
     
     temp = ini.GetString("system", "saveext", ".sav");
     saveExt = (temp == ".sav");
@@ -140,6 +142,7 @@ void cGlobalSettings::saveSettings() {
     ini.SetInt("system", "resethotkey", resetHotKey);
     ini.SetInt("system", "dsonly", dsOnly);
     ini.SetInt("system", "languageOverride", languageOverride);
+    ini.SetInt("system", "hbstrap", hbStrap);
     ini.SetInt("system", "phatCol", phatCol);
     ini.SetString(
         "system", "saveext",

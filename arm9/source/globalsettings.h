@@ -69,6 +69,7 @@ class cGlobalSettings {
     bool homebrewreset;
     bool dsOnly;
     bool phatCol;
+    bool hbStrap;
 };
 
 typedef t_singleton<cGlobalSettings> globalSettings_s;

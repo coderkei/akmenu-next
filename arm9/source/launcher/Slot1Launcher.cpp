@@ -13,7 +13,7 @@
 #include "nds_loader_arm9.h"
 
 bool Slot1Launcher::launchRom(std::string romPath, std::string savePath, u32 flags,
-                               u32 cheatOffset, u32 cheatSize) {
+                               u32 cheatOffset, u32 cheatSize, bool hb) {
     #ifdef __DSIMODE__
         const char slot1LoaderPath[] = "sd:/_nds/akmenunext/slot1launch.nds";
     #else

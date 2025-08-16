@@ -14,7 +14,7 @@
 #include "nds_loader_arm9.h"
 
 bool HomebrewLauncher::launchRom(std::string romPath, std::string savePath, u32 flags,
-                                 u32 cheatOffset, u32 cheatSize) {
+                                 u32 cheatOffset, u32 cheatSize, bool hb) {
     std::vector<const char*> argv;
     argv.push_back(romPath.c_str());
     eRunNdsRetCode rc = runNdsFile(argv[0], argv.size(), &argv[0]);

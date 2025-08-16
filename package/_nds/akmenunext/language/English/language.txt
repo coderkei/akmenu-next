@@ -217,6 +217,9 @@ linkage = Link with GBA
 sd save = Save directly to SD
 homebrew reset = Reset in Homebrew
 carddma = Card read DMA
+hbstrap = Homebrew Loader
+default = AKMenu-Next
+ndshb = nds-bootstrap
 
 [switches]
 Enable = on

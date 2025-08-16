@@ -41,7 +41,7 @@ static void resetAndLoop() {
 }
 
 bool AcekardLauncher::launchRom(std::string romPath, std::string savePath, u32 flags,
-                                u32 cheatOffset, u32 cheatSize) {
+                                u32 cheatOffset, u32 cheatSize, bool hb) {
     tNDSHeader header;
 
     dbg_printf("load %s\n", romPath.c_str());
