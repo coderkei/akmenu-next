@@ -13,7 +13,7 @@ Setting = 設定
 Set favorite = 設為喜愛的
 Unset favorite = 取消設為喜愛的
 Info = 檔案資訊
-Help = 說明
+Help = 說明與關於
 Tools = 工具
 START = START
 
@@ -163,10 +163,11 @@ item0 = release版
 item1 = nightly版
 firsttimetitle = 初始化 nds-bootstrap
 firsttime = 按“OK”開始 nds-bootstrap 的首次設定。這可能需要一分鐘，並且是一次性過程。
-dsmode = DS-Only Mode
+dsmode = DS-Only 模式
 inimissingtitle = INI 錯誤
 inimissing = _nds/akmenunext 中缺少 ndsbs.ini 檔案或該檔案已損壞。請恢復此檔案或重新安裝 akmenu-next。
-phatCol = DS Phat Colors
+phatCol = 初階DS顏色
+
 
 [language]
 text = 系統語言
@@ -188,9 +189,9 @@ item0 = %c  選擇檔案
 item1 = %c  是/開始/確定
 item2 = %c  否/後退/取消
 item3 = %c  查詢檔案資訊 / 選擇存檔類型
-item4 = %c  切換 SD / NAND 記憶體
+item4 = %c  喜愛的
 item5 = %c  上一頁
-item6 = %c  調整亮度：1/2/3/4
+item6 = %c  調整四階亮度（僅限DS/DSL）
 item7 = %s  開始選單
 item8 = %s  切換 圖示/文字 模式
 
