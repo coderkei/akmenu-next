@@ -635,12 +635,16 @@ void cMainWnd::setParam(void) {
     gs().dsOnly = settingWnd.getItemSelection(3, 0);
     gs().nightly = settingWnd.getItemSelection(3, 1);
     gs().languageOverride = settingWnd.getItemSelection(3,2);
+#ifdef __DSIMODE__
     gs().phatCol = settingWnd.getItemSelection(3, 3);
+#endif
 
     // page 5: other
     gs().cheats = settingWnd.getItemSelection(4, 0);
     gs().slot2mode = settingWnd.getItemSelection(4, 1);
+#ifdef __DSIMODE__
     gs().hbStrap = settingWnd.getItemSelection(4, 2);
+#endif
 
     if (uiIndex != uiIndexAfter) {
         u32 ret = messageBox(this, LANG("ui style changed", "title"),
