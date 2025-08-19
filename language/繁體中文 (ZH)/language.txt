@@ -226,9 +226,9 @@ linkage = 與GBA連結
 sd save = 直接存儲到SD
 homebrew reset = 在HomeBrew中暖開機
 carddma = 遊戲卡讀取DMA
-hbstrap = ホームブリュー・ローダー
+hbstrap = 自製讀取器
 default = AKMenu-Next
-ndshb = 自制加载器
+ndshb = nds-bootstrap
 
 [switches]
 Enable = 開啟
