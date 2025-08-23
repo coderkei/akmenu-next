@@ -45,10 +45,28 @@ cHelpWnd::cHelpWnd(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::strin
     }
     _helpText = formatString(_helpText.c_str(), 7, 1, 2, 4, 3, 5, 6, "START", "SELECT");
 
-    // u8 nandDriverVer = getNandDriverVer();
+    #ifdef __DSIMODE__
+        const char* ndsbsVer = "sd:/_nds/release-bootstrap.ver";
+    #else
+        const char* ndsbsVer = "fat:/_nds/release-bootstrap.ver";
+    #endif
+    
+    char ndsbsBuffer[256];
     _helpText += '\n';
     _helpText += formatString("coderkei akmenu-next %s.%s ", AKMENU_VERSION_MAIN, AKMENU_VERSION_SUB);
-    _helpText += formatString("\n%s %s ", AKMENU_LOADER_NAME, AKMENU_LOADER_VERSION);
+
+    if(access(ndsbsVer, F_OK) == 0){
+        FILE* file = fopen(ndsbsVer, "r");
+        if (file) {
+            if (fgets(ndsbsBuffer, sizeof(ndsbsBuffer), file)) {
+                _helpText += formatString("\n%s %s ", AKMENU_LOADER_NAME, ndsbsBuffer);
+            }
+            fclose(file);
+        }
+    }
+    else{
+        _helpText += formatString("\n%s %s ", AKMENU_LOADER_NAME, AKMENU_LOADER_VERSION);
+    }
 }
 
 cHelpWnd::~cHelpWnd() {}

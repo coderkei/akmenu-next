@@ -1,7 +1,7 @@
 themes
 data/load.bin
 build
-temp
+staging
 .vscode
 *.elf
 *.nds
@@ -10,3 +10,5 @@ temp
 *.dldi
 *.zip
 *.cia
+!PassMeLoader.nds
+!slot1launch.nds
