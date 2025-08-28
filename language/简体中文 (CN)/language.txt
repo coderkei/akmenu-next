@@ -178,7 +178,7 @@ de = 德语
 it = 意大利语
 es = 西班牙语
 cn = 简体中文
-zh = 繁體中文
+zh = 繁体中文
 
 [ui style]
 text = 界面风格
@@ -228,7 +228,7 @@ homebrew reset = 在自制程序中复位
 carddma = 卡带读取DMA
 hbstrap = 自制加载器
 default = AKMenu-Next
-ndshb = nds-bootstrap
+ndshb = ndsbootstrap
 
 [switches]
 Enable = 启用
@@ -315,18 +315,18 @@ text = 菜单热键
 3 = l-r-a-b-↓
 4 = l-r-b-y-↓
 5 = l-r-a-b-x-y
-6 = 风俗
+6 = 自定义
 
 [override]
 text = 语言覆盖
-0 = System
-1 = 日本語
-2 = English
-3 = Français
-4 = Deutsch
-5 = Italiano
-6 = Español
+0 = 系统预设
+1 = 日语
+2 = 英语
+3 = 法语
+4 = 德语
+5 = 意大利语
+6 = 西班牙语
 7 = 中文
-8 = Korean
+8 = 韩语
 
 [end]
