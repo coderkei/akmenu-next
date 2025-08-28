@@ -228,7 +228,7 @@ homebrew reset = 在HomeBrew中暖開機
 carddma = 遊戲卡讀取DMA
 hbstrap = 自製讀取器
 default = AKMenu-Next
-ndshb = nds-bootstrap
+ndshb = ndsbootstrap
 
 [switches]
 Enable = 開啟
@@ -315,18 +315,18 @@ text = 選單熱鍵
 3 = l-r-a-b-↓
 4 = l-r-b-y-↓
 5 = l-r-a-b-x-y
-6 = 風俗
+6 = 客製化
 
 [override]
 text = 語言覆蓋
-0 = System
-1 = 日本語
-2 = English
-3 = Français
-4 = Deutsch
-5 = Italiano
-6 = Español
+0 = 系統預設
+1 = 日文
+2 = 英文
+3 = 法文
+4 = 德文
+5 = 義大利文
+6 = 西班牙文
 7 = 中文
-8 = Korean
+8 = 韓文
 
 [end]
