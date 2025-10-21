@@ -28,6 +28,14 @@
 #include "NdsBootstrapLauncher.h"
 #include "nds_loader_arm9.h"
 
+void smoothProgress(u8 start, u8 end) {
+    for(u8 p = start; p <= end; p += 5) {
+        progressWnd().setPercent(p);
+        swiWaitForVBlank();
+    }
+    progressWnd().setPercent(end);
+}
+
 bool NdsBootstrapLauncher::prepareCheats() {
     u32 gameCode, crc32;
 
@@ -287,7 +295,7 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
     if (access("/_nds/nds-bootstrap/", F_OK) != 0) {
         mkdir("/_nds/nds-bootstrap/", 0777);
     }
-    progressWnd().setPercent(25);
+    smoothProgress(0, 25);
 
     // Setup argv to launch nds-bootstrap                             
     if(!useNightly){
@@ -297,16 +305,8 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
         argv.push_back(ndsBootstrapPathNightly);
     }
 
-    progressWnd().setTipText("Loading usrcheat.dat...");
-    progressWnd().setPercent(50);
-    // Prepare cheat codes if enabled
-    if (flags & PATCH_CHEATS) {
-        if (!prepareCheats()) {
-            return false;
-        }
-    }
     progressWnd().setTipText("Initializing nds-bootstrap...");
-    progressWnd().setPercent(75);
+    smoothProgress(25, 50);
 
     //Clean up old INI
     if (access("/_nds/nds-bootstrap/nds-bootstrap.ini", F_OK) == 0) {
@@ -315,7 +315,28 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
 
     // Setup nds-bootstrap INI parameters
     if (!prepareIni(false)) return false;
-    progressWnd().setPercent(100);
+    smoothProgress(50, 75);
+
+    // Prepare cheat codes if enabled
+    if (!_romInfo.saveInfo().getCheat() || !gs().cheats) {
+        progressWnd().setTipText("Booting game...");
+        smoothProgress(75, 100);
+    }
+    else {
+        progressWnd().setTipText("Loading usrcheat.dat...");
+        smoothProgress(75, 90);
+        if (flags & PATCH_CHEATS) {
+            if (!prepareCheats()) {
+                return false;
+            }
+        }
+        // Remove cheat bin if exists
+        if (access("/_nds/nds-bootstrap/cheatData.bin", F_OK) == 0) {
+            remove("/_nds/nds-bootstrap/cheatData.bin");
+        }
+        progressWnd().setTipText("Booting game...");
+        smoothProgress(90, 100);
+    }
 
     // Launch
     eRunNdsRetCode rc = runNdsFile(argv[0], argv.size(), &argv[0]);
