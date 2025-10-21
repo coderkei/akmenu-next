@@ -7,8 +7,8 @@
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 
-#define AKMENU_VERSION_MAIN "2"
-#define AKMENU_VERSION_SUB "0"
+#define AKMENU_VERSION_MAIN "1"
+#define AKMENU_VERSION_SUB "9.2"
 
 #ifndef __KERNEL_LAUNCHER_SUPPORT__
 #define AKMENU_LOADER_NAME "nds-bootstrap"

@@ -6,7 +6,6 @@ staging
 *.elf
 *.nds
 *.dsi
-*.pcf
 *.dldi
 *.zip
 *.cia
