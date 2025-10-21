@@ -284,15 +284,11 @@ void cRomInfoWnd::onShow() {
 }
 
 #define ITEM_SAVETYPE 0, 0
-#define ITEM_LINKAGE 0, 1
-#define ITEM_RUMBLE 0, 2
-#define ITEM_NDSBOOTSTRAP 0, 3
+#define ITEM_NDSBOOTSTRAP 0, 1
 
 #define ITEM_CHEATS 1, 0
-#define ITEM_SOFTRESET 1, 1
-#define ITEM_SAVESLOT 1, 2
-#define ITEM_ICON 1, 3
-#define ITEM_LANGUAGE 1, 4
+#define ITEM_SAVESLOT 1, 1
+#define ITEM_ICON 1, 2
 
 void cRomInfoWnd::pressSaveType(void) {
     if (!_romInfo.isDSRom() || _romInfo.isHomebrew()) return;
@@ -315,20 +311,6 @@ void cRomInfoWnd::pressSaveType(void) {
             LANG("save type", "text"), _values,
             cSaveManager::SaveTypeToDisplaySaveType((SAVE_TYPE)_romInfo.saveInfo().saveType));
 
-    _values.clear();
-    //_values.push_back(LANG("switches", "Disable"));
-    //_values.push_back(LANG("switches", "Enable"));
-    //settingWnd.addSettingItem(LANG("patches", "linkage"), _values,
-    //                          _romInfo.saveInfo().getLinkage());
-
-    //_values.clear();
-    //const char* rumbleLang[] = {"off", "low", "mid", "high"};
-    //for (size_t i = 0; i < 4; ++i) {
-    //    _values.push_back(LANG("exp window", rumbleLang[i]));
-    //}
-    //settingWnd.addSettingItem(LANG("exp window", "strength"), _values,
-     //                         _romInfo.saveInfo().getRumble());
-
 #ifdef __KERNEL_LAUNCHER_SUPPORT__
     _values.clear();
     _values.push_back("kernel");
@@ -350,15 +332,7 @@ void cRomInfoWnd::pressSaveType(void) {
                               _romInfo.saveInfo().getCheat());
 
     _values.clear();
-    //_values.push_back(LANG("switches", "Disable"));
-    //_values.push_back(LANG("switches", "Enable"));
-    //_values.push_back(formatString(LANG("switches", "Global").c_str(),
-    //                               gs().softreset ? LANG("switches", "Enable").c_str()
-    //                                              : LANG("switches", "Disable").c_str()));
-    //settingWnd.addSettingItem(LANG("patches", "reset in game"), _values,
-    //                          _romInfo.saveInfo().getSoftReset());
 
-    //_values.clear();
     std::string slotValue;
     for (size_t ii = 0; ii < 4; ++ii) {
         if (ii)
@@ -406,11 +380,8 @@ void cRomInfoWnd::pressSaveType(void) {
         addCode();
     }
     _romInfo.saveInfo().setFlags(
-            settingWnd.getItemSelection(ITEM_RUMBLE), 0,
-            settingWnd.getItemSelection(ITEM_SOFTRESET), settingWnd.getItemSelection(ITEM_CHEATS),
-            settingWnd.getItemSelection(ITEM_SAVESLOT), 2, 0,
-            settingWnd.getItemSelection(ITEM_LINKAGE), settingWnd.getItemSelection(ITEM_ICON), 2,
-            settingWnd.getItemSelection(ITEM_LANGUAGE),
+            0, 0, 0, settingWnd.getItemSelection(ITEM_CHEATS),
+            settingWnd.getItemSelection(ITEM_SAVESLOT), 2, 0, 0, 2, 0, 0,
             settingWnd.getItemSelection(ITEM_NDSBOOTSTRAP));
 
     saveManager().updateCustomSaveList(_romInfo.saveInfo());
