@@ -318,6 +318,10 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
     smoothProgress(50, 75);
 
     // Prepare cheat codes if enabled
+    // Remove cheat bin if exists to start clean
+    if (access("/_nds/nds-bootstrap/cheatData.bin", F_OK) == 0) {
+        remove("/_nds/nds-bootstrap/cheatData.bin");
+    }
     if (!_romInfo.saveInfo().getCheat() || !gs().cheats) {
         progressWnd().setTipText("Booting game...");
         smoothProgress(75, 100);
@@ -329,10 +333,6 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
             if (!prepareCheats()) {
                 return false;
             }
-        }
-        // Remove cheat bin if exists
-        if (access("/_nds/nds-bootstrap/cheatData.bin", F_OK) == 0) {
-            remove("/_nds/nds-bootstrap/cheatData.bin");
         }
         progressWnd().setTipText("Booting game...");
         smoothProgress(90, 100);
