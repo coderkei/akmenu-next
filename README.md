@@ -1,4 +1,4 @@
-# AKMenu-Next
+<img width="1357" height="357" alt="image" src="https://github.com/user-attachments/assets/cdcf1a49-a2e0-4ce8-812d-eeae5df01250" />
 
 <p align="center">
    <a href="https://gbatemp.net/threads/ds-i-3ds-akmenu-next-wood-frontend-for-nds-bootstrap.665743/">
@@ -8,6 +8,8 @@
       <img src="https://github.com/coderkei/akmenu-next/actions/workflows/main.yml/badge.svg" alt="Build status on GitHub Actions">
    </a>
 </p>
+
+## AKMenu-Next
 
 Frontend for [nds-bootstrap](https://github.com/DS-Homebrew/nds-bootstrap/) based upon [lifehansolhacker's akmenu4 port](https://github.com/lifehackerhansol/akmenu4).
 
