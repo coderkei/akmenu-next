@@ -1,4 +1,6 @@
-<img width="1357" height="357" alt="image" src="https://github.com/user-attachments/assets/cdcf1a49-a2e0-4ce8-812d-eeae5df01250" />
+<p align="center">
+   <img width="802" height="211" alt="image" src="https://github.com/user-attachments/assets/93b07874-5f3f-4572-b2e3-74bdabd757a0" />
+</p>
 
 <p align="center">
    <a href="https://gbatemp.net/threads/ds-i-3ds-akmenu-next-wood-frontend-for-nds-bootstrap.665743/">
