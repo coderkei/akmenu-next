@@ -320,15 +320,16 @@ info = Information
 load text = お待ちください...
 
 [nds bootstrap]
-text = nds-bootstrap version
+text = nds-bootstrapバージョン
 item0 = release
 item1 = nightly
 firsttimetitle = nds-bootstrapの初期化
 firsttime = 「OK」を押すと、nds-bootstrapの初回セットアップが開始されます。このプロセスは1分ほどかかる場合があり、一度だけ実行されます。
-dsmode = DS-Only Mode
+dsmode = DS専用モード
 inimissingtitle = INI エラー
 inimissing = ndsbs.ini が _nds/akmenunext に存在しないか、破損しています。このファイルを復元するか、akmenu-next を再インストールしてください。
-phatCol = DS Phat Colors
+phatCol = DSオリジナルカラー
+loader = ゲームローダー
 
 [resethotkey]
 text = メニューホットキー

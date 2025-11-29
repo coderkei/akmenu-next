@@ -2,6 +2,7 @@
 
 :FLASHCART
 mkdir flashcart
+cp -r _pico flashcart
 cp -r Autoboot flashcart
 cp -r _nds flashcart
 cp boot_nds.nds flashcart\boot.nds

@@ -259,6 +259,7 @@ void cRomInfoWnd::setRomInfo(const DSRomInfo& romInfo) {
         addCode();
         _buttonSaveType.show();
         if (gs().cheatDB) _buttonCheats.show();
+        if (gs().pico) _buttonCheats.hide();
     } else if (_romInfo.isGbaRom()) {
         _buttonFlash.show();
         _buttonSaveType.setText("\x03 " + LANG("exp window", "flash to nor"));

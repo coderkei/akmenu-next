@@ -167,6 +167,7 @@ dsmode = DS-Only 模式
 inimissingtitle = INI 錯誤
 inimissing = _nds/akmenunext 中缺少 ndsbs.ini 檔案或該檔案已損壞。請恢復此檔案或重新安裝 akmenu-next。
 phatCol = 初階DS顏色
+loader = 遊戲載入器
 
 
 [language]

@@ -17,8 +17,7 @@ NITRO_FILES :=
 
 # These set the information text in the nds file
 GAME_TITLE     := akmenu-next
-GAME_SUBTITLE1 := nds-bootstrap
-GAME_SUBTITLE2 := github.com/coderkei
+GAME_SUBTITLE1 := github.com/coderkei
 
 ifeq ($(OS),Windows_NT)
     MAKE_CIA = ./tools/make_cia.exe

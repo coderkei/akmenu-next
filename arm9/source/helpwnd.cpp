@@ -55,7 +55,10 @@ cHelpWnd::cHelpWnd(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::strin
     _helpText += '\n';
     _helpText += formatString("coderkei akmenu-next %s.%s ", AKMENU_VERSION_MAIN, AKMENU_VERSION_SUB);
 
-    if(access(ndsbsVer, F_OK) == 0){
+    if(gs().pico){
+        _helpText += formatString("\n%s %s ", AKMENU_PICO_NAME, AKMENU_LOADER_VERSION);
+    }
+    else if(access(ndsbsVer, F_OK) == 0 && gs().pico == false){
         FILE* file = fopen(ndsbsVer, "r");
         if (file) {
             if (fgets(ndsbsBuffer, sizeof(ndsbsBuffer), file)) {

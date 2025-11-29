@@ -5,6 +5,7 @@ set -e
 mkdir -p flashcart
 cp -r Autoboot flashcart
 cp -r _nds flashcart
+cp -r _pico flashcart
 cp boot_nds.nds flashcart/boot.nds
 mv flashcart/_nds/akmenunext/launcher_nds.nds flashcart/_nds/akmenunext/launcher.nds
 rm -f flashcart/_nds/akmenunext/launcher_dsi.nds

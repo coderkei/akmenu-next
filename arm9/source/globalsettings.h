@@ -70,6 +70,7 @@ class cGlobalSettings {
     bool dsOnly;
     bool phatCol;
     bool hbStrap;
+    bool pico;
 };
 
 typedef t_singleton<cGlobalSettings> globalSettings_s;

@@ -13,7 +13,7 @@
 
 ## AKMenu-Next
 
-Frontend for [nds-bootstrap](https://github.com/DS-Homebrew/nds-bootstrap/) based upon [lifehansolhacker's akmenu4 port](https://github.com/lifehackerhansol/akmenu4).
+Frontend for [nds-bootstrap](https://github.com/DS-Homebrew/nds-bootstrap/) and [Pico-Loader](https://github.com/LNH-team/pico-loader) based upon [lifehansolhacker's akmenu4 port](https://github.com/lifehackerhansol/akmenu4).
 
 ## Getting Started
 
@@ -29,6 +29,7 @@ Build the repository with `make`, then run `package.cmd/sh` depending on your OS
 * The binary of akmenu-next additionally needs to be in the `_nds/akmenunext` folder as `launcher.nds` for theme & language reboots, this is automatically added if using the package script.
 * Cheats should be placed as `usrcheat.dat` into the `_nds/akmenunext/cheats` folder.
 * Themes go into `_nds/akmenunext/ui`. Acekard & Wood R4 themes are supported.
+* For flashcart related builds, files for the corresponding flashcart for Pico-Loader should go into the `_pico` folder.
 
 ## License
 

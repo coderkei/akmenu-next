@@ -158,6 +158,7 @@ dsmode = DS-Only Mode
 inimissingtitle = INI error
 inimissing = ndsbs.ini is missing from _nds/akmenunext or is corrupt. Please restore this file or reinstall akmenu-next.
 phatCol = DS Phat Colors
+loader = Game Loader
 
 
 [language]

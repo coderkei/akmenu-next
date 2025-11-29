@@ -49,6 +49,7 @@ cGlobalSettings::cGlobalSettings() {
     phatCol = false;
     languageOverride = 0;
     hbStrap = 0;
+    pico = 0;
 #ifndef __KERNEL_LAUNCHER_SUPPORT__
     romLauncher = EKernelLauncher;
 #else
@@ -86,6 +87,7 @@ void cGlobalSettings::loadSettings() {
     phatCol = ini.GetInt("system", "phatCol", phatCol);
     languageOverride = ini.GetInt("system", "languageOverride", languageOverride);
     hbStrap = ini.GetInt("system", "hbstrap", hbStrap);
+    pico = ini.GetInt("system", "pico", pico);
     
     temp = ini.GetString("system", "saveext", ".sav");
     saveExt = (temp == ".sav");
@@ -143,6 +145,7 @@ void cGlobalSettings::saveSettings() {
     ini.SetInt("system", "dsonly", dsOnly);
     ini.SetInt("system", "languageOverride", languageOverride);
     ini.SetInt("system", "hbstrap", hbStrap);
+    ini.SetInt("system", "pico", pico);
     ini.SetInt("system", "phatCol", phatCol);
     ini.SetString(
         "system", "saveext",

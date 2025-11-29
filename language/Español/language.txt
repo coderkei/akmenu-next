@@ -336,6 +336,7 @@ dsmode = DS-Only Mode
 inimissingtitle = Error De INI
 inimissing = ndsbs.ini no se encuentra en _nds/akmenunext o está dañado. Restaure este archivo o reinstale akmenu-next.
 phatCol = DS Phat Colors
+loader = Cargador de juego
 
 [resethotkey]
 text = Botones del menú

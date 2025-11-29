@@ -575,6 +575,11 @@ void cMainWnd::setParam(void) {
     _values.push_back("disable");
     _values.push_back("enable");
     settingWnd.addSettingItem(LANG("nds bootstrap", "phatCol"), _values, gs().phatCol);
+#else
+    _values.clear();
+    _values.push_back("nds-bootstrap");
+    _values.push_back("Pico-Loader");
+    settingWnd.addSettingItem(LANG("nds bootstrap", "loader"), _values, gs().pico);
 #endif
 #ifdef __KERNEL_LAUNCHER_SUPPORT__
     _values.clear();
@@ -637,6 +642,8 @@ void cMainWnd::setParam(void) {
     gs().languageOverride = settingWnd.getItemSelection(3,2);
 #ifdef __DSIMODE__
     gs().phatCol = settingWnd.getItemSelection(3, 3);
+#else
+    gs().pico = settingWnd.getItemSelection(3, 3);
 #endif
 
     // page 5: other
