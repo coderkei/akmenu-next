@@ -9,8 +9,21 @@ cp -r _pico flashcart
 cp boot_nds.nds flashcart/boot.nds
 mv flashcart/_nds/akmenunext/launcher_nds.nds flashcart/_nds/akmenunext/launcher.nds
 rm -f flashcart/_nds/akmenunext/launcher_dsi.nds
+rm -f flashcart/_nds/akmenunext/launcher_pico.nds
 cd flashcart
 zip -r ../akmenu-next-flashcart.zip *
+cd ..
+
+#PICO
+mkdir -p pico
+cp -r _pico pico
+cp -r _nds pico
+cp boot_pico.nds pico/boot.nds
+cp boot_pico.nds pico/_picoboot.nds
+mv pico/_nds/akmenunext/launcher_pico.nds pico/_nds/akmenunext/launcher.nds
+rm -f pico/_nds/akmenunext/launcher_dsi.nds
+rm -f pico/_nds/akmenunext/launcher_nds.nds
+zip -r ../akmenu-next-pico.zip *
 cd ..
 
 #DSI

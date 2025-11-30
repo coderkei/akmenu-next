@@ -8,7 +8,19 @@ cp -r _nds flashcart
 cp boot_nds.nds flashcart\boot.nds
 mv flashcart\_nds\akmenunext\launcher_nds.nds flashcart\_nds\akmenunext\launcher.nds
 rm flashcart\_nds\akmenunext\launcher_dsi.nds
+rm flashcart\_nds\akmenunext\launcher_pico.nds
 "C:\Program Files\7-Zip\7z.exe" -tzip a -r akmenu-next-flashcart.zip ./flashcart/*
+
+:PICO
+mkdir pico
+cp -r _pico pico
+cp -r _nds pico
+cp boot_pico.nds pico\boot.nds
+cp boot_pico.nds pico\_picoboot.nds
+mv pico\_nds\akmenunext\launcher_pico.nds pico\_nds\akmenunext\launcher.nds
+rm pico\_nds\akmenunext\launcher_dsi.nds
+rm pico\_nds\akmenunext\launcher_nds.nds
+"C:\Program Files\7-Zip\7z.exe" -tzip a -r akmenu-next-pico.zip ./pico/*
 
 :DSI
 mkdir dsi
@@ -34,3 +46,4 @@ rm 3ds\_nds\akmenunext\PassMeLoader.nds
 rmdir flashcart /s /q
 rmdir dsi /s /q
 rmdir 3ds /s /q
+rmdir pico /s /q
