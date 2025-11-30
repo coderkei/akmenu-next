@@ -23,6 +23,7 @@ cp boot_pico.nds pico/_picoboot.nds
 mv pico/_nds/akmenunext/launcher_pico.nds pico/_nds/akmenunext/launcher.nds
 rm -f pico/_nds/akmenunext/launcher_dsi.nds
 rm -f pico/_nds/akmenunext/launcher_nds.nds
+cd pico
 zip -r ../akmenu-next-pico.zip *
 cd ..
 
@@ -51,4 +52,4 @@ zip -r ../akmenu-next-3ds.zip *
 cd ..
 
 #Cleanup
-rm -rf flashcart dsi 3ds
+rm -rf flashcart dsi 3ds pico
