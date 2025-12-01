@@ -11,5 +11,5 @@ staging
 *.cia
 !PassMeLoader.nds
 !slot1launch.nds
-!/redist/*
+!redist/**/*.zip
 /package/_nds/akmenunext/language
