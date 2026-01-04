@@ -87,13 +87,6 @@ bool DSpicoLauncher::launchRom(std::string romPath, std::string savePath, u32 fl
     fclose(loader7);
     progressWnd().setPercent(40);
 
-    if(((pload_header7_t*)picoLoader7)->apiVersion != PICO_LOADER_API_VERSION) {
-        delete[] picoLoader7;
-        fclose(loader9);
-        printError("Failed to load picoloader");
-        return false;
-    }
-
     auto picoLoader9 = new(cache_align) u8[picoLoader9Size];
     fread(picoLoader9, 1, picoLoader9Size, loader9);
     fclose(loader9);
