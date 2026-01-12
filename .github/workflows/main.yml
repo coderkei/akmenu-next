@@ -54,9 +54,3 @@ jobs:
         with:
           name: akmenu-next-3ds
           path: package/akmenu-next-3ds.zip
-
-      - name: Upload akmenu-next-pico
-        uses: actions/upload-artifact@v4
-        with:
-          name: akmenu-next-pico
-          path: package/akmenu-next-pico.zip
