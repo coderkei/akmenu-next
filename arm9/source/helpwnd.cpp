@@ -14,6 +14,7 @@
 #include "uisettings.h"
 #include "version.h"
 #include "windowmanager.h"
+#include "picocheck.h"
 
 using namespace akui;
 
@@ -45,10 +46,16 @@ cHelpWnd::cHelpWnd(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::strin
     }
     _helpText = formatString(_helpText.c_str(), 7, 1, 2, 4, 3, 5, 6, "START", "SELECT");
 
+    const char* ndsbsVer;
     #ifdef __DSIMODE__
-        const char* ndsbsVer = "sd:/_nds/release-bootstrap.ver";
+        if(isDSPico){
+            ndsbsVer = "fat:/_nds/release-bootstrap.ver";
+        }
+        else{
+            ndsbsVer = "sd:/_nds/release-bootstrap.ver";
+        }
     #else
-        const char* ndsbsVer = "fat:/_nds/release-bootstrap.ver";
+        ndsbsVer = "fat:/_nds/release-bootstrap.ver";
     #endif
     
     char ndsbsBuffer[256];

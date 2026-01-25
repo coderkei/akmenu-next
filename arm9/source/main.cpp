@@ -42,6 +42,7 @@
 #include "romlauncher.h"
 #include "sram.h"
 #include "userwnd.h"
+#include "picocheck.h"
 
 using namespace akui;
 
@@ -53,7 +54,7 @@ void __libnds_exit(int rc) {}
 }
 #endif
 
-int main(void) {
+int main(int argc, char **argv) {
     irq().init();
 
     windowManager();
@@ -76,11 +77,31 @@ int main(void) {
     gdi().switchSubEngineMode();
 #endif  // DEBUG
     dbg_printf("gdi ok\n");
-
+    
     // wait_press_b();
     //  init fat
     bool succ = fatInitDefault();
     if (!succ) dbg_printf("init fat %d\n", succ);
+
+
+#ifdef __DSIMODE__
+    if (argc > 0) {
+        if (memcmp(argv[0], "fat:", 4) == 0) {
+            isDSPico = true;
+            chdir("fat:/");
+        }
+        else if (memcmp(argv[0], "sd:", 3) == 0) {
+            isDSPico = false;
+            chdir("sd:/");
+        }
+    }
+    else{
+        isDSPico = false;
+        chdir("sd:/");
+    }
+#else
+    chdir("fat:/");
+#endif
 
     // wait_press_b();
 

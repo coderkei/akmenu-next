@@ -36,6 +36,7 @@
 #include "launcher/NdsBootstrapLauncher.h"
 #include "launcher/PassMeLauncher.h"
 #include "launcher/Slot1Launcher.h"
+#include "picocheck.h"
 
 using namespace akui;
 
@@ -571,21 +572,27 @@ void cMainWnd::setParam(void) {
     settingWnd.addSettingItem(LANG("override", "text"), _values, gs().languageOverride);
 
 #ifdef __DSIMODE__
-    _values.clear();
-    _values.push_back("disable");
-    _values.push_back("enable");
-    settingWnd.addSettingItem(LANG("nds bootstrap", "phatCol"), _values, gs().phatCol);
+    if(isDSPico){
+        _values.clear();
+        _values.push_back("nds-bootstrap");
+        _values.push_back("Pico-Loader");
+        settingWnd.addSettingItem(LANG("nds bootstrap", "loader"), _values, gs().pico);
+        _values.clear();
+        _values.push_back("disable");
+        _values.push_back("enable");
+        settingWnd.addSettingItem(LANG("nds bootstrap", "phatCol"), _values, gs().phatCol);
+    }
+    else{
+        _values.clear();
+        _values.push_back("disable");
+        _values.push_back("enable");
+        settingWnd.addSettingItem(LANG("nds bootstrap", "phatCol"), _values, gs().phatCol);
+    }
 #else
     _values.clear();
     _values.push_back("nds-bootstrap");
     _values.push_back("Pico-Loader");
     settingWnd.addSettingItem(LANG("nds bootstrap", "loader"), _values, gs().pico);
-#endif
-#ifdef __KERNEL_LAUNCHER_SUPPORT__
-    _values.clear();
-    _values.push_back("Kernel");
-    _values.push_back("nds-bootstrap");
-    settingWnd.addSettingItem(LANG("loader", "text"), _values, gs().romLauncher);
 #endif
 
     // page 5: other
@@ -641,7 +648,13 @@ void cMainWnd::setParam(void) {
     gs().nightly = settingWnd.getItemSelection(3, 1);
     gs().languageOverride = settingWnd.getItemSelection(3,2);
 #ifdef __DSIMODE__
-    gs().phatCol = settingWnd.getItemSelection(3, 3);
+    if(isDSPico){
+        gs().pico = settingWnd.getItemSelection(3, 3);
+        gs().phatCol = settingWnd.getItemSelection(3, 4);
+    }
+    else{
+        gs().phatCol = settingWnd.getItemSelection(3, 3);   
+    }
 #else
     gs().pico = settingWnd.getItemSelection(3, 3);
 #endif
@@ -660,8 +673,13 @@ void cMainWnd::setParam(void) {
             gs().uiName = uiNames[uiIndexAfter];
             gs().langDirectory = langNames[langIndexAfter];
             gs().saveSettings();
-            #ifdef __DSIMODE__ 
-            HomebrewLauncher().launchRom("sd:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
+            #ifdef __DSIMODE__
+                if(isDSPico){
+                    HomebrewLauncher().launchRom("fat:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
+                }
+                else{
+                    HomebrewLauncher().launchRom("sd:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
+                }
             #else
             HomebrewLauncher().launchRom("fat:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
             #endif
@@ -674,8 +692,13 @@ void cMainWnd::setParam(void) {
         if (ID_YES == ret) {
             gs().langDirectory = langNames[langIndexAfter];
             gs().saveSettings();
-            #ifdef __DSIMODE__ 
-            HomebrewLauncher().launchRom("sd:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
+            #ifdef __DSIMODE__
+                if(isDSPico){
+                    HomebrewLauncher().launchRom("fat:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
+                }
+                else{
+                    HomebrewLauncher().launchRom("sd:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
+                }
             #else
             HomebrewLauncher().launchRom("fat:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
             #endif

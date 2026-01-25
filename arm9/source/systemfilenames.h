@@ -9,11 +9,7 @@
 
 #pragma once
 
-#ifndef __DSIMODE__
-#define SFN_SYSTEM_DIR "fat:/_nds/akmenunext/"
-#else
-#define SFN_SYSTEM_DIR "sd:/_nds/akmenunext/"
-#endif
+#define SFN_SYSTEM_DIR "/_nds/akmenunext/"
 #define SFN_OFFICIAL_SAVELIST SFN_SYSTEM_DIR "savelist.bin"
 #define SFN_CUSTOM_SAVELIST SFN_SYSTEM_DIR "gamedata.bin"
 #define SFN_LAST_SAVEINFO SFN_SYSTEM_DIR "lastsave.ini"

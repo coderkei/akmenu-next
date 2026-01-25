@@ -27,6 +27,7 @@
 #include "ILauncher.h"
 #include "NdsBootstrapLauncher.h"
 #include "nds_loader_arm9.h"
+#include "picocheck.h"
 
 void smoothProgress(u8 start, u8 end) {
     for(u8 p = start; p <= end; p += 5) {
@@ -91,9 +92,26 @@ bool NdsBootstrapLauncher::prepareIni(bool hb) {
     ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", mSavePath);
 
     #ifdef __DSIMODE__
-        const char* custIniPath = "sd:/_nds/akmenunext/ndsbs.ini";
+        if(isDSPico){
+            ini.SetString("NDS-BOOTSTRAP", "QUIT_PATH", "fat:/_nds/akmenunext/launcher.nds");
+        }
+        else{
+            ini.SetString("NDS-BOOTSTRAP", "QUIT_PATH", "sd:/_nds/akmenunext/launcher.nds");
+        }
     #else
-        const char* custIniPath = "fat:/_nds/akmenunext/ndsbs.ini";
+        ini.SetString("NDS-BOOTSTRAP", "QUIT_PATH", "fat:/_nds/akmenunext/launcher.nds");
+    #endif
+
+    const char* custIniPath;
+    #ifdef __DSIMODE__
+        if(isDSPico){
+            custIniPath = "fat:/_nds/akmenunext/ndsbs.ini";
+        }
+        else{
+            custIniPath = "sd:/_nds/akmenunext/ndsbs.ini";   
+        }
+    #else
+        custIniPath = "fat:/_nds/akmenunext/ndsbs.ini";
     #endif
 
     if(access(custIniPath, F_OK) != 0){
@@ -206,7 +224,13 @@ bool NdsBootstrapLauncher::prepareIni(bool hb) {
 
 bool launchHbStrap(std::string romPath){
     progressWnd().setPercent(100);
-    const char ndsHbBootstrapPath[] = SD_ROOT_0 "/_nds/nds-bootstrap-hb-release.nds";
+    const char* ndsHbBootstrapPath;
+    if(isDSPico){
+        ndsHbBootstrapPath = "/_nds/nds-bootstrap-hb-release.nds";
+    }
+    else{
+        ndsHbBootstrapPath = SD_ROOT_0 "/_nds/nds-bootstrap-hb-release.nds";
+    }
     std::vector<const char*> argv;
     argv.push_back(ndsHbBootstrapPath);
     progressWnd().hide();
@@ -217,10 +241,23 @@ bool launchHbStrap(std::string romPath){
 
 bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, u32 flags,
                                      u32 cheatOffset, u32 cheatSize, bool hb) {
-    const char ndsBootstrapPath[] = SD_ROOT_0 "/_nds/nds-bootstrap-release.nds";
-    const char ndsBootstrapPathNightly[] = SD_ROOT_0 "/_nds/nds-bootstrap-nightly.nds";
-    const char ndsHbBootstrapPath[] = SD_ROOT_0 "/_nds/nds-bootstrap-hb-release.nds";
-    const char ndsBootstrapCheck[] = SD_ROOT_0 "/_nds/pagefile.sys";
+
+    const char* ndsBootstrapPath;
+    const char* ndsBootstrapPathNightly;
+    const char* ndsHbBootstrapPath;
+    const char* ndsBootstrapCheck;
+    if(isDSPico){
+        ndsBootstrapPath = "/_nds/nds-bootstrap-release.nds";
+        ndsBootstrapPathNightly = "/_nds/nds-bootstrap-nightly.nds";
+        ndsHbBootstrapPath = "/_nds/nds-bootstrap-hb-release.nds";
+        ndsBootstrapCheck = "/_nds/pagefile.sys";
+    }
+    else{
+        ndsBootstrapPath = SD_ROOT_0 "/_nds/nds-bootstrap-release.nds";
+        ndsBootstrapPathNightly = SD_ROOT_0 "/_nds/nds-bootstrap-nightly.nds";
+        ndsHbBootstrapPath = SD_ROOT_0 "/_nds/nds-bootstrap-hb-release.nds";
+        ndsBootstrapCheck = SD_ROOT_0 "/_nds/pagefile.sys";
+    }
     bool useNightly = false;
     bool hbStrap = hb;
 

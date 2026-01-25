@@ -28,6 +28,7 @@
 #include "../ui/progresswnd.h"
 #include "ILauncher.h"
 #include "DSpicoLauncher.h"
+#include "picocheck.h"
 
 constexpr std::align_val_t cache_align { 32 };
 
@@ -35,8 +36,18 @@ typedef void (*pico_loader_9_func_t)(void);
 
 bool DSpicoLauncher::launchRom(std::string romPath, std::string savePath, u32 flags,
                                      u32 cheatOffset, u32 cheatSize, bool hb) {
-    const char picoLoader7Path[] = SD_ROOT_0 "/_pico/picoLoader7.bin";
-    const char picoLoader9Path[] = SD_ROOT_0 "/_pico/picoLoader9.bin";
+
+    const char* picoLoader7Path;
+    const char* picoLoader9Path;
+
+    if(isDSPico){
+        picoLoader7Path = "/_pico/picoLoader7.bin";
+        picoLoader9Path = "/_pico/picoLoader9.bin";
+    }
+    else{
+        picoLoader7Path = SD_ROOT_0 "/_pico/picoLoader7.bin";
+        picoLoader9Path = SD_ROOT_0 "/_pico/picoLoader9.bin";
+    }
 
     progressWnd().setTipText("Initializing pico-loader...");
     progressWnd().show();

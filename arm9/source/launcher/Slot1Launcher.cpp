@@ -11,13 +11,21 @@
 #include "ILauncher.h"
 #include "Slot1Launcher.h"
 #include "nds_loader_arm9.h"
+#include "picocheck.h"
 
 bool Slot1Launcher::launchRom(std::string romPath, std::string savePath, u32 flags,
                                u32 cheatOffset, u32 cheatSize, bool hb) {
+
+    const char* slot1LoaderPath;
     #ifdef __DSIMODE__
-        const char slot1LoaderPath[] = "sd:/_nds/akmenunext/slot1launch.nds";
+        if(isDSPico){
+            slot1LoaderPath = "fat:/_nds/akmenunext/slot1launch.nds";
+        }
+        else{
+            slot1LoaderPath = "sd:/_nds/akmenunext/slot1launch.nds";
+        }          
     #else
-        const char slot1LoaderPath[] = "fat:/_nds/akmenunext/slot1launch.nds";
+        slot1LoaderPath = "fat:/_nds/akmenunext/slot1launch.nds";
     #endif
 
     if (access(slot1LoaderPath, F_OK) != 0) {

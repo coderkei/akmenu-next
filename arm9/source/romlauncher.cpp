@@ -12,11 +12,9 @@
 #include "flags.h"
 #include "language.h"
 
-#include "launcher/AcekardLauncher.h"
 #include "launcher/HomebrewLauncher.h"
 #include "launcher/ILauncher.h"
 #include "launcher/NdsBootstrapLauncher.h"
-#include "launcher/TopToyLauncher.h"
 #include "launcher/DSpicoLauncher.h"
 
 static SAVE_TYPE PrefillGame(u32 aGameCode) {
