@@ -81,6 +81,7 @@ organize_files:
 	@mv -f $(TARGET).nds $(TARGET).dsi boot_pico.nds package/
 	cp package/$(TARGET).nds package/_nds/akmenunext/launcher_nds.nds
 	cp package/$(TARGET).dsi package/_nds/akmenunext/launcher_dsi.nds
+	cp package/$(TARGET).dsi package/title/00030004/4e455854/content/00000000.app
 	cp package/$(TARGET).dsi package/_nds/akmenunext/launcher_pico.nds
 	cp package/$(TARGET).nds package/boot_nds.nds
 	cp package/$(TARGET).dsi package/boot_dsi.nds

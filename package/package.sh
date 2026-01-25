@@ -30,10 +30,12 @@ cd ..
 #DSI
 mkdir -p dsi
 cp -r _nds dsi
+cp -r title dsi
 cp boot_dsi.nds dsi/boot.nds
 cp boot_dsi.nds dsi/akmenu-next.dsi
 mv dsi/_nds/akmenunext/launcher_dsi.nds dsi/_nds/akmenunext/launcher.nds
 rm -f dsi/_nds/akmenunext/launcher_nds.nds
+rm -f dsi/_nds/akmenunext/launcher_pico.nds
 rm -f dsi/_nds/akmenunext/PassMeLoader.nds
 cd dsi
 zip -r ../akmenu-next-dsi.zip *
@@ -46,6 +48,7 @@ cp boot_dsi.nds 3ds/boot.nds
 cp akmenu-next.cia 3ds/akmenu-next.cia
 mv 3ds/_nds/akmenunext/launcher_dsi.nds 3ds/_nds/akmenunext/launcher.nds
 rm -f 3ds/_nds/akmenunext/launcher_nds.nds
+rm -f 3ds/_nds/akmenunext/launcher_pico.nds
 rm -f 3ds/_nds/akmenunext/PassMeLoader.nds
 cd 3ds
 zip -r ../akmenu-next-3ds.zip *
