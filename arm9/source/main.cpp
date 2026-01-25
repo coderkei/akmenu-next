@@ -43,6 +43,7 @@
 #include "sram.h"
 #include "userwnd.h"
 #include "picocheck.h"
+#include <nds/arm9/dldi.h>
 
 using namespace akui;
 
@@ -54,7 +55,14 @@ void __libnds_exit(int rc) {}
 }
 #endif
 
+const DISC_INTERFACE *dldiGet(void) {
+    if(io_dldi_data->ioInterface.features & FEATURE_SLOT_GBA)sysSetCartOwner(BUS_OWNER_ARM9);
+    if(io_dldi_data->ioInterface.features & FEATURE_SLOT_NDS)sysSetCardOwner(BUS_OWNER_ARM9);
+    return &io_dldi_data->ioInterface;
+}
+
 int main(int argc, char **argv) {
+
     irq().init();
 
     windowManager();
@@ -80,28 +88,33 @@ int main(int argc, char **argv) {
     
     // wait_press_b();
     //  init fat
-    bool succ = fatInitDefault();
-    if (!succ) dbg_printf("init fat %d\n", succ);
 
+    bool succ = false;
 
-#ifdef __DSIMODE__
-    if (argc > 0) {
-        if (memcmp(argv[0], "fat:", 4) == 0) {
-            isDSPico = true;
-            chdir("fat:/");
+    #ifdef __DSIMODE__
+        if (argc > 0) {
+            if (memcmp(argv[0], "fat:", 4) == 0) {
+                isDSPico = true;
+                succ = fatMountSimple("fat", dldiGet());
+                if(succ) chdir("fat:/");
+            else if (memcmp(argv[0], "sd:", 3) == 0) {
+                isDSPico = false;
+                succ = fatMountSimple("sd", get_io_dsisd());
+                if(succ) chdir("sd:/");
+                }
+            }
         }
-        else if (memcmp(argv[0], "sd:", 3) == 0) {
+        else{
             isDSPico = false;
-            chdir("sd:/");
+            succ = fatMountSimple("sd", get_io_dsisd());
+            if(succ) chdir("sd:/");
         }
-    }
-    else{
-        isDSPico = false;
-        chdir("sd:/");
-    }
-#else
-    chdir("fat:/");
-#endif
+    #else
+        succ = fatMountSimple("fat", dldiGet());
+        if(succ) chdir("fat:/");
+    #endif
+
+    if (!succ) dbg_printf("init fat %d\n", succ);
 
     // wait_press_b();
 

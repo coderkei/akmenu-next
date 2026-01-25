@@ -13,3 +13,4 @@ staging
 !slot1launch.nds
 !redist/**/*.zip
 /package/_nds/akmenunext/language
+/package/title/00030004/4e455854/content/00000000.app

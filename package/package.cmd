@@ -25,10 +25,12 @@ rm pico\_nds\akmenunext\launcher_nds.nds
 :DSI
 mkdir dsi
 cp -r _nds dsi
+cp -r title dsi
 cp boot_dsi.nds dsi\boot.nds
 cp boot_dsi.nds dsi\akmenu-next.dsi
 mv dsi\_nds\akmenunext\launcher_dsi.nds dsi\_nds\akmenunext\launcher.nds
 rm dsi\_nds\akmenunext\launcher_nds.nds
+rm dsi\_nds\akmenunext\launcher_pico.nds
 rm dsi\_nds\akmenunext\PassMeLoader.nds
 "C:\Program Files\7-Zip\7z.exe" -tzip a -r akmenu-next-dsi.zip ./dsi/*
 
@@ -39,6 +41,7 @@ cp boot_dsi.nds 3ds\boot.nds
 cp akmenu-next.cia 3ds\akmenu-next.cia
 mv 3ds\_nds\akmenunext\launcher_dsi.nds 3ds\_nds\akmenunext\launcher.nds
 rm 3ds\_nds\akmenunext\launcher_nds.nds
+rm 3ds\_nds\akmenunext\launcher_pico.nds
 rm 3ds\_nds\akmenunext\PassMeLoader.nds
 "C:\Program Files\7-Zip\7z.exe" -tzip a -r akmenu-next-3ds.zip ./3ds/*
 
