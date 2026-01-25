@@ -29,7 +29,6 @@
 #include "unknown_banner_bin.h"
 #include "windowmanager.h"
 #include "picocheck.h"
-#include "Launcher/ILauncher.h"
 
 using namespace akui;
 
@@ -81,18 +80,6 @@ int cMainList::init() {
     setViewMode((cMainList::VIEW_MODE)gs().viewMode);
 
     _activeIcon.hide();
-
-    #ifdef __DSIMODE__
-        if(isDSPico){
-            printLoaderNotFound("In DSi Mode as a DS Pico");
-        }
-        else{
-            printLoaderNotFound("In DSi Mode but not a DS Pico");
-        }
-    #else
-            printLoaderNotFound("In DS only mode");
-    #endif
-    
 
     return 1;
 }
