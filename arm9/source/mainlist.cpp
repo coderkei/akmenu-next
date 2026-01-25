@@ -122,7 +122,16 @@ bool cMainList::enterDir(const std::string& dirName) {
             if (_topuSD == i) {
                 a_row.push_back(LANG("mainlist", "microsd card"));
                 a_row.push_back("");
-                a_row.push_back(SD_ROOT);
+                #ifdef __DSIMODE__
+                    if(isDSPico){
+                        a_row.push_back("fat:/");
+                    }
+                    else{
+                        a_row.push_back("sd:/");
+                    }
+                #else
+                    a_row.push_back(SD_ROOT);
+                #endif
                 rominfo.setBanner("usd", microsd_banner_bin);
             } else if (_topSlot1 == i) {
                 a_row.push_back(LANG("mainlist", "slot1 card"));
