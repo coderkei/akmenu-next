@@ -248,6 +248,7 @@ internal = Eigenname
 small = Kleine Icons
 animation = Animation
 12 hour = 12-Stunden-Zählung
+custom icons = Benutzerdefinierte Symbole
 
 [gba settings]
 title = GBA-Einstellungen

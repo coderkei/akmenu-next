@@ -71,6 +71,7 @@ class cGlobalSettings {
     bool phatCol;
     bool hbStrap;
     bool pico;
+    bool icon;
 };
 
 typedef t_singleton<cGlobalSettings> globalSettings_s;

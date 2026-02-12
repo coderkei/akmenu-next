@@ -246,6 +246,7 @@ internal = Internal
 small = Small icons
 animation = Animation
 12 hour = Horaire sur 12 heures
+custom icons = Icônes personnalisées
 
 [gba settings]
 title = Other settings

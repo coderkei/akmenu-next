@@ -252,6 +252,7 @@ modern = Modern
 internal = Internal
 animation = Animation
 12 hour = 12-hour clock
+custom icons = Custom Icons
 
 [gba settings]
 title = Other Settings

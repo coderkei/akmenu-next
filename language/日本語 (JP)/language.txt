@@ -243,9 +243,10 @@ filelist style = ファイルリストのスタイル
 oldschool = 簡易
 modern = アイコン
 internal = 内部情報
-small = Small icons
+small = 小さいアイコン
 animation = アニメ
-12 hour = 12-hour clock
+12 hour = 12時間制
+custom icons = カスタムアイコン
 
 [gba settings]
 title = その他の設定
@@ -255,7 +256,7 @@ mode = Slot-2 mode
 modegba = gba
 modends = nds
 modeask = ask
-modetext = Launch slot-2 in NDS mode?
+modetext = NDS モードでスロット 2 を起動しますか?
 
 [sd save]
 title = 警告

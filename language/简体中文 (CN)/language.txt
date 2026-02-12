@@ -261,6 +261,7 @@ small = 小图标
 internal = 游戏标题
 animation = 动画
 12 hour = 12小时制
+custom icons = 自定义图标
 
 [gba settings]
 title = 其他设置

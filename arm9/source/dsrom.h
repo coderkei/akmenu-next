@@ -69,4 +69,5 @@ class DSRomInfo {
         _fileName = filename;
     };
     void setBanner(const std::string& anExtIcon, const u8* aBanner);
+    bool setBannerFromFile(const std::string& anExtIcon, const std::string& path);
 };

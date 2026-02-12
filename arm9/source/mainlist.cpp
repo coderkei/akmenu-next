@@ -109,6 +109,18 @@ static bool extnameFilter(const std::vector<std::string>& extNames, std::string 
 }
 
 bool cMainList::enterDir(const std::string& dirName) {
+
+#ifdef __DSIMODE__
+    const char* base = "sd:/_nds/akmenunext/icons/";
+#else
+    const char* base = "fat:/_nds/akmenunext/icons/";
+#endif
+
+    std::string microsd = std::string(base) + "microsd_banner.bin";
+    std::string nand = std::string(base) + "nand_banner.bin";
+    std::string gba = std::string(base) + "gba_banner.bin";
+    std::string folder = std::string(base) + "folder_banner.bin";
+
     _saves.clear();
     if (memcmp(dirName.c_str(), "...", 3) == 0 || dirName.empty())  // select RPG or SD card
     {
@@ -122,22 +134,34 @@ bool cMainList::enterDir(const std::string& dirName) {
                 a_row.push_back(LANG("mainlist", "microsd card"));
                 a_row.push_back("");
                 a_row.push_back(SD_ROOT);
-                rominfo.setBanner("usd", microsd_banner_bin);
+                if(gs().icon)
+                    rominfo.setBannerFromFile("folder", microsd);
+                else
+                    rominfo.setBanner("folder", microsd_banner_bin);
             } else if (_topSlot1 == i) {
                 a_row.push_back(LANG("mainlist", "slot1 card"));
                 a_row.push_back("");
                 a_row.push_back("slot1:/");
-                rominfo.setBanner("slot1", nand_banner_bin);
+                if(gs().icon)
+                    rominfo.setBannerFromFile("folder", nand);
+                else
+                    rominfo.setBanner("folder", nand_banner_bin);
             } else if (_topSlot2 == i) {
                 a_row.push_back(LANG("mainlist", "slot2 card"));
                 a_row.push_back("");
                 a_row.push_back("slot2:/");
-                rominfo.setBanner("slot2", gba_banner_bin);
+                if(gs().icon)
+                    rominfo.setBannerFromFile("folder", gba);
+                else
+                    rominfo.setBanner("folder", gba_banner_bin);
             } else if (_topFavorites == i) {
                 a_row.push_back(LANG("mainlist", "favorites"));
                 a_row.push_back("");
                 a_row.push_back("favorites:/");
-                rominfo.setBanner("folder", folder_banner_bin);
+                if(gs().icon)
+                    rominfo.setBannerFromFile("folder", folder);
+                else
+                    rominfo.setBanner("folder", folder_banner_bin);
             }
             insertRow(i, a_row);
             _romInfoList.push_back(rominfo);
@@ -289,7 +313,10 @@ bool cMainList::enterDir(const std::string& dirName) {
             for (size_t jj = 0; jj < extName.size(); ++jj) extName[jj] = tolower(extName[jj]);
 
             if ('/' == filename[filename.size() - 1]) {
-                rominfo.setBanner("folder", folder_banner_bin);
+                if(gs().icon)
+                    rominfo.setBannerFromFile("folder", folder);
+                else
+                    rominfo.setBanner("folder", folder_banner_bin);               
             } else {
                 bool allowExt = true, allowUnknown = false;
                 if (".sav" == extName) {
