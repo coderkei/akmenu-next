@@ -280,5 +280,5 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
 void autoLaunchRom(const std::string& aFullPath) {
     DSRomInfo rominfo;
     rominfo.MayBeDSRom(aFullPath);
-    if (rominfo.isDSRom()) launchRom(aFullPath, rominfo, false, NULL);
+    if (rominfo.isDSRom()) launchRom(aFullPath, rominfo, false, "");
 }
