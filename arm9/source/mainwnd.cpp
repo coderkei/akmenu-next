@@ -634,7 +634,7 @@ void cMainWnd::setParam(void) {
     gs().icon = settingWnd.getItemSelection(1, 1);
     gs().viewMode = settingWnd.getItemSelection(1, 2);
     gs().Animation = settingWnd.getItemSelection(1, 3);
-    gs().show12hrClock = settingWnd.getItemSelection(1, 3);
+    gs().show12hrClock = settingWnd.getItemSelection(1, 4);
 
     // page 3: filesystem
     gs().showHiddenFiles = settingWnd.getItemSelection(2, 0);
