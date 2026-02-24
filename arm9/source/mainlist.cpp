@@ -471,11 +471,11 @@ void cMainList::setViewMode(VIEW_MODE mode) {
             setRowHeight(15);
             break;
         case VM_LIST_ICON:
-            _columns[ICON_COLUMN].width = 18;
+            _columns[ICON_COLUMN].width = 21;
             _columns[SHOWNAME_COLUMN].width = 232;
             _columns[INTERNALNAME_COLUMN].width = 0;
             arangeColumnsSize();
-            setRowHeight(15);
+            setRowHeight(18);
             break;
         case VM_ICON:
             _columns[ICON_COLUMN].width = 36;
