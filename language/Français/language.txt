@@ -1,4 +1,4 @@
-﻿// Thanks to Antoine L., Shad and Supercarte for the translation.
+﻿// Thanks to Antoine L., Shad and Supercarte for the translation. (edited by Astro0710)
 
 [font]
 main = liberation.pcf
@@ -6,9 +6,9 @@ language = 2
 
 [start menu]
 Setting = Paramètres
-Set favorite = Ajouter aux favoris
-Unset favorite = Supprimer des favoris
-Info = Infos Fichier
+Set favorite = Ajouter aux fav.
+Unset favorite = Retirer des fav.
+Info = Info du fichier
 Help = Aide
 Tools = Outils
 START = START
@@ -22,7 +22,7 @@ cancel = Annuler
 [progress window]
 processing save = Sauvegarde… ne pas éteindre
 processing copy = Copie… ne pas éteindre, %c pour annuler
-first use sd = Vérification de la microSD pour une première utilisation
+first use sd = Vérif. de la SD pour une première utilisation
 gba load = Chargement du jeu GBA
 gba save load = Chargement de la sauvegarde du jeu GBA
 gba save store = Sauvegarde GBA… ne pas éteindre
@@ -30,7 +30,7 @@ erase nor = Supprimer mémoire NOR
 
 [copy file error]
 title = Erreur
-text = Le fichier n'existe pas.
+text = Le fichier n'existe pas
 
 [copy file exists]
 title = Attention
@@ -66,24 +66,24 @@ text = Impossible de restaurer la sauvegarde.
 
 [language changed]
 title = Question
-text = La configuration système a été mise à jour, redémarrer pour appliquer les changements ? Choisissez "Non" pour redémarrer plus tard.
+text = La config. système a été mise à jour, redémarrer pour appliquer les changements ? Choisissez "Non" pour redémarrer plus tard.
 
 [ui style changed]
 title = Question
-text = L'interface utilisateur a été mise à jour, redémarrer pour appliquer les changements ? Choisissez "Non" pour annuler les modifications.
+text = L'interface utilisateur a été mise à jour, redémarrer pour appliquer les changements ? Choisissez "Non" pour annuler les modif.
 
 [setting window]
 ok = OK
-savetype = Configuration
+savetype = Paramètres
 cancel = Annuler
 confirm = Confirmer
-confirm text = Sauvegarder la configuration ?
+confirm text = Sauvegarder les réglages ?
 close = Fermer
 system = Système
 interface = Interface
 filesystem = Fichiers
 gba = GBA
-patches = paramètres nds-bootstrap
+patches = Paramètres d'NDS-Bootstrap
 
 [save type]
 title = Configuration
@@ -101,7 +101,7 @@ No Save = Aucune
 32M = 32M
 64M = 64M
 default = Défaut
-save slot = Le slot de sauvegarde
+save slot = Choisir un slot de sauv.
 tab1 = Compatibilité
 tab2 = Options
 
@@ -140,13 +140,25 @@ text = microSD inaccessible, la sauvegarde du dernier jeu lancé a été écrite
 
 [no gba card]
 title = Notification
-text = Il n'y a pas de cartouche insérée dans le slot 2.
+text = Il n'y a pas de cartouche insérée dans le SLOT-2.
 
 [filelist type]
 text = Afficher les fichiers
 item0 = ROMS
 item1 = ROMS + SAV
-item2 = TOUT
+item2 = TOUS
+
+[nds bootstrap]
+text = Version d'NDS-Bootstrap
+item0 = Stable
+item1 = Bêta
+firsttimetitle = Initialisation d'NDS-Bootstrap
+firsttime = Appuyez sur OK pour lancer la première configuration d'NDS-Bootstrap. Cette opération peut prendre une minute et est unique.
+dsmode = Mode DS seulement
+inimissingtitle = Erreur INI
+inimissing = Le fichier ndsbs.ini est manquant dans _nds/akmenunext ou corrompu. Veuillez restaurer ce fichier ou réinstaller akmenu-next.
+phatCol = Couleur DS 2003
+loader = Chargeur de jeu
 
 [rom trim]
 text = Trimmer lors de la copie
@@ -154,7 +166,7 @@ item0 = Non
 item1 = Oui
 
 [language]
-text = Langage
+text = Langue
 ja = 日本語
 en = english
 fr = français
@@ -165,7 +177,7 @@ cn = 简体中文
 zh = 繁體中文
 
 [ui style]
-text = Interface utilisateur
+text = Thème
 
 [help window]
 title = Aide
@@ -189,8 +201,8 @@ low = Faible
 mid = Moyenne
 high = Forte
 strength = Vibrations
-flash to nor = NOR
-copy to psram = RAM
+flash to nor = vers NOR
+copy to psram = vers RAM
 
 [abort save]
 title = Annuler la sauvegarde
@@ -201,25 +213,25 @@ title = Attention
 text = Les roms GBA avec une taille supérieur à 32Mb ne sont pas supportées.
 
 [patches]
-download play = Download Play
-cheating system = Codes de triche AR
+download play = Mode téléchargement
+cheating system = Codes de triches AR
 reset in game = Redémarrer (L+R+A+B+Bas)
 dma = Mode DMA
-protection = Protection bypass
+protection = Passer la protection
 linkage = Lien GBA
 sd save = Sauvegarder sur microSD
-homebrew reset = Reset in Homebrew
-reset hotkey = Reset Hotkey
+homebrew reset = Réinit. dans une Homebrew
+reset hotkey = Réinit. combo de touches
 rts = Real Time Save
 carddma = Card read DMA
-hbstrap = Homebrew Loader
+hbstrap = Lancer d'Homebrew
 default = AKMenu-Next
-ndshb = nds-bootstrap
+ndshb = NDS-Bootstrap
 
 [switches]
-Enable = on
-Disable = off
-Global = global(%s)
+Enable = ON
+Disable = OFF
+Global = Global(%s)
 
 [ram allocation]
 title = Erreur
@@ -227,36 +239,36 @@ memory allocation error = Erreur d'allocation mémoire
 
 [scrolling]
 fast = Rapide
-medium = Médium
-slow = Faible
+medium = Équilibré
+slow = Lent
 
 [file settings]
-title = Paramêtres des fichiers
+title = Paramètres des fichiers
 show hidden files = Afficher les fichiers cachés
 save extension = Extension de la sauvegarde
 use saves folder = Utiliser le dossier 'saves'
 
 [interface settings]
-title = Interface de réglages
+title = Réglages de l'interface
 scrolling speed = Vitesse de défilement
 filelist style = Affichage fichiers
 oldschool = Simple
 modern = Icônes
-internal = Internal
-small = Small icons
+internal = Interne
+small = Petites icônes
 animation = Animation
 12 hour = Horaire sur 12 heures
-custom icons = Icônes personnalisées
+custom icons = Icônes perso.
 
 [gba settings]
-title = Other settings
+title = Autres réglages
 sleephack = Veille universelle
 autosave = Sauvegarde au démarrage
-mode = Slot-2 mode
-modegba = gba
-modends = nds
-modeask = ask
-modetext = Launch slot-2 in NDS mode?
+mode = Mode SLOT-2
+modegba = GBA
+modends = NDS
+modeask = Demander
+modetext = Lancer le SLOT-2 en mode DS ?
 
 [sd save]
 title = Attention
@@ -264,73 +276,35 @@ text = Ce jeu ne peut pas être lancé depuis la mémoire interne, veuillez le c
 
 [icon]
 icon = Fond de l'icone
-transparent = transparent
-as is = original
-firmware = firmware
+transparent = Transparant
+as is = Original
+firmware = Système
 
 [cheats]
-title = Cheats
-info = Info
-deselect = Deselect all
+title = Triches
+info = Plus...
+deselect = Désélectionner
 
 [saveslot]
 title = Slot de sauvegarde
-confirm = Etes-vous sûr de vouloir copier ce slot ?
+confirm = Êtes-vous sûr de vouloir copier ce slot ?
 target slot = Slot de destination
 
 [mainlist]
-flash memory = Flash Memory
-microsd card = microSD Card
-slot2 card = Slot 2 Card
-slot1 card = Slot 1 Card
-favorites = Favorites
-
-[hotkeys]
-l-r-a-b-↓ = l-r-a-b-↓
-l-r-b-y-↓ = l-r-b-y-↓
-l-r-a-b-x-y = l-r-a-b-x-y
-b-y-touch = b-y-touch
-start-r-touch = start-r-touch
-
-[updater]
-update = Update
-update ? = Do you want to update?
-updater = Update module
-menu = Main module
-savesize.bin = savesize.bin
-cheats = Cheats DB
-connecting = Connecting
-failed = failed
-updated = updated
-fresh = already updated
-stop = Do you want to stop transfer?
-download = Downloaded %d bytes
-unpack = Unpacking
-
-[crc32]
-crc32 = CRC32
-calculation = calcul CRC32
+flash memory = Écraser la mémoire
+microsd card = Carte microSD
+slot2 card = Cartouche SLOT-2
+slot1 card = Cartouche SLOT-1
+favorites = Favories
 
 [loader]
 text = Utiliser le chargeur ROM
 not found = Chargeur non trouvé
-error = Error
+error = Erreur
 info = Information
 
 [loading]
 load text = S'il vous plaît, attendez…
-
-[nds bootstrap]
-text = nds-bootstrap version
-item0 = release
-item1 = nightly
-firsttimetitle = Initialisation de nds-bootstrap
-firsttime = Appuyez sur OK pour lancer la première configuration de nds-bootstrap. Cette opération peut prendre une minute et est unique.
-dsmode = DS-Only Mode
-inimissingtitle = Erreur INI
-inimissing = Le fichier ndsbs.ini est manquant dans _nds/akmenunext ou corrompu. Veuillez restaurer ce fichier ou réinstaller akmenu-next.
-phatCol = DS Phat Colors
-loader = Chargeur de jeu
 
 [resethotkey]
 text = Boutons de menu
@@ -340,11 +314,37 @@ text = Boutons de menu
 3 = l-r-a-b-↓
 4 = l-r-b-y-↓
 5 = l-r-a-b-x-y
-6 = Coutume
+6 = Perso.
+
+[hotkeys]
+l-r-a-b-↓ = l-r-a-b-↓
+l-r-b-y-↓ = l-r-b-y-↓
+l-r-a-b-x-y = l-r-a-b-x-y
+b-y-touch = b-y-stylet
+start-r-touch = start-r-stylet
+
+[updater]
+update = Mise à jour
+update ? = Voulez-vous mettre à jour ?
+updater = Module de màj
+menu = Module de base
+savesize.bin = savesize.bin
+cheats = Base des codes triches
+connecting = Connection
+failed = Échec
+updated = Terminé
+fresh = Déjà à jour
+stop = Arrêter le transfert ?
+download = Téléchargées %d bytes
+unpack = Extraction
+
+[crc32]
+crc32 = CRC32
+calculation = calcul CRC32
 
 [override]
 text = Remplacement de la langue
-0 = System
+0 = Système
 1 = 日本語
 2 = English
 3 = Français
