@@ -150,8 +150,8 @@ item2 = ALL
 
 [nds bootstrap]
 text = nds-bootstrap version
-item0 = release
-item1 = nightly
+release = release
+nightly = nightly
 firsttimetitle = Initializing nds-bootstrap
 firsttime = Press OK to start first-time setup of nds-bootstrap. This may take a minute and is a one-time process.
 dsmode = DS-Only Mode

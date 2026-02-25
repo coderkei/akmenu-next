@@ -322,8 +322,8 @@ load text = お待ちください...
 
 [nds bootstrap]
 text = nds-bootstrapバージョン
-item0 = release
-item1 = nightly
+release = release
+nightly = nightly
 firsttimetitle = nds-bootstrapの初期化
 firsttime = 「OK」を押すと、nds-bootstrapの初回セットアップが開始されます。このプロセスは1分ほどかかる場合があり、一度だけ実行されます。
 dsmode = DS専用モード

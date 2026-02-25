@@ -324,8 +324,8 @@ load text = Bitte warten…
 
 [nds bootstrap]
 text = nds-bootstrap version
-item0 = release
-item1 = nightly
+release = release
+nightly = nightly
 firsttimetitle = NDS-Bootstrap wird initialisiert
 firsttime = Drücken Sie OK, um die Ersteinrichtung von NDS-Bootstrap zu starten. Dies kann eine Minute dauern und ist ein einmaliger Vorgang.
 dsmode = DS-Only Mode
