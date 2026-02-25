@@ -150,8 +150,8 @@ item2 = TOUS
 
 [nds bootstrap]
 text = Version d'NDS-Bootstrap
-item0 = Stable
-item1 = Bêta
+release = Stable
+nightly = Bêta
 firsttimetitle = Initialisation d'NDS-Bootstrap
 firsttime = Appuyez sur OK pour lancer la première configuration d'NDS-Bootstrap. Cette opération peut prendre une minute et est unique.
 dsmode = Mode DS seulement

@@ -547,19 +547,19 @@ void cMainWnd::setParam(void) {
     _values.push_back(".sav");
     settingWnd.addSettingItem(LANG("file settings", "save extension"), _values, gs().saveExt);
     _values.clear();
-    _values.push_back("no");
-    _values.push_back("yes");
+    _values.push_back(LANG("message box", "no"));
+    _values.push_back(LANG("message box", "yes"));
     settingWnd.addSettingItem(LANG("file settings", "use saves folder"), _values, gs().saveDir);
 
     // page 4: ndsbs
     settingWnd.addSettingTab(LANG("setting window", "patches"));
     _values.clear();
-    _values.push_back("disable");
-    _values.push_back("enable");
+    _values.push_back(LANG("switches", "Disable"));
+    _values.push_back(LANG("switches", "Enable"));
     settingWnd.addSettingItem(LANG("nds bootstrap", "dsmode"), _values, gs().dsOnly);
     _values.clear();
-    _values.push_back("release");
-    _values.push_back("nightly");
+    _values.push_back(LANG("nds bootstrap", "release"));
+    _values.push_back(LANG("nds bootstrap", "nightly"));
     settingWnd.addSettingItem(LANG("nds bootstrap", "text"), _values, gs().nightly);
 
     _values.clear();
@@ -576,8 +576,8 @@ void cMainWnd::setParam(void) {
 
 #ifdef __DSIMODE__
     _values.clear();
-    _values.push_back("disable");
-    _values.push_back("enable");
+    _values.push_back(LANG("switches", "Disable"));
+    _values.push_back(LANG("switches", "Enable"));
     settingWnd.addSettingItem(LANG("nds bootstrap", "phatCol"), _values, gs().phatCol);
 #else
     _values.clear();

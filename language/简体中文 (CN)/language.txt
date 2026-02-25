@@ -159,8 +159,8 @@ item1 = 禁用
 
 [nds bootstrap]
 text = nds-bootstrap版本
-item0 = 正式版
-item1 = 每夜版
+release = 正式版
+nightly = 每夜版
 firsttimetitle = 初始化 nds-bootstrap
 firsttime = 按“确定”开始 nds-bootstrap 的首次设置。此过程可能需要一分钟，并且是一次性过程。
 dsmode = DS-Only 模式
