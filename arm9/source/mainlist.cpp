@@ -110,7 +110,7 @@ static bool extnameFilter(const std::vector<std::string>& extNames, std::string 
 
 bool cMainList::enterDir(const std::string& dirName) {
 
-#ifdef __DSIMODE__
+#if defined(__DSIMODE__) && !defined(__DSPICO__)
     const char* base = "sd:/_nds/akmenunext/icons/";
 #else
     const char* base = "fat:/_nds/akmenunext/icons/";

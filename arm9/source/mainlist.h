@@ -17,10 +17,10 @@
 #include "touchmessage.h"
 #include "zoomingicon.h"
 
-#ifndef __DSIMODE__
-#define SD_ROOT_0 "fat:"
-#else
+#if defined(__DSIMODE__)  && !defined(__DSPICO__)
 #define SD_ROOT_0 "sd:"
+#else
+#define SD_ROOT_0 "fat:"
 #endif
 #define SD_ROOT SD_ROOT_0 "/"
 

@@ -574,12 +574,14 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("override", "8"));
     settingWnd.addSettingItem(LANG("override", "text"), _values, gs().languageOverride);
 
+
 #ifdef __DSIMODE__
     _values.clear();
     _values.push_back(LANG("switches", "Disable"));
     _values.push_back(LANG("switches", "Enable"));
     settingWnd.addSettingItem(LANG("nds bootstrap", "phatCol"), _values, gs().phatCol);
-#else
+#endif
+#if !defined(__DSIMODE__) || defined(__DSPICO__)
     _values.clear();
     _values.push_back("nds-bootstrap");
     _values.push_back("Pico-Loader");
@@ -651,6 +653,10 @@ void cMainWnd::setParam(void) {
     gs().pico = settingWnd.getItemSelection(3, 3);
 #endif
 
+#ifdef __DSPICO__
+    gs().pico = settingWnd.getItemSelection(3, 4);
+#endif
+
     // page 5: other
     gs().cheats = settingWnd.getItemSelection(4, 0);
     gs().slot2mode = settingWnd.getItemSelection(4, 1);
@@ -665,7 +671,7 @@ void cMainWnd::setParam(void) {
             gs().uiName = uiNames[uiIndexAfter];
             gs().langDirectory = langNames[langIndexAfter];
             gs().saveSettings();
-            #ifdef __DSIMODE__ 
+            #if defined(__DSIMODE__)  && !defined(__DSPICO__)
             HomebrewLauncher().launchRom("sd:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
             #else
             HomebrewLauncher().launchRom("fat:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
@@ -679,7 +685,7 @@ void cMainWnd::setParam(void) {
         if (ID_YES == ret) {
             gs().langDirectory = langNames[langIndexAfter];
             gs().saveSettings();
-            #ifdef __DSIMODE__ 
+            #if defined(__DSIMODE__)  && !defined(__DSPICO__)
             HomebrewLauncher().launchRom("sd:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
             #else
             HomebrewLauncher().launchRom("fat:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);

@@ -57,6 +57,10 @@ checkarm9_dsi: nds-bootloader
 	$(MAKE) -C arm9_dsi
 
 #---------------------------------------------------------------------------------
+checkarm9_pico: nds-bootloader
+	$(MAKE) -C arm9_dsi_pico
+
+#---------------------------------------------------------------------------------
 $(TARGET).nds : $(NITRO_FILES) checkarm7 checkarm9
 	ndstool	-c $(TARGET).nds -7 arm7/$(TARGET).elf -9 arm9/$(TARGET).elf \
 	-h 0x200 -t banner.bin \
@@ -69,11 +73,12 @@ $(TARGET).dsi : $(NITRO_FILES) checkarm7 checkarm9_dsi
 	-g NEXT 01 "AKMENU" -z 80040407 -u 00030004 -a 00000138 -p 0001 \
 	$(_ADDFILES)
 
-boot_pico.nds : $(NITRO_FILES) checkarm7 checkarm9
+boot_pico.nds : $(NITRO_FILES) checkarm7 checkarm9_pico
 	ndstool -c boot_pico.nds \
 		-7 arm7/$(TARGET).elf \
-		-9 arm9/$(TARGET).elf \
-		-h 0x200 -t banner.bin \
+		-9 arm9_dsi_pico/$(TARGET).elf \
+		-t banner.bin \
+		-g NEXT 01 "AKMENU" -z 80040407 -u 00030004 -a 00000138 -p 0001 \
 		$(_ADDFILES)
 
 #---------------------------------------------------------------------------------

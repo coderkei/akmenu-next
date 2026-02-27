@@ -90,13 +90,13 @@ bool NdsBootstrapLauncher::prepareIni(bool hb) {
 
     ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", mSavePath);
 
-    #ifdef __DSIMODE__
+    #if defined(__DSIMODE__) && !defined(__DSPICO__)
         ini.SetString("NDS-BOOTSTRAP", "QUIT_PATH", "sd:/_nds/akmenunext/launcher.nds");
     #else
         ini.SetString("NDS-BOOTSTRAP", "QUIT_PATH", "fat:/_nds/akmenunext/launcher.nds");
     #endif
 
-    #ifdef __DSIMODE__
+    #if defined(__DSIMODE__) && !defined(__DSPICO__)
         const char* custIniPath = "sd:/_nds/akmenunext/ndsbs.ini";
     #else
         const char* custIniPath = "fat:/_nds/akmenunext/ndsbs.ini";
