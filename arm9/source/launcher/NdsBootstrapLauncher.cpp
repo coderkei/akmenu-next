@@ -261,7 +261,7 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
 
     // check for DSiWare
     if(dsiWare){
-        printError("Unsupported application. DSiWare is not supported.");
+        printError("DSiWare is not supported with the selected loader. Please use Pico-Loader if available for this device.");
         return false;
     }
 
