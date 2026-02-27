@@ -16,7 +16,7 @@ GAME_ICON := icon.bmp
 NITRO_FILES :=
 
 # These set the information text in the nds file
-GAME_TITLE     := akmenu-next
+GAME_TITLE     := AKMenu-Next
 GAME_SUBTITLE1 := github.com/coderkei
 
 ifeq ($(OS),Windows_NT)
@@ -87,7 +87,7 @@ organize_files:
 	cp package/$(TARGET).nds package/_nds/akmenunext/launcher_nds.nds
 	cp package/$(TARGET).dsi package/_nds/akmenunext/launcher_dsi.nds
 	cp package/$(TARGET).dsi package/title/00030004/4e455854/content/00000000.app
-	cp package/$(TARGET).dsi package/_nds/akmenunext/launcher_pico.nds
+	cp package/boot_pico.nds package/_nds/akmenunext/launcher_pico.nds
 	cp package/$(TARGET).nds package/boot_nds.nds
 	cp package/$(TARGET).dsi package/boot_dsi.nds
 	@$(MAKE) make_cia
