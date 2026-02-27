@@ -45,7 +45,7 @@ cHelpWnd::cHelpWnd(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::strin
     }
     _helpText = formatString(_helpText.c_str(), 7, 1, 2, 4, 3, 5, 6, "START", "SELECT");
 
-    #ifdef __DSIMODE__
+    #if defined(__DSIMODE__) && !defined(__DSPICO__)
         const char* ndsbsVer = "sd:/_nds/release-bootstrap.ver";
     #else
         const char* ndsbsVer = "fat:/_nds/release-bootstrap.ver";

@@ -14,7 +14,7 @@
 
 bool Slot1Launcher::launchRom(std::string romPath, std::string savePath, u32 flags,
                                u32 cheatOffset, u32 cheatSize, bool hb) {
-    #ifdef __DSIMODE__
+    #if defined(__DSIMODE__) && !defined(__DSPICO__)
         const char slot1LoaderPath[] = "sd:/_nds/akmenunext/slot1launch.nds";
     #else
         const char slot1LoaderPath[] = "fat:/_nds/akmenunext/slot1launch.nds";
