@@ -8,6 +8,7 @@
 */
 
 #include <nds.h>
+#include <nds/arm9/dldi.h>
 #include <cstdio>
 #include <list>
 #include <map>
@@ -79,8 +80,13 @@ int main(void) {
 
     // wait_press_b();
     //  init fat
+#ifdef __DSPICO__
+    fatMountSimple("fat", dldiGetInternal());
+    chdir("fat:/");
+#else
     bool succ = fatInitDefault();
     if (!succ) dbg_printf("init fat %d\n", succ);
+#endif
 
     // wait_press_b();
 
