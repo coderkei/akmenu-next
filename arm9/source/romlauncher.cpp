@@ -232,7 +232,7 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
         if (aRomInfo.saveInfo().isCheat()) {
             u32 gameCode, crc32;
             if (cCheatWnd::romData(aFullPath, gameCode, crc32)) {
-                FILE* dat = fopen(SFN_CHEATS, "rb");
+                FILE* dat = fopen((SFN_CHEATS).c_str(), "rb");
                 if (dat) {
                     if (cCheatWnd::searchCheatData(dat, gameCode, crc32, cheatOffset, cheatSize)) {
                         flags |= PATCH_CHEATS;
@@ -246,7 +246,7 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
         u8 language = aRomInfo.saveInfo().getLanguage();
         if (language) flags |= (language << PATCH_LANGUAGE_SHIFT) & PATCH_LANGUAGE_MASK;
 #ifndef __KERNEL_LAUNCHER_SUPPORT__
-        if(gs().pico){
+        if(gs().pico && aFullPath[0] != 's'){ //roms can only be launched from the sd with nds-bootstrap
             launcher = new DSpicoLauncher();
         }
         else {

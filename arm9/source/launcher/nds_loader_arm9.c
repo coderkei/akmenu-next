@@ -283,11 +283,10 @@ eRunNdsRetCode runNds (const void* loader, u32 loaderSize, u32 cluster, bool ini
 	VRAM_C_CR = VRAM_ENABLE | VRAM_C_LCD;
 
 	//Fix VRAM because for some reason some homebrew screws up without it
-	#ifdef __DSIMODE__
-		//do nothing because this breaks on DSi/3DS mode
-	#else
+	//breaks on DSi/3DS mode
+	if (!isDSiMode()){
 		memset (LCDC_BANK_C, 0x00, 128 * 1024);
-	#endif
+	}
 
 	// Load the loader/patcher into the correct address
 	vramcpy (LCDC_BANK_C, loader, loaderSize);

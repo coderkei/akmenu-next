@@ -43,6 +43,7 @@
 #include "romlauncher.h"
 #include "sram.h"
 #include "userwnd.h"
+#include "fsmngr.h"
 
 using namespace akui;
 
@@ -54,7 +55,7 @@ void __libnds_exit(int rc) {}
 }
 #endif
 
-int main(void) {
+int main(int argc, char* argv[]) {
     irq().init();
 
     windowManager();
@@ -80,14 +81,8 @@ int main(void) {
 
     // wait_press_b();
     //  init fat
-#ifdef __DSPICO__
-    fatMountSimple("fat", dldiGetInternal());
-    chdir("fat:/");
-#else
-    bool succ = fatInitDefault();
-    if (!succ) dbg_printf("init fat %d\n", succ);
-#endif
-
+    fsManager().init(argc, argv);
+    
     // wait_press_b();
 
     // setting scripts

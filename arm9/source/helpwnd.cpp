@@ -45,11 +45,7 @@ cHelpWnd::cHelpWnd(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::strin
     }
     _helpText = formatString(_helpText.c_str(), 7, 1, 2, 4, 3, 5, 6, "START", "SELECT");
 
-    #if defined(__DSIMODE__) && !defined(__DSPICO__)
-        const char* ndsbsVer = "sd:/_nds/release-bootstrap.ver";
-    #else
-        const char* ndsbsVer = "fat:/_nds/release-bootstrap.ver";
-    #endif
+    std::string ndsbsVer = fsManager().resolveSystemPath("/_nds/release-bootstrap.ver");
     
     char ndsbsBuffer[256];
     _helpText += "https://github.com/coderkei\n";
@@ -58,8 +54,8 @@ cHelpWnd::cHelpWnd(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::strin
     if(gs().pico){
         _helpText += formatString("\n%s %s ", AKMENU_PICO_NAME, AKMENU_LOADER_VERSION);
     }
-    else if(access(ndsbsVer, F_OK) == 0 && gs().pico == false){
-        FILE* file = fopen(ndsbsVer, "r");
+    else if(access(ndsbsVer.c_str(), F_OK) == 0 && gs().pico == false){
+        FILE* file = fopen(ndsbsVer.c_str(), "r");
         if (file) {
             if (fgets(ndsbsBuffer, sizeof(ndsbsBuffer), file)) {
                 _helpText += formatString("\n%s %s ", AKMENU_LOADER_NAME, ndsbsBuffer);

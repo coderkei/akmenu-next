@@ -7,6 +7,7 @@ endif
 
 include $(DEVKITARM)/ds_rules
 
+SOURCE_PATH := ../arm9
 #---------------------------------------------------------------------------------
 # BUILD is the directory where object files & intermediate files will be placed
 # SOURCES is a list of directories containing source code
@@ -16,9 +17,9 @@ include $(DEVKITARM)/ds_rules
 # all directories are relative to this makefile
 #---------------------------------------------------------------------------------
 BUILD    := build
-SOURCES  := source source/ui source/font source/launcher source/saves
-INCLUDES := include ../share $(SOURCES)
-DATA     := data ../data
+SOURCES  := $(SOURCE_PATH)/source $(SOURCE_PATH)/source/ui $(SOURCE_PATH)/source/font $(SOURCE_PATH)/source/launcher $(SOURCE_PATH)/source/saves
+INCLUDES := $(SOURCE_PATH)/include ../share $(SOURCES)
+DATA     := $(SOURCE_PATH)/data ../data
 GRAPHICS :=
 
 #---------------------------------------------------------------------------------

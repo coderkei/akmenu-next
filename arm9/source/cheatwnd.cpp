@@ -236,7 +236,7 @@ static void updateDB(u8 value, u32 offset, FILE* db) {
 }
 
 void cCheatWnd::onGenerate(void) {
-    FILE* db = fopen(SFN_CHEATS, "r+b");
+    FILE* db = fopen((SFN_CHEATS).c_str(), "r+b");
     if (db) {
         std::vector<cParsedItem>::iterator itr = _data.begin();
         while (itr != _data.end()) {
@@ -288,7 +288,7 @@ bool cCheatWnd::parse(const std::string& aFileName) {
     _fileName = aFileName;
     u32 romcrc32, gamecode;
     if (romData(_fileName, gamecode, romcrc32)) {
-        FILE* dat = fopen(SFN_CHEATS, "rb");
+        FILE* dat = fopen((SFN_CHEATS).c_str(), "rb");
         if (dat) {
             res = parseInternal(dat, gamecode, romcrc32);
             fclose(dat);

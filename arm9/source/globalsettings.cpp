@@ -114,7 +114,7 @@ void cGlobalSettings::loadSettings() {
 #endif
 
     struct stat st;
-    if (0 == stat(SFN_CHEATS, &st)) cheatDB = true;
+    if (0 == stat((SFN_CHEATS).c_str(), &st)) cheatDB = true;
 
     CIniFile iniBacklight(SFN_BACKLIGHT);
     brightness = iniBacklight.GetInt("brightness", "brightness", brightness);

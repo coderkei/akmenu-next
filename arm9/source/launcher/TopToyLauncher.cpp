@@ -60,7 +60,7 @@ bool TopToyLauncher::prepareCheats() {
     u32 gameCode, crc32;
 
     if (cCheatWnd::romData(mRomPath, gameCode, crc32)) {
-        FILE* cheatDb = fopen(SFN_CHEATS, "rb");
+        FILE* cheatDb = fopen((SFN_CHEATS).c_str(), "rb");
         if (!cheatDb) goto cheat_failed;
         long cheatOffset;
         size_t cheatSize;
