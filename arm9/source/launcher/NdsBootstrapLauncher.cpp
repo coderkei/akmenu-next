@@ -27,6 +27,7 @@
 #include "ILauncher.h"
 #include "NdsBootstrapLauncher.h"
 #include "nds_loader_arm9.h"
+#include "fsmngr.h"
 
 void smoothProgress(u8 start, u8 end) {
     for(u8 p = start; p <= end; p += 5) {
@@ -40,7 +41,7 @@ bool NdsBootstrapLauncher::prepareCheats() {
     u32 gameCode, crc32;
 
     if (cCheatWnd::romData(mRomPath, gameCode, crc32)) {
-        FILE* cheatDb = fopen(SFN_CHEATS, "rb");
+        FILE* cheatDb = fopen((SFN_CHEATS).c_str(), "rb");
         if (!cheatDb) goto cheat_failed;
         long cheatOffset;
         size_t cheatSize;
@@ -90,19 +91,11 @@ bool NdsBootstrapLauncher::prepareIni(bool hb) {
 
     ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", mSavePath);
 
-    #if defined(__DSIMODE__) && !defined(__DSPICO__)
-        ini.SetString("NDS-BOOTSTRAP", "QUIT_PATH", "sd:/_nds/akmenunext/launcher.nds");
-    #else
-        ini.SetString("NDS-BOOTSTRAP", "QUIT_PATH", "fat:/_nds/akmenunext/launcher.nds");
-    #endif
+    ini.SetString("NDS-BOOTSTRAP", "QUIT_PATH", fsManager().resolveSystemPath("/_nds/akmenunext/launcher.nds"));
 
-    #if defined(__DSIMODE__) && !defined(__DSPICO__)
-        const char* custIniPath = "sd:/_nds/akmenunext/ndsbs.ini";
-    #else
-        const char* custIniPath = "fat:/_nds/akmenunext/ndsbs.ini";
-    #endif
+    std::string custIniPath = fsManager().resolveSystemPath("/_nds/akmenunext/ndsbs.ini");
 
-    if(access(custIniPath, F_OK) != 0){
+    if(access(custIniPath.c_str(), F_OK) != 0){
             akui::messageBox(NULL, LANG("nds bootstrap", "inimissingtitle"), LANG("nds bootstrap", "inimissing"), MB_OK);
             return false;
         }
@@ -194,10 +187,9 @@ bool NdsBootstrapLauncher::prepareIni(bool hb) {
     if(gs().dsOnly) {
         ini.SetString("NDS-BOOTSTRAP", "DSI_MODE", "0");
     }
-    if(gs().phatCol) {
-    #ifdef __DSIMODE__
+    
+    if(gs().phatCol && isDSiMode()) {
         ini.SetString("NDS-BOOTSTRAP", "PHAT_COLORS", "1");
-    #endif
     }
 
     if (access("/_nds/debug.txt", F_OK) == 0) {
@@ -212,9 +204,9 @@ bool NdsBootstrapLauncher::prepareIni(bool hb) {
 
 bool launchHbStrap(std::string romPath){
     progressWnd().setPercent(100);
-    const char ndsHbBootstrapPath[] = SD_ROOT_0 "/_nds/nds-bootstrap-hb-release.nds";
+    std::string ndsHbBootstrapPath = fsManager().resolveSystemPath("/_nds/nds-bootstrap-hb-release.nds");
     std::vector<const char*> argv;
-    argv.push_back(ndsHbBootstrapPath);
+    argv.push_back(ndsHbBootstrapPath.c_str());
     progressWnd().hide();
     eRunNdsRetCode rc = runNdsFile(argv[0], argv.size(), &argv[0]);
     if (rc == RUN_NDS_OK) return true;
@@ -223,17 +215,17 @@ bool launchHbStrap(std::string romPath){
 
 bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, u32 flags,
                                      u32 cheatOffset, u32 cheatSize, bool hb) {
-    const char ndsBootstrapPath[] = SD_ROOT_0 "/_nds/nds-bootstrap-release.nds";
-    const char ndsBootstrapPathNightly[] = SD_ROOT_0 "/_nds/nds-bootstrap-nightly.nds";
-    const char ndsHbBootstrapPath[] = SD_ROOT_0 "/_nds/nds-bootstrap-hb-release.nds";
-    const char ndsBootstrapCheck[] = SD_ROOT_0 "/_nds/pagefile.sys";
+    std::string ndsBootstrapPath = fsManager().resolveSystemPath("/_nds/nds-bootstrap-release.nds");
+    std::string ndsBootstrapPathNightly = fsManager().resolveSystemPath("/_nds/nds-bootstrap-nightly.nds");
+    std::string ndsHbBootstrapPath = fsManager().resolveSystemPath("/_nds/nds-bootstrap-hb-release.nds");
+    std::string ndsBootstrapCheck = fsManager().resolveSystemPath("/_nds/pagefile.sys");
     bool useNightly = false;
     bool hbStrap = hb;
 
     //check if rom is homebrew
     if(hbStrap){
         mRomPath = romPath;
-        if(access(ndsHbBootstrapPath, F_OK) != 0){
+        if(access(ndsHbBootstrapPath.c_str(), F_OK) != 0){
             progressWnd().hide();
             printLoaderNotFound(ndsHbBootstrapPath);
             return false;
@@ -252,7 +244,7 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
     }
 
     //has the user used nds-bootstrap before?
-    if(access(ndsBootstrapCheck, F_OK) != 0){
+    if(access(ndsBootstrapCheck.c_str(), F_OK) != 0){
         akui::messageBox(NULL, LANG("nds bootstrap", "firsttimetitle"), LANG("nds bootstrap", "firsttime"), MB_OK);
     }
 
@@ -271,7 +263,7 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
 
     //Check which nds-bootstrap version has been selected
     if(gs().nightly){
-        if(access(ndsBootstrapPathNightly, F_OK) != 0){
+        if(access(ndsBootstrapPathNightly.c_str(), F_OK) != 0){
             progressWnd().hide();
             printLoaderNotFound(ndsBootstrapPathNightly);
             return false;
@@ -281,7 +273,7 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
         }
     }
     else{
-        if(access(ndsBootstrapPath, F_OK) != 0){
+        if(access(ndsBootstrapPath.c_str(), F_OK) != 0){
             progressWnd().hide();
             printLoaderNotFound(ndsBootstrapPath);
             return false;
@@ -305,10 +297,10 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
 
     // Setup argv to launch nds-bootstrap                             
     if(!useNightly){
-        argv.push_back(ndsBootstrapPath);
+        argv.push_back(ndsBootstrapPath.c_str());
     }
     else{
-        argv.push_back(ndsBootstrapPathNightly);
+        argv.push_back(ndsBootstrapPathNightly.c_str());
     }
 
     progressWnd().setTipText("Initializing nds-bootstrap...");

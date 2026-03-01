@@ -30,12 +30,12 @@ endif
 
 include $(DEVKITARM)/ds_rules
 
-.PHONY: nds-bootloader checkarm7 checkarm9 checkarm9_dsi clean
+.PHONY: nds-bootloader checkarm7 checkarm9 clean
 
 #---------------------------------------------------------------------------------
 # main targets
 #---------------------------------------------------------------------------------
-all: $(TARGET).nds $(TARGET).dsi boot_pico.nds
+all: $(TARGET).dsi
 	@$(MAKE) organize_files
 
 data:
@@ -53,45 +53,20 @@ checkarm9: nds-bootloader
 	$(MAKE) -C arm9
 
 #---------------------------------------------------------------------------------
-checkarm9_dsi: nds-bootloader
-	$(MAKE) -C arm9_dsi
-
-#---------------------------------------------------------------------------------
-checkarm9_pico: nds-bootloader
-	$(MAKE) -C arm9_dsi_pico
-
-#---------------------------------------------------------------------------------
-$(TARGET).nds : $(NITRO_FILES) checkarm7 checkarm9
-	ndstool	-c $(TARGET).nds -7 arm7/$(TARGET).elf -9 arm9/$(TARGET).elf \
-	-h 0x200 -t banner.bin \
-	$(_ADDFILES)
-
-#---------------------------------------------------------------------------------
-$(TARGET).dsi : $(NITRO_FILES) checkarm7 checkarm9_dsi
-	ndstool	-c $@ -7 arm7/$(TARGET).elf -9 arm9_dsi/$(TARGET).elf \
+$(TARGET).dsi : $(NITRO_FILES) checkarm7 checkarm9
+	ndstool	-c $@ -7 arm7/$(TARGET).elf -9 arm9/$(TARGET).elf \
 	-t banner.bin \
 	-g NEXT 01 "AKMENU" -z 80040407 -u 00030004 -a 00000138 -p 0001 \
 	$(_ADDFILES)
 
-boot_pico.nds : $(NITRO_FILES) checkarm7 checkarm9_pico
-	ndstool -c boot_pico.nds \
-		-7 arm7/$(TARGET).elf \
-		-9 arm9_dsi_pico/$(TARGET).elf \
-		-t banner.bin \
-		-g NEXT 01 "AKMENU" -z 80040407 -u 00030004 -a 00000138 -p 0001 \
-		$(_ADDFILES)
-
 #---------------------------------------------------------------------------------
 organize_files:
-	@mv -f $(TARGET).nds $(TARGET).dsi boot_pico.nds package/
-	cp package/$(TARGET).nds package/_nds/akmenunext/launcher_nds.nds
-	cp package/$(TARGET).dsi package/_nds/akmenunext/launcher_dsi.nds
+	@mv -f $(TARGET).dsi package/
+	cp package/$(TARGET).dsi package/_nds/akmenunext/launcher.nds
 	cp package/$(TARGET).dsi package/title/00030004/4e455854/content/00000000.app
-	cp package/boot_pico.nds package/_nds/akmenunext/launcher_pico.nds
-	cp package/$(TARGET).nds package/boot_nds.nds
-	cp package/$(TARGET).dsi package/boot_dsi.nds
+	cp package/$(TARGET).dsi package/boot.nds
 	@$(MAKE) make_cia
-	rm -f package/$(TARGET).nds package/$(TARGET).dsi
+	rm -f package/$(TARGET).dsi
 	cp -r language package/_nds/akmenunext/
 
 #---------------------------------------------------------------------------------
@@ -106,6 +81,6 @@ clean:
 	$(MAKE) -C arm7 clean
 	rm -rf data
 	rm -f package/*.nds package/*.dsi package/*.cia
-	rm -f package/_nds/akmenunext/launcher_nds.nds package/_nds/akmenunext/launcher_dsi.nds package/_nds/akmenunext/launcher_pico.nds
+	rm -f package/_nds/akmenunext/launcher.nds
 	rm -f *.nds *.dsi
 	rm -rf package/_nds/akmenunext/language

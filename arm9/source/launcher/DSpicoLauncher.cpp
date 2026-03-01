@@ -35,8 +35,8 @@ typedef void (*pico_loader_9_func_t)(void);
 
 bool DSpicoLauncher::launchRom(std::string romPath, std::string savePath, u32 flags,
                                      u32 cheatOffset, u32 cheatSize, bool hb) {
-    const char picoLoader7Path[] = SD_ROOT_0 "/_pico/picoLoader7.bin";
-    const char picoLoader9Path[] = SD_ROOT_0 "/_pico/picoLoader9.bin";
+    const char picoLoader7Path[] = "fat:/_pico/picoLoader7.bin";
+    const char picoLoader9Path[] = "fat:/_pico/picoLoader9.bin";
 
     progressWnd().setTipText("Initializing pico-loader...");
     progressWnd().show();

@@ -442,7 +442,7 @@ void cMainWnd::setParam(void) {
     // user interface style
     _values.clear();
     std::vector<std::string> uiNames;
-    DIR* dir = opendir(SFN_UI_DIRECTORY);
+    DIR* dir = opendir((SFN_UI_DIRECTORY).c_str());
     struct dirent* entry;
     if (NULL != dir) {
         while ((entry = readdir(dir)) != NULL) {
@@ -464,7 +464,7 @@ void cMainWnd::setParam(void) {
     // language
     _values.clear();
     std::vector<std::string> langNames;
-    dir = opendir(SFN_LANGUAGE_DIRECTORY);
+    dir = opendir((SFN_LANGUAGE_DIRECTORY).c_str());
     if (NULL != dir) {
         while ((entry = readdir(dir)) != NULL) {
             std::string lfn(entry->d_name);
@@ -574,19 +574,20 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("override", "8"));
     settingWnd.addSettingItem(LANG("override", "text"), _values, gs().languageOverride);
 
+    if (isDSiMode()){
+        _values.clear();
+        _values.push_back(LANG("switches", "Disable"));
+        _values.push_back(LANG("switches", "Enable"));
+        settingWnd.addSettingItem(LANG("nds bootstrap", "phatCol"), _values, gs().phatCol);
+    }
 
-#ifdef __DSIMODE__
-    _values.clear();
-    _values.push_back(LANG("switches", "Disable"));
-    _values.push_back(LANG("switches", "Enable"));
-    settingWnd.addSettingItem(LANG("nds bootstrap", "phatCol"), _values, gs().phatCol);
-#endif
-#if !defined(__DSIMODE__) || defined(__DSPICO__)
-    _values.clear();
-    _values.push_back("nds-bootstrap");
-    _values.push_back("Pico-Loader");
-    settingWnd.addSettingItem(LANG("nds bootstrap", "loader"), _values, gs().pico);
-#endif
+    if (fsManager().isFlashcart()){
+        _values.clear();
+        _values.push_back("nds-bootstrap");
+        _values.push_back("Pico-Loader");
+        settingWnd.addSettingItem(LANG("nds bootstrap", "loader"), _values, gs().pico);
+    }
+
 #ifdef __KERNEL_LAUNCHER_SUPPORT__
     _values.clear();
     _values.push_back("Kernel");
@@ -605,12 +606,13 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("gba settings", "modegba"));
     _values.push_back(LANG("gba settings", "modends"));
     settingWnd.addSettingItem(LANG("gba settings", "mode"), _values, gs().slot2mode);
-#ifdef __DSIMODE__
-    _values.clear(); 
-    _values.push_back(LANG("patches", "default"));
-    _values.push_back(LANG("patches", "ndshb"));
-    settingWnd.addSettingItem(LANG("patches", "hbstrap"), _values, gs().hbStrap);
-#endif
+
+    if (isDSiMode()) {
+        _values.clear(); 
+        _values.push_back(LANG("patches", "default"));
+        _values.push_back(LANG("patches", "ndshb"));
+        settingWnd.addSettingItem(LANG("patches", "hbstrap"), _values, gs().hbStrap);
+    }
 
     u32 ret = settingWnd.doModal();
     if (ID_CANCEL == ret) return;
@@ -647,22 +649,26 @@ void cMainWnd::setParam(void) {
     gs().dsOnly = settingWnd.getItemSelection(3, 0);
     gs().nightly = settingWnd.getItemSelection(3, 1);
     gs().languageOverride = settingWnd.getItemSelection(3,2);
-#ifdef __DSIMODE__
-    gs().phatCol = settingWnd.getItemSelection(3, 3);
-#else
-    gs().pico = settingWnd.getItemSelection(3, 3);
-#endif
 
-#ifdef __DSPICO__
-    gs().pico = settingWnd.getItemSelection(3, 4);
-#endif
+    if (isDSiMode()) {
+        gs().phatCol = settingWnd.getItemSelection(3, 3);
+
+        if (fsManager().isFlashcart()){
+            gs().pico = settingWnd.getItemSelection(3, 4);
+        }
+        
+    }else if (fsManager().isFlashcart()) {
+        gs().pico = settingWnd.getItemSelection(3, 3);
+    }
 
     // page 5: other
     gs().cheats = settingWnd.getItemSelection(4, 0);
     gs().slot2mode = settingWnd.getItemSelection(4, 1);
-#ifdef __DSIMODE__
-    gs().hbStrap = settingWnd.getItemSelection(4, 2);
-#endif
+
+    if (isDSiMode()){
+        gs().hbStrap = settingWnd.getItemSelection(4, 2);
+    }
+
 
     if (uiIndex != uiIndexAfter) {
         u32 ret = messageBox(this, LANG("ui style changed", "title"),
@@ -671,11 +677,9 @@ void cMainWnd::setParam(void) {
             gs().uiName = uiNames[uiIndexAfter];
             gs().langDirectory = langNames[langIndexAfter];
             gs().saveSettings();
-            #if defined(__DSIMODE__)  && !defined(__DSPICO__)
-            HomebrewLauncher().launchRom("sd:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
-            #else
-            HomebrewLauncher().launchRom("fat:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
-            #endif
+
+            std::string launcherPath = fsManager().resolveSystemPath("/_nds/akmenunext/launcher.nds");
+            HomebrewLauncher().launchRom(launcherPath, "", 0, 0, 0, 0);
         }
     }
 
@@ -685,11 +689,9 @@ void cMainWnd::setParam(void) {
         if (ID_YES == ret) {
             gs().langDirectory = langNames[langIndexAfter];
             gs().saveSettings();
-            #if defined(__DSIMODE__)  && !defined(__DSPICO__)
-            HomebrewLauncher().launchRom("sd:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
-            #else
-            HomebrewLauncher().launchRom("fat:/_nds/akmenunext/launcher.nds", "", 0, 0, 0, 0);
-            #endif
+
+            std::string launcherPath = fsManager().resolveSystemPath("/_nds/akmenunext/launcher.nds");
+            HomebrewLauncher().launchRom(launcherPath, "", 0, 0, 0, 0);
         }
     }
 
