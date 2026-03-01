@@ -114,6 +114,13 @@ static u8 brightnessGet(void) {
     return data & PM_NDSLITE_BRIGHTNESS_MASK;
 }
 
+static u8 checkSD(void) {
+    //SD_IRQ_STATUS0
+    u32 status = *(volatile u32*)(0x400481C);
+
+    return status & (1u << 5);
+}
+
 static void menuValue32Handler(u32 value, void* data) {
     switch (value) {
         case MENU_MSG_GBA: {
@@ -156,6 +163,10 @@ static void menuValue32Handler(u32 value, void* data) {
                                      readPowerManagement(PM_CONTROL2_REG) | PM_CONTROL2_RESET);
             else
                 systemShutDown();
+            break;
+        case MENU_MSG_IS_SD_INSERTED:
+            fifoSendValue32(FIFO_USER_01, checkSD());
+            break;
         default:
             break;
     }

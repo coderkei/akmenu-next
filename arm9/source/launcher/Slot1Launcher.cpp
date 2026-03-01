@@ -14,19 +14,15 @@
 
 bool Slot1Launcher::launchRom(std::string romPath, std::string savePath, u32 flags,
                                u32 cheatOffset, u32 cheatSize, bool hb) {
-    #if defined(__DSIMODE__) && !defined(__DSPICO__)
-        const char slot1LoaderPath[] = "sd:/_nds/akmenunext/slot1launch.nds";
-    #else
-        const char slot1LoaderPath[] = "fat:/_nds/akmenunext/slot1launch.nds";
-    #endif
+    std::string slot1LoaderPath = fsManager().resolveSystemPath("/_nds/akmenunext/slot1launch.nds");
 
-    if (access(slot1LoaderPath, F_OK) != 0) {
+    if (access(slot1LoaderPath.c_str(), F_OK) != 0) {
         printLoaderNotFound(slot1LoaderPath);
         return false;
     }
 
     std::vector<const char*> argv;
-    argv.push_back(slot1LoaderPath);
+    argv.push_back(slot1LoaderPath.c_str());
     eRunNdsRetCode rc = runNdsFile(argv[0], argv.size(), &argv[0]);
     if (rc == RUN_NDS_OK) return true;
 

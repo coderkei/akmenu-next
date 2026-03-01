@@ -28,32 +28,58 @@
 #include "unicode.h"
 #include "unknown_banner_bin.h"
 #include "windowmanager.h"
+#include "fsmngr.h"
 
 using namespace akui;
 
 cMainList::cMainList(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::string& text)
     : cListView(x, y, w, h, parent, text),
       _showAllFiles(false),
-      _topCount(3),
+      _topCount(5),
       _topuSD(0),
-      _topSlot2(1),
-      _topFavorites(2) {
+      _topuDSiSD(1),
+      _topFavorites(2),
+      _topSlot1(3),
+      _topSlot2(4) {
     _viewMode = VM_LIST;
     _activeIconScale = 1;
     _activeIcon.hide();
     _activeIcon.update();
     animationManager().addAnimation(&_activeIcon);
     dbg_printf("_activeIcon.init\n");
-    fifoSendValue32(FIFO_USER_01, MENU_MSG_SYSTEM);
-    while (!fifoCheckValue32(FIFO_USER_02))
-        ;
-    u32 system = fifoGetValue32(FIFO_USER_02);
-    if (2 == system)  // dsi
-    {
+
+    if (!isDSiMode()) {
         _topCount = 3;
-        _topSlot2 = 3;
-        _topSlot1 = 2;
+        _topuSD = 0;
         _topFavorites = 1;
+        _topSlot2 = 2;
+        _topuDSiSD = 3;
+        _topSlot1 = 4;
+    } else {
+        if (fsManager().isFlashcart()) {
+            if (fsManager().isSDInserted()) {
+                _topCount = 3;
+                _topuSD = 0;
+                _topuDSiSD = 1;
+                _topFavorites = 2;
+                _topSlot2 = 3;               
+                _topSlot1 = 4;
+            } else {
+                _topCount = 2;
+                _topuSD = 0;
+                _topFavorites = 1;
+                _topSlot2 = 2;
+                _topuDSiSD = 3;
+                _topSlot1 = 4;
+            }
+        } else {
+                _topCount = 3;      
+                _topuDSiSD = 0;
+                _topFavorites = 1;
+                _topSlot1 = 2;
+                _topuSD = 3;
+                _topSlot2 = 4;
+        }
     }
 }
 
@@ -110,16 +136,12 @@ static bool extnameFilter(const std::vector<std::string>& extNames, std::string 
 
 bool cMainList::enterDir(const std::string& dirName) {
 
-#if defined(__DSIMODE__) && !defined(__DSPICO__)
-    const char* base = "sd:/_nds/akmenunext/icons/";
-#else
-    const char* base = "fat:/_nds/akmenunext/icons/";
-#endif
+    std::string base = fsManager().resolveSystemPath("/_nds/akmenunext/icons/");
 
-    std::string microsd = std::string(base) + "microsd_banner.bin";
-    std::string nand = std::string(base) + "nand_banner.bin";
-    std::string gba = std::string(base) + "gba_banner.bin";
-    std::string folder = std::string(base) + "folder_banner.bin";
+    std::string microsd = base + "microsd_banner.bin";
+    std::string nand = base + "nand_banner.bin";
+    std::string gba = base + "gba_banner.bin";
+    std::string folder = base + "folder_banner.bin";
 
     _saves.clear();
     if (memcmp(dirName.c_str(), "...", 3) == 0 || dirName.empty())  // select RPG or SD card
@@ -133,7 +155,15 @@ bool cMainList::enterDir(const std::string& dirName) {
             if (_topuSD == i) {
                 a_row.push_back(LANG("mainlist", "microsd card"));
                 a_row.push_back("");
-                a_row.push_back(SD_ROOT);
+                a_row.push_back("fat:/");
+                if(gs().icon)
+                    rominfo.setBannerFromFile("folder", microsd);
+                else
+                    rominfo.setBanner("folder", microsd_banner_bin);
+            } else if (_topuDSiSD == i) {
+                a_row.push_back("DSi SD");
+                a_row.push_back("");
+                a_row.push_back("sd:/");
                 if(gs().icon)
                     rominfo.setBannerFromFile("folder", microsd);
                 else
@@ -191,7 +221,7 @@ bool cMainList::enterDir(const std::string& dirName) {
         dir = opendir(dirName.c_str());
 
         if (dir == NULL) {
-            if (SD_ROOT == dirName) {
+            if (fsManager().getFSRoot() == dirName) {
                 std::string title = LANG("sd card error", "title");
                 std::string sdError = LANG("sd card error", "text");
                 messageBox(NULL, title, sdError, MB_OK);
@@ -363,7 +393,7 @@ void cMainList::onScrolled(u32 index) {
 void cMainList::backParentDir() {
     if ("..." == _currentDir) return;
 
-    bool fat1 = (SD_ROOT == _currentDir), favorites = ("favorites:/" == _currentDir);
+    bool fat1 = (fsManager().getFSRoot() == _currentDir), favorites = ("favorites:/" == _currentDir);
     if ("fat:/" == _currentDir || "sd:/" == _currentDir || fat1 || favorites ||
         "/" == _currentDir) {
         enterDir("...");
