@@ -71,7 +71,8 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
         _isModernHomebrew = ETrue;
         u32 arm9StartSig[4] = {0};
         //Seek to ARM9 entry point and read first 4 instructions
-        fseek(f, (u32)header.arm9romOffset + (u32)header.arm9executeAddress - (u32)header.arm9destination, SEEK_SET);
+        // "Battle/Combat of Giants: Mutant Insects" (TID: BIG) has code that is run before the actual SDK boot code
+        fseek(f, (u32)header.arm9romOffset + ((strncmp(header.gameCode, "BIG", 3) == 0) ? 0x02000800 : (u32)header.arm9executeAddress) - (u32)header.arm9destination, SEEK_SET);
         fread(arm9StartSig, sizeof(u32), 4, f);
 
          //Check for Nintendo SDK style retail builds
