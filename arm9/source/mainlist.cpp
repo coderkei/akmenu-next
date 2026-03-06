@@ -453,9 +453,12 @@ void cMainList::draw() {
 
 void cMainList::drawIcons()  // 直接画家算法画 icons
 {
-    if (VM_LIST_ICON == _viewMode){
+    if (VM_LIST != _viewMode){
         size_t total = _visibleRowCount;
         if (total > _rows.size() - _firstVisibleRowId) total = _rows.size() - _firstVisibleRowId;
+
+        int icon_height = (VM_LIST_ICON == _viewMode) ? 16 : 32;
+        bool small = (VM_LIST_ICON == _viewMode) ? true : false;
 
         for (size_t i = 0; i < total; ++i) {
             // 这里图像呈现比真正的 MAIN buffer 翻转要早，所以会闪一下
@@ -466,25 +469,8 @@ void cMainList::drawIcons()  // 直接画家算法画 icons
                 }
             }
             s32 itemX = _position.x + 1;
-            s32 itemY = _position.y + i * _rowHeight + ((_rowHeight - 16) >> 1) - 1;
-            _romInfoList[_firstVisibleRowId + i].drawDSRomIcon(itemX, itemY, _engine, true);
-        }
-    }
-    else if (VM_LIST != _viewMode) {
-        size_t total = _visibleRowCount;
-        if (total > _rows.size() - _firstVisibleRowId) total = _rows.size() - _firstVisibleRowId;
-
-        for (size_t i = 0; i < total; ++i) {
-            // 这里图像呈现比真正的 MAIN buffer 翻转要早，所以会闪一下
-            // 解决方法是在 gdi().present 里边统一呈现翻转
-            if (_firstVisibleRowId + i == _selectedRowId) {
-                if (_activeIcon.visible()) {
-                    continue;
-                }
-            }
-            s32 itemX = _position.x + 1;
-            s32 itemY = _position.y + i * _rowHeight + ((_rowHeight - 32) >> 1) - 1;
-            _romInfoList[_firstVisibleRowId + i].drawDSRomIcon(itemX, itemY, _engine, false);
+            s32 itemY = _position.y + i * _rowHeight + ((_rowHeight - icon_height) >> 1) - 1;
+            _romInfoList[_firstVisibleRowId + i].drawDSRomIcon(itemX, itemY, _engine, small);
         }
     }
 }
@@ -532,12 +518,8 @@ void cMainList::updateActiveIcon(bool updateContent) {
 
     // do not show active icon when hold key to list files. Otherwise the icon will not show
     // correctly.
-    if (VM_LIST_ICON == _viewMode){
-        _activeIcon.hide();
-        cwl();
-    }
-    else if (getInputIdleMs() > 1000 && VM_LIST != _viewMode && allowAnimation && _romInfoList.size() &&
-        0 == temp.keysHeld && gs().Animation) {
+    if (getInputIdleMs() > 1000 && VM_LIST != _viewMode && VM_LIST_ICON != _viewMode && allowAnimation &&
+        _romInfoList.size() && 0 == temp.keysHeld && gs().Animation) {
         if (!_activeIcon.visible()) {
             u8 backBuffer[32 * 32 * 2];
             zeroMemory(backBuffer, 32 * 32 * 2);
@@ -554,11 +536,9 @@ void cMainList::updateActiveIcon(bool updateContent) {
             for (u8 i = 0; i < 8; ++i) dbg_printf("%02x", backBuffer[i]);
             dbg_printf("\n");
         }
-    } else {
-        if (_activeIcon.visible()) {
-            _activeIcon.hide();
-            cwl();
-        }
+    } else if (_activeIcon.visible()) {
+        _activeIcon.hide();
+        cwl();
     }
 }
 

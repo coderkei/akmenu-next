@@ -186,54 +186,30 @@ void DSRomInfo::drawDSRomIcon(u8 x, u8 y, GRAPHICS_ENGINE engine, bool small) {
             gdi().maskBlt(icon_bg_bin, x, y, 32, 32, engine);
             break;
     }
-    
-    if (small) {
-        // Draw 16x16px
-        for (int tile = 0; tile < 16; ++tile) {
-            for (int pixel = 0; pixel < 32; ++pixel) {
-                u8 a_byte = _banner.icon[(tile << 5) + pixel];
 
-                int px = ((tile & 3) << 3) + ((pixel << 1) & 7);
-                int py = ((tile >> 2) << 3) + (pixel >> 2);
+    for (int tile = 0; tile < 16; ++tile) {
+        for (int pixel = 0; pixel < 32; ++pixel) {
+            u8 a_byte = _banner.icon[(tile << 5) + pixel];
 
-                u8 idx1 = (a_byte & 0xf0) >> 4;
-                u8 idx2 = (a_byte & 0x0f);
+            int px = ((tile & 3) << 3) + ((pixel << 1) & 7);
+            int py = ((tile >> 2) << 3) + (pixel >> 2);
 
-                int small_px = px / 2;
-                int small_py = py / 2;
-
-                if (skiptransparent || 0 != idx1) {
-                    gdi().setPenColor(_banner.palette[idx1], engine);
-                    gdi().drawPixel(small_px + 1 + x, small_py + y, engine);
-                }
-
-                if (skiptransparent || 0 != idx2) {
-                    gdi().setPenColor(_banner.palette[idx2], engine);
-                    gdi().drawPixel(small_px + x, small_py + y, engine);
-                }
+            if(small){
+                px /= 2;
+                py /= 2;
             }
-        }
-    } else {
-        // Draw 32x32px
-        for (int tile = 0; tile < 16; ++tile) {
-            for (int pixel = 0; pixel < 32; ++pixel) {
-                u8 a_byte = _banner.icon[(tile << 5) + pixel];
 
-                int px = ((tile & 3) << 3) + ((pixel << 1) & 7);
-                int py = ((tile >> 2) << 3) + (pixel >> 2);
+            u8 idx1 = (a_byte & 0xf0) >> 4;
+            u8 idx2 = (a_byte & 0x0f);
 
-                u8 idx1 = (a_byte & 0xf0) >> 4;
-                u8 idx2 = (a_byte & 0x0f);
+            if (skiptransparent || 0 != idx1) {
+                gdi().setPenColor(_banner.palette[idx1], engine);
+                gdi().drawPixel(px + 1 + x, py + y, engine);
+            }
 
-                if (skiptransparent || 0 != idx1) {
-                    gdi().setPenColor(_banner.palette[idx1], engine);
-                    gdi().drawPixel(px + 1 + x, py + y, engine);
-                }
-
-                if (skiptransparent || 0 != idx2) {
-                    gdi().setPenColor(_banner.palette[idx2], engine);
-                    gdi().drawPixel(px + x, py + y, engine);
-                }
+            if (skiptransparent || 0 != idx2) {
+                gdi().setPenColor(_banner.palette[idx2], engine);
+                gdi().drawPixel(px + x, py + y, engine);
             }
         }
     }
