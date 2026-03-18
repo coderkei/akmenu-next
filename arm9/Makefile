@@ -17,7 +17,7 @@ SOURCE_PATH := ../arm9
 # all directories are relative to this makefile
 #---------------------------------------------------------------------------------
 BUILD    := build
-SOURCES  := $(SOURCE_PATH)/source $(SOURCE_PATH)/source/ui $(SOURCE_PATH)/source/font $(SOURCE_PATH)/source/launcher $(SOURCE_PATH)/source/saves
+SOURCES  := $(SOURCE_PATH)/source $(SOURCE_PATH)/source/ui $(SOURCE_PATH)/source/font $(SOURCE_PATH)/source/launcher/slot2 $(SOURCE_PATH)/source/launcher $(SOURCE_PATH)/source/saves
 INCLUDES := $(SOURCE_PATH)/include ../share $(SOURCES)
 DATA     := $(SOURCE_PATH)/data ../data
 GRAPHICS :=

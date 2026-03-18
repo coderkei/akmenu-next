@@ -29,12 +29,40 @@
 #include "nds_loader_arm9.h"
 #include "fsmngr.h"
 
+#include "slot2/io_g6_common.h"
+#include "slot2/io_m3_common.h"
+#include "slot2/io_sc_common.h"
+
 void smoothProgress(u8 start, u8 end) {
     for(u8 p = start; p <= end; p += 5) {
         progressWnd().setPercent(p);
         swiWaitForVBlank();
     }
     progressWnd().setPercent(end);
+}
+
+void slot2RamAccess(){
+    // if running from NDS slot
+    if (io_dldi_data->ioInterface.features & FEATURE_SLOT_NDS) {
+        sysSetCartOwner(BUS_OWNER_ARM9);
+
+        *(vu16*)0x08000000 = 0x1111;    // write data to GBA ROM area
+        // if data wasn't written, try enabling RAM access for various slot 2 carts and write again
+        if (*(vu16*)0x08000000 != 0x1111) {
+            _SC_changeMode(SC_MODE_RAM);
+            *(vu16*)0x08000000 = 0x1111;
+        }
+        if (*(vu16*)0x08000000 != 0x1111) {
+            _G6_SelectOperation(G6_MODE_RAM);
+            *(vu16*)0x08000000 = 0x1111;
+        }
+        if (*(vu16*)0x08000000 != 0x1111) {
+            _M3_changeMode(M3_MODE_RAM);
+            *(vu16*)0x08000000 = 0x1111;
+        }
+
+        sysSetCartOwner(BUS_OWNER_ARM7);
+    }
 }
 
 bool NdsBootstrapLauncher::prepareCheats() {
@@ -334,6 +362,11 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
         }
         progressWnd().setTipText("Booting game...");
         smoothProgress(90, 100);
+    }
+
+    // enable slot2 ram access if available
+    if(!isDSiMode()){
+        slot2RamAccess();
     }
 
     // Launch
