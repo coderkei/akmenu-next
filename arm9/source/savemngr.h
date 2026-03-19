@@ -82,6 +82,8 @@ enum DISPLAY_SAVE_TYPE {
 #define SAVE_INFO_EX_LANGUAGE_SHIFT 10
 #define SAVE_INFO_EX_LOADER (BIT(13))
 #define SAVE_INFO_EX_GLOBAL_LOADER (BIT(14))
+#define SAVE_INFO_EX_NIGHTLY (BIT(15))
+#define SAVE_INFO_EX_GLOBAL_NIGHTLY (BIT(16))
 
 typedef struct SAVE_INFO_EX_T {
     u8 gameTitle[12];
@@ -111,6 +113,9 @@ typedef struct SAVE_INFO_EX_T {
     u8 getLoader(void) {
         return getFlag(SAVE_INFO_EX_LOADER, SAVE_INFO_EX_GLOBAL_LOADER, true);
     };
+    u8 getNightly(void) {
+        return getFlag(SAVE_INFO_EX_NIGHTLY, SAVE_INFO_EX_GLOBAL_NIGHTLY, true);
+    };
     bool isDownloadPlay(void) {
         return getState(SAVE_INFO_EX_DOWNLOAD_PLAY, SAVE_INFO_EX_GLOBAL_DOWNLOAD_PLAY, false,
                         false);
@@ -135,7 +140,7 @@ typedef struct SAVE_INFO_EX_T {
                         gs().romLauncher, true);
     };
     void setFlags(u8 rumble, u8 downloadplay, u8 reset, u8 cheat, u8 slot, u8 dma, u8 protection,
-                  u8 linkage, u8 icon, u8 sdsave, u8 language, u8 ndsbootstrap) {
+                  u8 linkage, u8 icon, u8 sdsave, u8 language, u8 ndsbootstrap, u8 nightly) {
         flags = rumble & SAVE_INFO_EX_RUMBLE;
         flags2 = 0;
         setFlag(SAVE_INFO_EX_DOWNLOAD_PLAY, SAVE_INFO_EX_GLOBAL_DOWNLOAD_PLAY, downloadplay, false);
@@ -149,6 +154,7 @@ typedef struct SAVE_INFO_EX_T {
         setFlag(SAVE_INFO_EX_SD_SAVE, SAVE_INFO_EX_GLOBAL_SD_SAVE, sdsave, true);
         flags2 |= (language << SAVE_INFO_EX_LANGUAGE_SHIFT) & SAVE_INFO_EX_LANGUAGE_MASK;
         setFlag(SAVE_INFO_EX_LOADER, SAVE_INFO_EX_GLOBAL_LOADER, ndsbootstrap, true);
+        setFlag(SAVE_INFO_EX_NIGHTLY, SAVE_INFO_EX_GLOBAL_NIGHTLY, nightly, true);
     };
     u8 getFlag(u32 personal, u32 global, bool style) {
         return (flags2 & global) ? 2 : ((style ? (flags2 & personal) : (flags & personal)) ? 1 : 0);
@@ -184,7 +190,7 @@ typedef struct SAVE_INFO_EX_T {
         flags = 0;
         flags2 = SAVE_INFO_EX_GLOBAL_SOFT_RESET | SAVE_INFO_EX_GLOBAL_CHEAT |
                  SAVE_INFO_EX_GLOBAL_DMA | SAVE_INFO_EX_GLOBAL_SD_SAVE |
-                 SAVE_INFO_EX_GLOBAL_LOADER;
+                 SAVE_INFO_EX_GLOBAL_LOADER | SAVE_INFO_EX_GLOBAL_NIGHTLY;
         reserved[0] = reserved[1] = 0;
     };
 } SAVE_INFO_EX;
