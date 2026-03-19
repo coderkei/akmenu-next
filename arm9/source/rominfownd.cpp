@@ -285,7 +285,6 @@ void cRomInfoWnd::onShow() {
 }
 
 #define ITEM_SAVETYPE 0, 0
-#define ITEM_NDSBOOTSTRAP 0, 1
 
 #define ITEM_CHEATS 1, 0
 #define ITEM_SAVESLOT 1, 1
@@ -312,14 +311,23 @@ void cRomInfoWnd::pressSaveType(void) {
             LANG("save type", "text"), _values,
             cSaveManager::SaveTypeToDisplaySaveType((SAVE_TYPE)_romInfo.saveInfo().saveType));
 
-#ifdef __KERNEL_LAUNCHER_SUPPORT__
-    _values.clear();
-    _values.push_back("kernel");
-    _values.push_back("nds-bootstrap");
-    _values.push_back(LANG("save type", "default"));
-    settingWnd.addSettingItem(LANG("loader", "text"), _values,
-                              _romInfo.saveInfo().getNdsBootstrap());
-#endif  // __KERNEL_LAUNCHER_SUPPORT__
+    if (fsManager().isFlashcart()){
+        _values.clear();
+        _values.push_back("Pico-Loader");
+        _values.push_back("nds-bootstrap");
+        _values.push_back(LANG("save type", "default"));
+        settingWnd.addSettingItem(LANG("nds bootstrap", "loader"), _values,
+                                _romInfo.saveInfo().getLoader());
+    }
+
+    if((!gs().pico && _romInfo.saveInfo().getLoader() == 2) || _romInfo.saveInfo().getLoader() == 1){
+        _values.clear();
+        _values.push_back(LANG("nds bootstrap", "release"));
+        _values.push_back(LANG("nds bootstrap", "nightly"));
+        _values.push_back(LANG("save type", "default"));
+        settingWnd.addSettingItem(LANG("nds bootstrap", "text"), _values,
+                                _romInfo.saveInfo().getNightly());
+    }
 
     settingWnd.addSettingTab(LANG("save type", "tab2"));
 
@@ -380,10 +388,19 @@ void cRomInfoWnd::pressSaveType(void) {
                 LANG("save type", stLangStrings[_romInfo.saveInfo().saveType]).c_str());
         addCode();
     }
+
+    u8 loader_choice = 2, nightly_choice = 2;
+    if (fsManager().isFlashcart()) {
+        loader_choice = settingWnd.getItemSelection(0,1);
+        nightly_choice = settingWnd.getItemSelection(0,2);
+    } else {
+        nightly_choice = settingWnd.getItemSelection(0,1);
+    }
+
     _romInfo.saveInfo().setFlags(
             0, 0, 0, settingWnd.getItemSelection(ITEM_CHEATS),
-            settingWnd.getItemSelection(ITEM_SAVESLOT), 2, 0, 0, 2, 0, 0,
-            settingWnd.getItemSelection(ITEM_NDSBOOTSTRAP));
+            settingWnd.getItemSelection(ITEM_SAVESLOT), 2, 0, 0, settingWnd.getItemSelection(ITEM_ICON), 0, 0,
+            loader_choice, nightly_choice);
 
     saveManager().updateCustomSaveList(_romInfo.saveInfo());
 }

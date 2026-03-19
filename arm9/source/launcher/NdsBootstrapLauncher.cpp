@@ -290,7 +290,7 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
     progressWnd().setPercent(0);
 
     //Check which nds-bootstrap version has been selected
-    if(gs().nightly){
+    if((gs().nightly && _romInfo.saveInfo().getNightly() == 2) || _romInfo.saveInfo().getNightly() == 1){
         if(access(ndsBootstrapPathNightly.c_str(), F_OK) != 0){
             progressWnd().hide();
             printLoaderNotFound(ndsBootstrapPathNightly);

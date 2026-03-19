@@ -183,7 +183,11 @@ void DSRomInfo::drawDSRomIcon(u8 x, u8 y, GRAPHICS_ENGINE engine, bool small) {
             skiptransparent = true;
             break;
         case SAVE_INFO_EX_ICON_FIRMWARE:
-            gdi().maskBlt(icon_bg_bin, x, y, 32, 32, engine);
+            if (small) {
+                gdi().maskBlt(icon_bg_bin, x, y, 16, 16, engine);
+            } else {
+                gdi().maskBlt(icon_bg_bin, x, y, 32, 32, engine);
+            }
             break;
     }
 
