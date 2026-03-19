@@ -245,23 +245,16 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
         if (aRomInfo.saveInfo().isLinkage()) flags |= PATCH_LINKAGE;
         u8 language = aRomInfo.saveInfo().getLanguage();
         if (language) flags |= (language << PATCH_LANGUAGE_SHIFT) & PATCH_LANGUAGE_MASK;
-#ifndef __KERNEL_LAUNCHER_SUPPORT__
-        if(gs().pico && aFullPath[0] != 's'){ //roms can only be launched from the sd with nds-bootstrap
+
+        u8 loader = aRomInfo.saveInfo().getLoader();
+        // loader = 0: pico, 1: nds-bootstrap, 2: global
+        if(((gs().pico && loader == 2) || loader == 0) && aFullPath[0] != 's'){ //roms can only be launched from the sd with nds-bootstrap
             launcher = new DSpicoLauncher();
         }
         else {
             launcher = new NdsBootstrapLauncher();
         }
-#else  // __KERNEL_LAUNCHER_SUPPORT__
-        if (aRomInfo.saveInfo().isNdsBootstrap())
-            launcher = new NdsBootstrapLauncher();
-        else
-#ifdef __TTLAUNCHER__
-            launcher = new TopToyLauncher();
-#else   // __TTLAUNCHER__
-            launcher = new AcekardLauncher();
-#endif  // __TTLAUNCHER__
-#endif  // __KERNEL_LAUNCHER_SUPPORT__
+
     } else {
         if (!aMenu) saveManager().saveLastInfo(aFullPath);
         if (gs().hbStrap == 1)

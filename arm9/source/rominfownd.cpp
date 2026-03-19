@@ -285,7 +285,7 @@ void cRomInfoWnd::onShow() {
 }
 
 #define ITEM_SAVETYPE 0, 0
-#define ITEM_NDSBOOTSTRAP 0, 1
+#define ITEM_LOADER 0, 1
 
 #define ITEM_CHEATS 1, 0
 #define ITEM_SAVESLOT 1, 1
@@ -312,14 +312,14 @@ void cRomInfoWnd::pressSaveType(void) {
             LANG("save type", "text"), _values,
             cSaveManager::SaveTypeToDisplaySaveType((SAVE_TYPE)_romInfo.saveInfo().saveType));
 
-#ifdef __KERNEL_LAUNCHER_SUPPORT__
-    _values.clear();
-    _values.push_back("kernel");
-    _values.push_back("nds-bootstrap");
-    _values.push_back(LANG("save type", "default"));
-    settingWnd.addSettingItem(LANG("loader", "text"), _values,
-                              _romInfo.saveInfo().getNdsBootstrap());
-#endif  // __KERNEL_LAUNCHER_SUPPORT__
+    if (fsManager().isFlashcart()){
+        _values.clear();
+        _values.push_back("Pico-Loader");
+        _values.push_back("nds-bootstrap");
+        _values.push_back(LANG("save type", "default"));
+        settingWnd.addSettingItem(LANG("nds bootstrap", "loader"), _values,
+                                _romInfo.saveInfo().getLoader());
+    }
 
     settingWnd.addSettingTab(LANG("save type", "tab2"));
 
@@ -383,7 +383,7 @@ void cRomInfoWnd::pressSaveType(void) {
     _romInfo.saveInfo().setFlags(
             0, 0, 0, settingWnd.getItemSelection(ITEM_CHEATS),
             settingWnd.getItemSelection(ITEM_SAVESLOT), 2, 0, 0, 2, 0, 0,
-            settingWnd.getItemSelection(ITEM_NDSBOOTSTRAP));
+            settingWnd.getItemSelection(ITEM_LOADER));
 
     saveManager().updateCustomSaveList(_romInfo.saveInfo());
 }
