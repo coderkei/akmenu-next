@@ -285,8 +285,6 @@ void cRomInfoWnd::onShow() {
 }
 
 #define ITEM_SAVETYPE 0, 0
-#define ITEM_LOADER 0, 1
-#define ITEM_NDSBS_VER 0,2
 
 #define ITEM_CHEATS 1, 0
 #define ITEM_SAVESLOT 1, 1
@@ -390,10 +388,19 @@ void cRomInfoWnd::pressSaveType(void) {
                 LANG("save type", stLangStrings[_romInfo.saveInfo().saveType]).c_str());
         addCode();
     }
+
+    u8 loader_choice = 2, nightly_choice = 2;
+    if (fsManager().isFlashcart()) {
+        loader_choice = settingWnd.getItemSelection(0,1);
+        nightly_choice = settingWnd.getItemSelection(0,2);
+    } else {
+        nightly_choice = settingWnd.getItemSelection(0,1);
+    }
+
     _romInfo.saveInfo().setFlags(
             0, 0, 0, settingWnd.getItemSelection(ITEM_CHEATS),
             settingWnd.getItemSelection(ITEM_SAVESLOT), 2, 0, 0, settingWnd.getItemSelection(ITEM_ICON), 0, 0,
-            settingWnd.getItemSelection(ITEM_LOADER), settingWnd.getItemSelection(ITEM_NDSBS_VER));
+            loader_choice, nightly_choice);
 
     saveManager().updateCustomSaveList(_romInfo.saveInfo());
 }
