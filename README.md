@@ -15,13 +15,16 @@
 
 Frontend for [nds-bootstrap](https://github.com/DS-Homebrew/nds-bootstrap/) and [Pico-Loader](https://github.com/LNH-team/pico-loader) based upon [lifehansolhacker's akmenu4 port](https://github.com/lifehackerhansol/akmenu4).
 
-## Getting Started
+## Installing
+
+Please check the [AKMenu-Next Docs](https://coderkei.github.io/akmenu-next-docs/) for setting up or updating AKMenu-Next.
+
+## Building from source
 
 Requires the pre-calico version of devkitarm to be installed with the `nds-dev` package.
 A docker image is available with this version on [docker hub](https://hub.docker.com/layers/devkitpro/devkitarm/20241104).
 
 Build the repository with `make`, then run `package.cmd/sh` depending on your OS to package the build for Flashcarts, DSi and 3DS.
-
 
 ### Configuration
 
