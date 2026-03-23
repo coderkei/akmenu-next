@@ -190,11 +190,6 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    if (gs().autorunWithLastRom && "..." != lastFile) {
-        INPUT& inputs = updateInput();
-        if (!(inputs.keysHeld & KEY_B)) autoLaunchRom(lastFile);
-    }
-
     dbg_printf("lastDirectory '%s'\n", lastDirectory.c_str());
     if (!wnd->_mainList->enterDir("..." != lastDirectory ? lastDirectory : gs().startupFolder))
         wnd->_mainList->enterDir("...");
@@ -202,6 +197,11 @@ int main(int argc, char* argv[]) {
     *(u32*)(0xCFFFD0C) = 0x454D4D43;
     while (*(u32*)(0xCFFFD0C) != 0) {
         swiDelay(100);
+    }
+
+    if (gs().autorunWithLastRom && "..." != lastFile) {
+        INPUT& inputs = updateInput();
+        if (!(inputs.keysHeld & KEY_B)) autoLaunchRom(lastFile);
     }
 
     while (true) {
