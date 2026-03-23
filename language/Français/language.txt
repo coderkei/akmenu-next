@@ -109,6 +109,9 @@ tab2 = Options
 title = Interface utilisateur
 safe mode = Safe Mode
 
+[autorun]
+text = Autorun Last ROM
+
 [rom info]
 title = Propriétés du fichier
 file date = Modifié le : %d/%d/%d %02d:%02d:%02d(GMT)

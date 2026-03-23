@@ -606,6 +606,10 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("gba settings", "modegba"));
     _values.push_back(LANG("gba settings", "modends"));
     settingWnd.addSettingItem(LANG("gba settings", "mode"), _values, gs().slot2mode);
+    _values.clear();
+    _values.push_back(LANG("switches", "Disable"));
+    _values.push_back(LANG("switches", "Enable"));
+    settingWnd.addSettingItem(LANG("autorun", "text"), _values, gs().autorunWithLastRom);
 
     if (isDSiMode()) {
         _values.clear(); 
@@ -664,9 +668,10 @@ void cMainWnd::setParam(void) {
     // page 5: other
     gs().cheats = settingWnd.getItemSelection(4, 0);
     gs().slot2mode = settingWnd.getItemSelection(4, 1);
+    gs().autorunWithLastRom = settingWnd.getItemSelection(4, 2);
 
     if (isDSiMode()){
-        gs().hbStrap = settingWnd.getItemSelection(4, 2);
+        gs().hbStrap = settingWnd.getItemSelection(4, 3);
     }
 
 

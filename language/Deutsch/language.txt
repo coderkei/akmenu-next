@@ -111,6 +111,9 @@ tab2 = Zusatzfunktionen
 title = System-Konfig.
 safe mode = Safe Mode
 
+[autorun]
+text = Autorun Last ROM
+
 [rom info]
 title = Dateiinformation
 file date = Letzte Änderung: %d/%d/%d %02d:%02d:%02d(GMT)

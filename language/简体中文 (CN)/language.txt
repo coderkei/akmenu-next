@@ -113,6 +113,9 @@ tab2 = 功能
 title = 系统选项
 safe mode = 安全模式
 
+[autorun]
+text = Autorun Last ROM
+
 [rom info]
 title = 文件信息
 file date = 最后写入：%d年%d月%d日 %02d:%02d:%02d(GMT)

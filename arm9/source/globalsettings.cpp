@@ -108,11 +108,6 @@ void cGlobalSettings::loadSettings() {
             : (temp == "nds") ? ESlot2Nds
             : ESlot2Ask;
 
-#ifdef __KERNEL_LAUNCHER_SUPPORT__
-    temp = ini.GetString("system", "nds-bootstrap", "false");
-    romLauncher = (temp != "false") ? ENdsBootstrapLauncher : EKernelLauncher;
-#endif
-
     struct stat st;
     if (0 == stat((SFN_CHEATS).c_str(), &st)) cheatDB = true;
 
@@ -150,6 +145,7 @@ void cGlobalSettings::saveSettings() {
     ini.SetInt("system", "pico", pico);
     ini.SetInt("system", "icon", icon);
     ini.SetInt("system", "phatCol", phatCol);
+    ini.SetInt("system", "autorunWithLastRom", autorunWithLastRom);
     ini.SetString(
         "system", "saveext",
         saveExt ? ".sav" 
@@ -173,11 +169,6 @@ void cGlobalSettings::saveSettings() {
         : (slot2mode == ESlot2Nds) ? "nds"
         : (slot2mode == ESlot2Ask) ? "ask"
         : "ask" );
-
-#ifdef __KERNEL_LAUNCHER_SUPPORT__
-    ini.SetString("system", "nds-bootstrap",
-                  romLauncher == ENdsBootstrapLauncher ? "true" : "false");
-#endif
 
     ini.SaveIniFile(SFN_GLOBAL_SETTINGS);
     updateSafeMode();
