@@ -116,6 +116,9 @@ tab2 = Características
 title = Ajustes del sistema
 safe mode = Modo Seguro
 
+[autorun]
+text = Autorun Last ROM
+
 [rom info]
 title = Información de elemento
 file date = Último cambio: %d/%d/%d %02d:%02d:%02d(GMT).

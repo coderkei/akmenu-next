@@ -109,6 +109,9 @@ tab2 = 機能
 title = システム設定
 safe mode = Safe Mode
 
+[autorun]
+text = Autorun Last ROM
+
 [rom info]
 title = ファイル詳細
 file date = 最終更新: %d/%d/%d %02d:%02d:%02d(GMT)
