@@ -19,6 +19,7 @@ class NdsBootstrapLauncher : public ILauncher {
   private:
     bool prepareCheats(void);
     bool prepareIni(bool hb);
+    bool is3DS(void);
     bool hotkeyCheck;
     std::string mRomPath;
     std::string mSavePath;

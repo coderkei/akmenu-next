@@ -11,6 +11,7 @@
 #include "../../share/fifotool.h"
 #include "../../share/memtool.h"
 #include "picoLoader7.h"
+#include "my_i2c.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -121,6 +122,20 @@ static u8 checkSD(void) {
     return status & (1u << 5);
 }
 
+static u8 check3DS(void) {
+    if (!isDSiMode()) {
+        return 0;
+    }
+
+    u8 byteBak = my_i2cReadRegister(0x4A, 0x71);
+    my_i2cWriteRegister(0x4A, 0x71, 0xD2);
+    u8 byteNew = my_i2cReadRegister(0x4A, 0x71);
+    u8 is3DS = (byteNew != 0xD2) ? 1 : 0;
+    my_i2cWriteRegister(0x4A, 0x71, byteBak);
+
+    return is3DS;
+}
+
 static void menuValue32Handler(u32 value, void* data) {
     switch (value) {
         case MENU_MSG_GBA: {
@@ -167,6 +182,8 @@ static void menuValue32Handler(u32 value, void* data) {
         case MENU_MSG_IS_SD_INSERTED:
             fifoSendValue32(FIFO_USER_01, checkSD());
             break;
+        case MENU_MSG_IS_3DS:
+            fifoSendValue32(FIFO_USER_01, check3DS());
         default:
             break;
     }

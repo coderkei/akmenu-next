@@ -121,6 +121,8 @@ bool NdsBootstrapLauncher::prepareIni(bool hb) {
 
     ini.SetString("NDS-BOOTSTRAP", "QUIT_PATH", fsManager().resolveSystemPath("/_nds/akmenunext/launcher.nds"));
 
+    ini.SetString("NDS-BOOTSTRAP", "CONSOLE_MODEL", is3DS() ? "2" : "0");
+
     std::string custIniPath = fsManager().resolveSystemPath("/_nds/akmenunext/ndsbs.ini");
 
     if(access(custIniPath.c_str(), F_OK) != 0){
@@ -228,6 +230,20 @@ bool NdsBootstrapLauncher::prepareIni(bool hb) {
     ini.SaveIniFile("/_nds/nds-bootstrap.ini");
 
     return true;
+}
+
+bool NdsBootstrapLauncher::is3DS(void) {
+    if (!isDSiMode()) {
+        return false;
+    }
+
+    fifoSendValue32(FIFO_USER_01, MENU_MSG_IS_3DS);
+
+    fifoWaitValue32(FIFO_USER_01);
+
+    int result = fifoGetValue32(FIFO_USER_01);
+
+    return result != 0;
 }
 
 bool launchHbStrap(std::string romPath){
