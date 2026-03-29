@@ -20,9 +20,11 @@ void cFSManager::init(int argc, char* argv[]) {
     }
 
     // Mount devices
-    if (isFlashcart()) {
-        fatMountSimple("fat", dldiGetInternal());
+    // If we can mount fat, we're on a flashcart
+    if (fatMountSimple("fat", dldiGetInternal())) {
         chdir("fat:/");
+
+        _isFlashcart = true;
         _fsRoot = "fat:";
     }
 
