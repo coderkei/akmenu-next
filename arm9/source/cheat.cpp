@@ -66,7 +66,7 @@ bool cCheat::searchCheatData(FILE* aDat, u32 gamecode, u32 crc32, long& aPos, si
     fread(header, 12, 1, aDat);
     if (strncmp(KHeader, header, 12)) return false;
 
-    sDatIndex idx, nidx;
+    sCheatDatIndex idx, nidx;
 
     fseek(aDat, 0, SEEK_END);
     long fileSize = ftell(aDat);
@@ -118,18 +118,18 @@ bool cCheat::parseInternal(FILE* aDat, u32 gamecode, u32 crc32) {
         char* folderNote = NULL;
         u32 flagItem = 0;
         if ((*ccode >> 28) & 1) {
-            flagItem |= cParsedItem::EInFolder;
-            if ((*ccode >> 24) == 0x11) flagItem |= cParsedItem::EOne;
+            flagItem |= cCheatDatItem::EInFolder;
+            if ((*ccode >> 24) == 0x11) flagItem |= cCheatDatItem::EOne;
             folderCount = *ccode & 0x00ffffff;
             folderName = (char*)((u32)ccode + 4);
             folderNote = (char*)((u32)folderName + strlen(folderName) + 1);
-            _data.push_back(cParsedItem(folderName, folderNote, cParsedItem::EFolder));
+            _data.push_back(cCheatDatItem(folderName, folderNote, cCheatDatItem::EFolder));
             cc++;
             ccode = (u32*)(((u32)folderName + strlen(folderName) + 1 + strlen(folderNote) + 1 + 3) &
                            ~3);
         }
 
-        u32 selectValue = cParsedItem::ESelected;
+        u32 selectValue = cCheatDatItem::ESelected;
         for (size_t ii = 0; ii < folderCount; ++ii) {
             char* cheatName = (char*)((u32)ccode + 4);
             char* cheatNote = (char*)((u32)cheatName + strlen(cheatName) + 1);
@@ -137,10 +137,10 @@ bool cCheat::parseInternal(FILE* aDat, u32 gamecode, u32 crc32) {
             u32 cheatDataLen = *cheatData++;
 
             if (cheatDataLen) {
-                _data.push_back(cParsedItem(cheatName, cheatNote,
-                                            flagItem | ((*ccode & 0xff000000) ? selectValue : 0),
-                                            dataPos + (((char*)ccode + 3) - buffer)));
-                if ((*ccode & 0xff000000) && (flagItem & cParsedItem::EOne)) selectValue = 0;
+                _data.push_back(cCheatDatItem(cheatName, cheatNote,
+                                              flagItem | ((*ccode & 0xff000000) ? selectValue : 0),
+                                              dataPos + (((char*)ccode + 3) - buffer)));
+                if ((*ccode & 0xff000000) && (flagItem & cCheatDatItem::EOne)) selectValue = 0;
                 _data.back()._cheat.resize(cheatDataLen);
                 memcpy(_data.back()._cheat.data(), cheatData, cheatDataLen * 4);
             }
@@ -154,15 +154,15 @@ bool cCheat::parseInternal(FILE* aDat, u32 gamecode, u32 crc32) {
 }
 
 void cCheat::deselectFolder(size_t anIndex) {
-    std::vector<cParsedItem>::iterator itr = _data.begin() + anIndex;
+    std::vector<cCheatDatItem>::iterator itr = _data.begin() + anIndex;
     while (--itr >= _data.begin()) {
-        if ((*itr)._flags & cParsedItem::EFolder) {
+        if ((*itr)._flags & cCheatDatItem::EFolder) {
             ++itr;
             break;
         }
     }
-    while (((*itr)._flags & cParsedItem::EInFolder) && itr != _data.end()) {
-        (*itr)._flags &= ~cParsedItem::ESelected;
+    while (((*itr)._flags & cCheatDatItem::EInFolder) && itr != _data.end()) {
+        (*itr)._flags &= ~cCheatDatItem::ESelected;
         ++itr;
     }
 }
@@ -170,7 +170,7 @@ void cCheat::deselectFolder(size_t anIndex) {
 std::vector<u32> cCheat::getCheats() {
     std::vector<u32> cheats;
     for (uint i = 0; i < _data.size(); i++) {
-        if (_data[i]._flags & cParsedItem::ESelected) {
+        if (_data[i]._flags & cCheatDatItem::ESelected) {
             cheats.insert(cheats.end(), _data[i]._cheat.begin(), _data[i]._cheat.end());
         }
     }

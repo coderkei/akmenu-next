@@ -130,7 +130,7 @@ bool cCheatWnd::processKeyMessage(const cKeyMessage& msg) {
             case cKeyMessage::UI_KEY_LEFT: {
                 size_t ii = _List.selectedRowId();
                 while (--ii > 0) {
-                    if (_data[_indexes[ii]]._flags & cParsedItem::EFolder) break;
+                    if (_data[_indexes[ii]]._flags & cCheatDatItem::EFolder) break;
                 }
                 _List.selectRow(ii);
             }
@@ -139,7 +139,7 @@ bool cCheatWnd::processKeyMessage(const cKeyMessage& msg) {
             case cKeyMessage::UI_KEY_RIGHT: {
                 size_t ii = _List.selectedRowId(), top = _List.getRowCount();
                 while (++ii < top) {
-                    if (_data[_indexes[ii]]._flags & cParsedItem::EFolder) break;
+                    if (_data[_indexes[ii]]._flags & cCheatDatItem::EFolder) break;
                 }
                 _List.selectRow(ii);
             }
@@ -185,23 +185,23 @@ void cCheatWnd::onItemClicked(u32 index) {
 
 void cCheatWnd::onSelect(void) {
     size_t index = _indexes[_List.selectedRowId()];
-    if (_data[index]._flags & cParsedItem::EFolder) {
-        _data[index]._flags ^= cParsedItem::EOpen;
+    if (_data[index]._flags & cCheatDatItem::EFolder) {
+        _data[index]._flags ^= cCheatDatItem::EOpen;
         u32 first = _List.firstVisibleRowId(), row = _List.selectedRowId();
         generateList();
         _List.setFirstVisibleIdAndSelectRow(first, row);
     } else {
-        bool deselect = (_data[index]._flags & (cParsedItem::EOne | cParsedItem::ESelected)) ==
-                        (cParsedItem::EOne | cParsedItem::ESelected);
-        if (_data[index]._flags & cParsedItem::EOne) deselectFolder(index);
-        if (!deselect) _data[index]._flags ^= cParsedItem::ESelected;
+        bool deselect = (_data[index]._flags & (cCheatDatItem::EOne | cCheatDatItem::ESelected)) ==
+                        (cCheatDatItem::EOne | cCheatDatItem::ESelected);
+        if (_data[index]._flags & cCheatDatItem::EOne) deselectFolder(index);
+        if (!deselect) _data[index]._flags ^= cCheatDatItem::ESelected;
     }
 }
 
 void cCheatWnd::onDeselectAll(void) {
-    std::vector<cParsedItem>::iterator itr = _data.begin();
+    std::vector<cCheatDatItem>::iterator itr = _data.begin();
     while (itr != _data.end()) {
-        (*itr)._flags &= ~cParsedItem::ESelected;
+        (*itr)._flags &= ~cCheatDatItem::ESelected;
         ++itr;
     }
 }
@@ -233,9 +233,9 @@ static void updateDB(u8 value, u32 offset, FILE* db) {
 void cCheatWnd::onGenerate(void) {
     FILE* db = fopen((SFN_CHEATS).c_str(), "r+b");
     if (db) {
-        std::vector<cParsedItem>::iterator itr = _data.begin();
+        std::vector<cCheatDatItem>::iterator itr = _data.begin();
         while (itr != _data.end()) {
-            updateDB(((*itr)._flags & cParsedItem::ESelected) ? 1 : 0, (*itr)._offset, db);
+            updateDB(((*itr)._flags & cCheatDatItem::ESelected) ? 1 : 0, (*itr)._offset, db);
             ++itr;
         }
         fclose(db);
@@ -254,23 +254,23 @@ void cCheatWnd::onDraw(const cListView::cOwnerDraw& od) {
     size_t index = _indexes[od._row];
     u32 flags = _data[index]._flags;
     if (od._col == EIconColumn) {
-        if (flags & cParsedItem::EFolder) {
+        if (flags & cCheatDatItem::EFolder) {
             u16 size = od._size.y - EFolderTop * 2;
             s16 x1 = od._position.x + ((od._size.x - size) >> 1) - 1, x2 = x1 + (size >> 1),
                 y1 = od._position.y + EFolderTop, y2 = y1 + (size >> 1);
             gdi().frameRect(x1, y1, size, size, od._engine);
             gdi().drawLine(x1, y2, x1 + size, y2, od._engine);
-            if (!(flags & cParsedItem::EOpen)) gdi().drawLine(x2, y1, x2, y1 + size, od._engine);
-        } else if (!(flags & cParsedItem::EInFolder)) {
-            if (flags & cParsedItem::ESelected) drawMark(od, od._size.x);
+            if (!(flags & cCheatDatItem::EOpen)) gdi().drawLine(x2, y1, x2, y1 + size, od._engine);
+        } else if (!(flags & cCheatDatItem::EInFolder)) {
+            if (flags & cCheatDatItem::ESelected) drawMark(od, od._size.x);
         }
     } else if (od._col == ETextColumn) {
-        if (flags & cParsedItem::EInFolder) {
-            if (flags & cParsedItem::ESelected) drawMark(od, EFolderWidth);
+        if (flags & cCheatDatItem::EInFolder) {
+            if (flags & cCheatDatItem::ESelected) drawMark(od, EFolderWidth);
         }
         s16 x = od._position.x;
         u16 w = od._size.x;
-        if (flags & cParsedItem::EInFolder) {
+        if (flags & cCheatDatItem::EInFolder) {
             x += EFolderWidth;
             w -= EFolderWidth;
         }
@@ -289,7 +289,7 @@ void cCheatWnd::generateList(void) {
     _indexes.clear();
     _List.removeAllRows();
 
-    std::vector<cParsedItem>::iterator itr = _data.begin();
+    std::vector<cCheatDatItem>::iterator itr = _data.begin();
     while (itr != _data.end()) {
         std::vector<std::string> row;
         row.push_back("");
@@ -298,8 +298,8 @@ void cCheatWnd::generateList(void) {
         _indexes.push_back(itr - _data.begin());
         u32 flags = (*itr)._flags;
         ++itr;
-        if ((flags & cParsedItem::EFolder) && (flags & cParsedItem::EOpen) == 0) {
-            while (((*itr)._flags & cParsedItem::EInFolder) && itr != _data.end()) ++itr;
+        if ((flags & cCheatDatItem::EFolder) && (flags & cCheatDatItem::EOpen) == 0) {
+            while (((*itr)._flags & cCheatDatItem::EInFolder) && itr != _data.end()) ++itr;
         }
     }
 }
