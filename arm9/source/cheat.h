@@ -35,7 +35,7 @@ class cCheat {
     bool parse(const std::string& aFileName);
     static bool searchCheatData(FILE* aDat, u32 gamecode, u32 crc32, long& aPos, size_t& aSize);
     static bool romData(const std::string& aFileName, u32& aGameCode, u32& aCrc32);
-    std::vector<u32> getCheats();
+    std::vector<cCheatDatItem> getEnabledCheats();
     void writeCheatsToFile(const char* path);
 
   protected:

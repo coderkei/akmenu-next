@@ -167,11 +167,11 @@ void cCheat::deselectFolder(size_t anIndex) {
     }
 }
 
-std::vector<u32> cCheat::getCheats() {
-    std::vector<u32> cheats;
+std::vector<cCheatDatItem> cCheat::getEnabledCheats() {
+    std::vector<cCheatDatItem> cheats;
     for (uint i = 0; i < _data.size(); i++) {
         if (_data[i]._flags & cCheatDatItem::ESelected) {
-            cheats.insert(cheats.end(), _data[i]._cheat.begin(), _data[i]._cheat.end());
+            cheats.push_back(_data[i]);
         }
     }
     return cheats;
@@ -180,8 +180,10 @@ std::vector<u32> cCheat::getCheats() {
 void cCheat::writeCheatsToFile(const char* path) {
     FILE* file = fopen(path, "wb");
     if (file) {
-        std::vector<u32> cheats(getCheats());
-        fwrite(cheats.data(), 4, cheats.size(), file);
+        std::vector<cCheatDatItem> cheats(getEnabledCheats());
+        for (uint i = 0; i < cheats.size(); i++) {
+            fwrite(cheats[i]._cheat.data(), 4, cheats[i]._cheat.size(), file);
+        }
         fwrite("\0\0\0\xCF", 4, 1, file);
         fclose(file);
     }
