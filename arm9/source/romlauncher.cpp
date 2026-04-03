@@ -231,10 +231,11 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
         if (aRomInfo.saveInfo().isDownloadPlay()) flags |= PATCH_DOWNLOAD_PLAY;
         if (aRomInfo.saveInfo().isCheat()) {
             u32 gameCode, crc32;
-            if (cCheatWnd::romData(aFullPath, gameCode, crc32)) {
+
+            if (cCheat::romData(aFullPath, gameCode, crc32)) {
                 FILE* dat = fopen((SFN_CHEATS).c_str(), "rb");
                 if (dat) {
-                    if (cCheatWnd::searchCheatData(dat, gameCode, crc32, cheatOffset, cheatSize)) {
+                    if (cCheat::searchCheatData(dat, gameCode, crc32, cheatOffset, cheatSize)) {
                         flags |= PATCH_CHEATS;
                     }
                     fclose(dat);
