@@ -34,7 +34,7 @@ bool cCheat::parse(const std::string& aFileName) {
     _fileName = aFileName;
     u32 romcrc32, gamecode;
     if (romData(_fileName, gamecode, romcrc32)) {
-        FILE* dat = fopen(SFN_CHEATS, "rb");
+        FILE* dat = fopen((SFN_CHEATS).c_str(), "rb");
         if (dat) {
             res = parseInternal(dat, gamecode, romcrc32);
             fclose(dat);
