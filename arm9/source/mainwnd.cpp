@@ -588,13 +588,6 @@ void cMainWnd::setParam(void) {
         settingWnd.addSettingItem(LANG("nds bootstrap", "loader"), _values, gs().pico);
     }
 
-#ifdef __KERNEL_LAUNCHER_SUPPORT__
-    _values.clear();
-    _values.push_back("Kernel");
-    _values.push_back("nds-bootstrap");
-    settingWnd.addSettingItem(LANG("loader", "text"), _values, gs().romLauncher);
-#endif
-
     // page 5: other
     settingWnd.addSettingTab(LANG("gba settings", "title"));
     _values.clear();

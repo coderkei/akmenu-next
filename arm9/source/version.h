@@ -10,18 +10,6 @@
 #define AKMENU_VERSION_MAIN "2"
 #define AKMENU_VERSION_SUB "0.5"
 
-#ifndef __KERNEL_LAUNCHER_SUPPORT__
 #define AKMENU_LOADER_NAME "nds-bootstrap"
 #define AKMENU_PICO_NAME "Pico-Loader"
 #define AKMENU_LOADER_VERSION ""
-#else  // __KERNEL_LAUNCHER_SUPPORT__
-
-// Loader versions - may not be accurate
-#if defined(__AKLOADER_AK2__)
-#define AKMENU_LOADER_NAME "BL2CK"
-#define AKMENU_LOADER_VERSION "1.31.0"
-#else  // fallback for acekard
-#define AKMENU_LOADER_NAME "wood"
-#define AKMENU_LOADER_VERSION "1.62"
-#endif  // __AKLOADER_AK2__
-#endif  // __KERNEL_LAUNCHER_SUPPORT__
