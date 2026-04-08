@@ -414,7 +414,7 @@ void cMainWnd::launchSelected() {
     progressWnd().show();
     progressWnd().setPercent(0);
     switch (launchRom(fullPath, rominfo,
-                      rominfo.isHomebrew() && "BOOT.NDS" == _mainList->getSelectedShowName(), savesPath)) {
+                      rominfo.isHomebrew() && "BOOT.NDS" == _mainList->getSelectedShowName(), savesPath, _mainList->IsFavorites() ? "yes" : "no")) {
         case ELaunchNoFreeSpace:
             title = LANG("no free space", "title");
             text = LANG("no free space", "text");

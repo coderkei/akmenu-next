@@ -217,7 +217,7 @@ class cSaveManager {
 
     void updateCustomSaveList(const SAVE_INFO_EX& aSaveInfo);
 
-    bool saveLastInfo(const std::string& romFilename);
+    bool saveLastInfo(const std::string& romFilename, const std::string& favorite);
 
     bool loadLastInfo(std::string& lastLoadedFilename);
 

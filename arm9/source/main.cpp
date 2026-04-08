@@ -136,16 +136,21 @@ int main(int argc, char* argv[]) {
     irq().vblankStart();
 
     // enter last directory
-    std::string lastDirectory = "...", lastFile = "...";
+    std::string lastDirectory = "...", lastFile = "...", favorite = "no";
     if (gs().enterLastDirWhenBoot || gs().autorunWithLastRom) {
         CIniFile f;
         if (f.LoadIniFile(SFN_LAST_SAVEINFO)) {
             lastFile = f.GetString("Save Info", "lastLoaded", "");
+            favorite = f.GetString("Save Info", "favorite", "no");
             if ("" == lastFile) {
                 lastFile = "...";
             } else if (gs().enterLastDirWhenBoot) {
-                size_t slashPos = lastFile.find_last_of('/');
-                if (lastFile.npos != slashPos) lastDirectory = lastFile.substr(0, slashPos + 1);
+                if (favorite == "yes") {
+                    lastDirectory = "favorites:/";
+                } else {
+                    size_t slashPos = lastFile.find_last_of('/');
+                    if (lastFile.npos != slashPos) lastDirectory = lastFile.substr(0, slashPos + 1);
+                }
             }
         }
     }
@@ -191,8 +196,11 @@ int main(int argc, char* argv[]) {
     }
 
     dbg_printf("lastDirectory '%s'\n", lastDirectory.c_str());
-    if (!wnd->_mainList->enterDir("..." != lastDirectory ? lastDirectory : gs().startupFolder))
+    if (!wnd->_mainList->enterDir("..." != lastDirectory ? lastDirectory : gs().startupFolder)) {
         wnd->_mainList->enterDir("...");
+    } else {
+        wnd->_mainList->selectRom(lastFile);
+    }
 
     *(u32*)(0xCFFFD0C) = 0x454D4D43;
     while (*(u32*)(0xCFFFD0C) != 0) {
@@ -201,7 +209,7 @@ int main(int argc, char* argv[]) {
 
     if (gs().autorunWithLastRom && "..." != lastFile) {
         INPUT& inputs = updateInput();
-        if (!(inputs.keysHeld & KEY_B)) autoLaunchRom(lastFile);
+        if (!(inputs.keysHeld & KEY_B)) autoLaunchRom(lastFile, favorite);
     }
 
     while (true) {
