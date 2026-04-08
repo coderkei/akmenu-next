@@ -15,7 +15,7 @@
 
 #include <nds/ndstypes.h>
 
-#include "../cheatwnd.h"
+#include "cheat.h"
 #include "../dsrom.h"
 #include "../flags.h"
 #include "../inifile.h"
@@ -68,17 +68,16 @@ void slot2RamAccess(){
 bool NdsBootstrapLauncher::prepareCheats() {
     u32 gameCode, crc32;
 
-    if (cCheatWnd::romData(mRomPath, gameCode, crc32)) {
+    if (cCheat::romData(mRomPath, gameCode, crc32)) {
         FILE* cheatDb = fopen((SFN_CHEATS).c_str(), "rb");
         if (!cheatDb) goto cheat_failed;
         long cheatOffset;
         size_t cheatSize;
-        if (cCheatWnd::searchCheatData(cheatDb, gameCode, crc32, cheatOffset, cheatSize)) {
-            cCheatWnd chtwnd((256) / 2, (192) / 2, 100, 100, NULL, mRomPath);
-
-            chtwnd.parse(mRomPath);
-            chtwnd.writeCheatsToFile("/_nds/nds-bootstrap/cheatData.bin");
-            FILE* cheatData = fopen("/_nds/nds-bootstrap/cheatData.bin", "rb");
+        if (cCheat::searchCheatData(cheatDb, gameCode, crc32, cheatOffset, cheatSize)) {
+            cCheat cheat;
+            cheat.parse(mRomPath);
+            cheat.writeCheatsToFile("/_nds/nds-bootstrap/cheatData.bin");
+            FILE* cheatData = fopen("/_nds/nds-bootstrap/cheatData.bin","rb");
             if (cheatData) {
                 u32 check[2];
                 fread(check, 1, 8, cheatData);

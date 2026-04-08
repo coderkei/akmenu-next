@@ -51,11 +51,6 @@ cGlobalSettings::cGlobalSettings() {
     hbStrap = 0;
     pico = 0;
     icon = 1;
-#ifndef __KERNEL_LAUNCHER_SUPPORT__
-    romLauncher = EKernelLauncher;
-#else
-    romLauncher = ENdsBootstrapLauncher;
-#endif
 }
 
 void cGlobalSettings::loadSettings() {

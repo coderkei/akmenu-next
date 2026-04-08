@@ -1,5 +1,5 @@
 /*
-    Copyright 2016-2024 melonDS team
+    Copyright 2016-2026 melonDS team
 
     This file is part of melonDS.
 
@@ -20,6 +20,12 @@
 
 #include "ROMList.h"
 
+/* AKMENU CHANGES START - don't namespace ROMList */
+/*
+namespace melonDS
+{
+*/
+/* AKMENU CHANGES END - don't namespace ROMList */
 const ROMListEntry ROMList[] =
 {
 	{0x41464141, 0x00800000, 0x00000004},
@@ -898,7 +904,7 @@ const ROMListEntry ROMList[] =
 	{0x45455742, 0x04000000, 0x00000001},
 	{0x45455743, 0x01000000, 0x00000002},
 	{0x45455842, 0x04000000, 0x00000001},
-	{0x45455943, 0x08000000, 0x00000002},
+	{0x45455943, 0x08000000, 0x00000003},
 	{0x45455A41, 0x04000000, 0x00000006},
 	{0x45455A42, 0x00800000, 0x00000001},
 	{0x45463242, 0x00800000, 0x00000001},
@@ -6803,3 +6809,9 @@ const ROMListEntry ROMList[] =
 };
 
 const size_t ROMListEntryCount = sizeof(ROMList) / sizeof(ROMListEntry);
+
+/* AKMENU CHANGES START - don't namespace ROMList */
+/*
+}
+*/
+/* AKMENU CHANGES END - don't namespace ROMList */

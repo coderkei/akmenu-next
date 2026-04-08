@@ -1,5 +1,5 @@
 /*
-    Copyright 2016-2024 melonDS team
+    Copyright 2016-2026 melonDS team
 
     This file is part of melonDS.
 
@@ -25,6 +25,12 @@
 
 #include <nds/ndstypes.h>
 
+/* AKMENU CHANGES START - don't namespace ROMList */
+/*
+namespace melonDS
+{
+*/
+/* AKMENU CHANGES END - don't namespace ROMList */
 struct ROMListEntry
 {
 	u32 GameCode;
@@ -38,4 +44,9 @@ extern const ROMListEntry ROMList[];
 /// The number of elements in \c ROMList.
 extern const size_t ROMListEntryCount;
 
-#endif  // ROMLIST_H
+/* AKMENU CHANGES START - don't namespace ROMList */
+/*
+}
+*/
+/* AKMENU CHANGES END - don't namespace ROMList */
+#endif // ROMLIST_H

@@ -7,16 +7,14 @@
 
 #include <sys/stat.h>
 #include "romlauncher.h"
-#include "cheatwnd.h"
+#include "cheat.h"
 #include "exptools.h"
 #include "flags.h"
 #include "language.h"
 
-#include "launcher/AcekardLauncher.h"
 #include "launcher/HomebrewLauncher.h"
 #include "launcher/ILauncher.h"
 #include "launcher/NdsBootstrapLauncher.h"
-#include "launcher/TopToyLauncher.h"
 #include "launcher/DSpicoLauncher.h"
 
 static SAVE_TYPE PrefillGame(u32 aGameCode) {
@@ -231,10 +229,11 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
         if (aRomInfo.saveInfo().isDownloadPlay()) flags |= PATCH_DOWNLOAD_PLAY;
         if (aRomInfo.saveInfo().isCheat()) {
             u32 gameCode, crc32;
-            if (cCheatWnd::romData(aFullPath, gameCode, crc32)) {
+
+            if (cCheat::romData(aFullPath, gameCode, crc32)) {
                 FILE* dat = fopen((SFN_CHEATS).c_str(), "rb");
                 if (dat) {
-                    if (cCheatWnd::searchCheatData(dat, gameCode, crc32, cheatOffset, cheatSize)) {
+                    if (cCheat::searchCheatData(dat, gameCode, crc32, cheatOffset, cheatSize)) {
                         flags |= PATCH_CHEATS;
                     }
                     fclose(dat);
