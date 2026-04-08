@@ -196,8 +196,11 @@ int main(int argc, char* argv[]) {
     }
 
     dbg_printf("lastDirectory '%s'\n", lastDirectory.c_str());
-    if (!wnd->_mainList->enterDir("..." != lastDirectory ? lastDirectory : gs().startupFolder))
+    if (!wnd->_mainList->enterDir("..." != lastDirectory ? lastDirectory : gs().startupFolder)) {
         wnd->_mainList->enterDir("...");
+    } else {
+        wnd->_mainList->selectRom(lastFile);
+    }
 
     *(u32*)(0xCFFFD0C) = 0x454D4D43;
     while (*(u32*)(0xCFFFD0C) != 0) {

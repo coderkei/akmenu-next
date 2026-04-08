@@ -53,6 +53,8 @@ class cMainList : public akui::cListView {
 
     void setRomInfo(u32 rowIndex, const DSRomInfo& info);
 
+    void selectRom(const std::string& romPath);
+
     void setViewMode(VIEW_MODE mode);
 
     std::string getSelectedFullPath();
