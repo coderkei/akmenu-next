@@ -33,10 +33,65 @@ constexpr std::align_val_t cache_align { 32 };
 
 typedef void (*pico_loader_9_func_t)(void);
 
+bool DSpicoLauncher::prepareCheats(void) {
+    u32* cheatTablePtr;
+    std::vector<cCheatDatItem> cheatEntries;
+    // a pload_cheats_t table always has two u32s as the header
+    u32 cheatTableSize = 8;
+    cCheat cheat;
+
+    if (!cheat.parse(mRomPath)) goto cheat_failed;
+
+    cheatEntries = cheat.getEnabledCheats();
+    if (cheatEntries.empty()) goto cheat_failed;
+
+    // calculate size of pload_cheats_t to allocate
+    for (u32 i = 0; i < cheatEntries.size(); i++) {
+        // Each pload_cheats_t table has a pload_cheat_t entry for each cheat entry
+        // which has a u32 for length
+        cheatTableSize += 4;
+        // then the data, multiplied by 4 since each opcode is a u32
+        cheatTableSize += ((cheatEntries[i]._cheat.size()) << 2);
+    }
+
+    // construct the cheat table
+    mCheats = (pload_cheats_t*)memalign(4, cheatTableSize);
+    mCheats->length = cheatTableSize;
+    mCheats->numberOfCheats = cheatEntries.size();
+    cheatTablePtr = (u32*)mCheats;
+
+    // load cheat codes to table
+    // skip the first two u32, which is the cheat table's header
+    cheatTablePtr += 2;
+
+    for (u32 i = 0; i < cheatEntries.size(); i++) {
+        // pload_cheat_t->length
+        *cheatTablePtr = cheatEntries[i]._cheat.size() << 2;
+
+        cheatTablePtr++;
+        // pload_cheat_opcode_t, arbitrary size
+        // TODO bounds check
+        for (u32 j = 0; j < cheatEntries[i]._cheat.size(); j++) {
+            *cheatTablePtr = cheatEntries[i]._cheat[j];
+            cheatTablePtr++;
+        }
+    }
+
+    return true;
+
+    cheat_failed:
+    return false;
+}
+
+
 bool DSpicoLauncher::launchRom(std::string romPath, std::string savePath, u32 flags,
                                      u32 cheatOffset, u32 cheatSize, bool hb) {
     const char picoLoader7Path[] = "fat:/_pico/picoLoader7.bin";
     const char picoLoader9Path[] = "fat:/_pico/picoLoader9.bin";
+
+    mRomPath = romPath;
+    mSavePath = savePath;
+    mFlags = flags;
 
     progressWnd().setTipText("Initializing pico-loader...");
     progressWnd().show();
@@ -71,8 +126,14 @@ bool DSpicoLauncher::launchRom(std::string romPath, std::string savePath, u32 fl
     }
 
     pload_params_t sLoadParams{};
-    strcpy(sLoadParams.romPath, romPath.c_str());
-    strcpy(sLoadParams.savePath, savePath.c_str());
+    strcpy(sLoadParams.romPath, mRomPath.c_str());
+    strcpy(sLoadParams.savePath, mSavePath.c_str());
+
+    if(mFlags & PATCH_CHEATS){
+        prepareCheats();
+    }
+    progressWnd().setPercent(20);
+
 
     fseek(loader9, 0, SEEK_END);
     auto picoLoader9Size = ftell(loader9);
@@ -114,14 +175,18 @@ bool DSpicoLauncher::launchRom(std::string romPath, std::string savePath, u32 fl
         TIMER_DATA(i) = 0;
     }
 
+    ((pload_header7_t*)0x06840000)->bootDrive = PLOAD_BOOT_DRIVE_DLDI;
+    ((pload_header7_t*)0x06840000)->dldiDriver = (void*)io_dldi_data;
+    tonccpy(&((pload_header7_t*)0x06840000)->loadParams, &sLoadParams, sizeof(pload_params_t));
+    if(mFlags & PATCH_CHEATS){
+        ((pload_header7_t*)0x06840000)->v3.cheats = mCheats;
+    }
+
     DC_FlushAll();
     DC_InvalidateAll();
     IC_InvalidateAll();
     sysSetBusOwners(false, false);
 
-    ((pload_header7_t*)0x06840000)->bootDrive = PLOAD_BOOT_DRIVE_DLDI;
-    ((pload_header7_t*)0x06840000)->dldiDriver = (void*)io_dldi_data;
-    tonccpy(&((pload_header7_t*)0x06840000)->loadParams, &sLoadParams, sizeof(pload_params_t));
     vramSetBankC(VRAM_C_ARM7_0x06000000);
     vramSetBankD(VRAM_D_ARM7_0x06020000);
     fifoSendValue32(FIFO_USER_01, MENU_MSG_ARM7_REBOOT_PICOLOADER);

@@ -8,6 +8,7 @@
 
 #include <nds/ndstypes.h>
 
+#include "DSpico/picoLoader7.h"
 #include "../dsrom.h"
 #include "ILauncher.h"
 
@@ -18,10 +19,8 @@ class DSpicoLauncher : public ILauncher {
 
   private:
     bool prepareCheats(void);
-    bool prepareIni(bool hb);
-    bool hotkeyCheck;
     std::string mRomPath;
     std::string mSavePath;
     u32 mFlags;
-    DSRomInfo _romInfo;
+    pload_cheats_t* mCheats;
 };
