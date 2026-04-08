@@ -136,16 +136,21 @@ int main(int argc, char* argv[]) {
     irq().vblankStart();
 
     // enter last directory
-    std::string lastDirectory = "...", lastFile = "...";
+    std::string lastDirectory = "...", lastFile = "...", favorite = "no";
     if (gs().enterLastDirWhenBoot || gs().autorunWithLastRom) {
         CIniFile f;
         if (f.LoadIniFile(SFN_LAST_SAVEINFO)) {
             lastFile = f.GetString("Save Info", "lastLoaded", "");
+            favorite = f.GetString("Save Info", "favorite", "no");
             if ("" == lastFile) {
                 lastFile = "...";
             } else if (gs().enterLastDirWhenBoot) {
-                size_t slashPos = lastFile.find_last_of('/');
-                if (lastFile.npos != slashPos) lastDirectory = lastFile.substr(0, slashPos + 1);
+                if (favorite == "yes") {
+                    lastDirectory = "favorites:/";
+                } else {
+                    size_t slashPos = lastFile.find_last_of('/');
+                    if (lastFile.npos != slashPos) lastDirectory = lastFile.substr(0, slashPos + 1);
+                }
             }
         }
     }
@@ -201,7 +206,7 @@ int main(int argc, char* argv[]) {
 
     if (gs().autorunWithLastRom && "..." != lastFile) {
         INPUT& inputs = updateInput();
-        if (!(inputs.keysHeld & KEY_B)) autoLaunchRom(lastFile);
+        if (!(inputs.keysHeld & KEY_B)) autoLaunchRom(lastFile, favorite);
     }
 
     while (true) {

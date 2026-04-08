@@ -137,9 +137,10 @@ void cSaveManager::updateCustomSaveList(const SAVE_INFO_EX& aSaveInfo) {
     exportCustomSaveList(SFN_CUSTOM_SAVELIST);
 }
 
-bool cSaveManager::saveLastInfo(const std::string& romFilename) {
+bool cSaveManager::saveLastInfo(const std::string& romFilename, const std::string& favorite) {
     CIniFile f;
     f.SetString("Save Info", "lastLoaded", romFilename);
+    f.SetString("Save Info", "favorite", favorite);
     if (!f.SaveIniFile(SFN_LAST_SAVEINFO)) return false;
 
     return true;
@@ -161,7 +162,7 @@ bool cSaveManager::loadLastInfo(std::string& lastLoadedFilename) {
 bool cSaveManager::clearLastInfo() {
     std::string loadLoadedFile;
     if (loadLastInfo(loadLoadedFile)) {
-        return saveLastInfo("");
+        return saveLastInfo("","");
     }
     return true;
 }

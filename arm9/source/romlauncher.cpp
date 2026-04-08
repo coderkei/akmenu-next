@@ -132,7 +132,7 @@ static u32 SaveSize(SAVE_TYPE st) {
     return result;
 }
 
-TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool aMenu, const std::string& savesPath) {
+TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool aMenu, const std::string& savesPath, const std::string& favorite) {
     u32 flags = 0;
     long cheatOffset = 0;
     size_t cheatSize = 0;
@@ -200,7 +200,7 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
                                                          bigSaveSize);
             if (!isBigSave) return ELaunchNoFreeSpace;
             flags |= PATCH_SD_SAVE | (bigSaveMask << PATCH_SAVE_SHIFT);
-            saveManager().saveLastInfo(aFullPath);
+            saveManager().saveLastInfo(aFullPath, favorite);
         } else {
             SAVE_TYPE st = (SAVE_TYPE)aRomInfo.saveInfo().saveType;
             if (ST_UNKNOWN == st) st = ST_AUTO;
@@ -217,7 +217,7 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
                 if (cSaveManager::initializeSaveFile(useSavesPath, aRomInfo.saveInfo().getSlot(),
                 SaveSize(st))) {
                 flags |= PATCH_SD_SAVE | (SaveMask(st) << PATCH_SAVE_SHIFT);
-                saveManager().saveLastInfo(aFullPath);
+                saveManager().saveLastInfo(aFullPath, favorite);
                 } else {
                 return ELaunchNoFreeSpace;
                 }
@@ -255,7 +255,7 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
         }
 
     } else {
-        if (!aMenu) saveManager().saveLastInfo(aFullPath);
+        if (!aMenu) saveManager().saveLastInfo(aFullPath, favorite);
         if (gs().hbStrap == 1)
         {
             hb = true;
@@ -269,8 +269,8 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
     return ELaunchRomOk;
 }
 
-void autoLaunchRom(const std::string& aFullPath) {
+void autoLaunchRom(const std::string& aFullPath, const std::string& favorite) {
     DSRomInfo rominfo;
     rominfo.MayBeDSRom(aFullPath);
-    if (rominfo.isDSRom()) launchRom(aFullPath, rominfo, false, "");
+    if (rominfo.isDSRom()) launchRom(aFullPath, rominfo, false, "", favorite);
 }
