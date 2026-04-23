@@ -44,6 +44,7 @@
 #include "sram.h"
 #include "userwnd.h"
 #include "fsmngr.h"
+#include "pluginmngr.h"
 
 using namespace akui;
 
@@ -87,6 +88,7 @@ int main(int argc, char* argv[]) {
 
     // setting scripts
     gs().loadSettings();
+    pluginManager().loadPlugins();
 
     // init unicode
     // if( initUnicode() )

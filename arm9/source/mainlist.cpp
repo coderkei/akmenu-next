@@ -29,6 +29,7 @@
 #include "unknown_banner_bin.h"
 #include "windowmanager.h"
 #include "fsmngr.h"
+#include "pluginmngr.h"
 
 using namespace akui;
 
@@ -239,6 +240,8 @@ bool cMainList::enterDir(const std::string& dirName) {
     extNames.push_back(".dsi");
     extNames.push_back(".srl");
     if (gs().showGbaRoms > 0) extNames.push_back(".gba");
+    const std::vector<std::string>& pluginExtensions = pluginManager().extensions();
+    extNames.insert(extNames.end(), pluginExtensions.begin(), pluginExtensions.end());
     if (gs().fileListType > 0) extNames.push_back(".sav");
     if (_showAllFiles || gs().fileListType > 1) extNames.clear();
     std::vector<std::string> savNames;

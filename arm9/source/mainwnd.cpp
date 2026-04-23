@@ -19,6 +19,7 @@
 #include "datetime.h"
 
 #include "expwnd.h"
+#include "exptools.h"
 #include "favorites.h"
 #include "gbaloader.h"
 #include "helpwnd.h"
@@ -27,17 +28,39 @@
 #include "progresswnd.h"
 #include "rominfownd.h"
 #include "romlauncher.h"
+#include "pluginmngr.h"
 
 #include <dirent.h>
 #include <fat.h>
+#include <unistd.h>
 #include <sys/iosupport.h>
 
 #include "launcher/HomebrewLauncher.h"
 #include "launcher/NdsBootstrapLauncher.h"
 #include "launcher/PassMeLauncher.h"
 #include "launcher/Slot1Launcher.h"
+#include "launcher/nds_loader_arm9.h"
+#include "launcher/ILauncher.h"
 
 using namespace akui;
+
+namespace {
+bool launchPluginFile(const cPluginManager::PluginAssociation& plugin, const std::string& selectedPath) {
+    if (access(plugin.launcherPath.c_str(), F_OK) != 0) {
+        printLoaderNotFound(plugin.launcherPath);
+        return false;
+    }
+
+    std::vector<const char*> argv;
+    argv.push_back(plugin.launcherPath.c_str());
+    if (plugin.useArgv) {
+        argv.push_back(selectedPath.c_str());
+    }
+
+    eRunNdsRetCode rc = runNdsFile(argv[0], argv.size(), &argv[0]);
+    return rc == RUN_NDS_OK;
+}
+}  // namespace
 
 cMainWnd::cMainWnd(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::string& text)
     : cForm(x, y, w, h, parent, text),
@@ -395,11 +418,21 @@ void cMainWnd::launchSelected() {
 
     DSRomInfo rominfo;
     if (!_mainList->getRomInfo(_mainList->selectedRowId(), rominfo)) return;
+    const cPluginManager::PluginAssociation* plugin = pluginManager().findPlugin(fullPath);
 
     // rominfo.loadDSRomInfo( fullPath, false );
 
     if (rominfo.isGbaRom()) {
-        CGbaLoader(fullPath).Load(false, false);
+        if (expansion().IsValid()) {
+            CGbaLoader(fullPath).Load(false, false);
+        } else if (plugin) {
+            launchPluginFile(*plugin, fullPath);
+        }
+        return;
+    }
+
+    if (plugin) {
+        launchPluginFile(*plugin, fullPath);
         return;
     }
 
