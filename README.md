@@ -37,7 +37,7 @@ Build the repository with `make`, then run `package.cmd/sh` depending on your OS
 
 ### Plugins
 
-Plugin format is `{extension}.ini` and follows the below format:
+Plugin format is `{extension}.ini` (e.g. gba.ini) and follows the below format:
 
 
 ```
