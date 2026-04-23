@@ -9,6 +9,7 @@ class cPluginManager {
     struct PluginAssociation {
         std::string extension;
         std::string launcherPath;
+        std::string iconPath;
         bool useArgv;
     };
 

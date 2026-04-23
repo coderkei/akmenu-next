@@ -33,6 +33,19 @@
 
 using namespace akui;
 
+namespace {
+bool loadBannerFromBin(DSRomInfo& rominfo, const std::string& path) {
+    FILE* f = fopen(path.c_str(), "rb");
+    if (!f) {
+        return false;
+    }
+
+    size_t read = fread(&rominfo.banner(), 1, sizeof(tNDSBanner), f);
+    fclose(f);
+    return read == sizeof(tNDSBanner);
+}
+}  // namespace
+
 cMainList::cMainList(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::string& text)
     : cListView(x, y, w, h, parent, text),
       _showAllFiles(false),
@@ -352,20 +365,27 @@ bool cMainList::enterDir(const std::string& dirName) {
                     rominfo.setBanner("folder", folder_banner_bin);               
             } else {
                 bool allowExt = true, allowUnknown = false;
+                const cPluginManager::PluginAssociation* plugin = pluginManager().findPlugin(filename);
                 if (".sav" == extName) {
                     memcpy(&rominfo.banner(), nds_save_banner_bin, sizeof(tNDSBanner));
                 } else if (".gba" == extName) {
                     rominfo.MayBeGbaRom(filename);
                 } else if (".nds" != extName && ".dsi" != extName && ".srl" != extName) {
-                    memcpy(&rominfo.banner(), unknown_banner_bin, sizeof(tNDSBanner));
-                    allowUnknown = true;
+                    if (!(plugin && loadBannerFromBin(rominfo, plugin->iconPath))) {
+                        memcpy(&rominfo.banner(), unknown_banner_bin, sizeof(tNDSBanner));
+                        allowUnknown = true;
+                    } else {
+                        allowExt = false;
+                    }
                 } else {
                     rominfo.MayBeDSRom(filename);
                     allowExt = false;
                 }
-                rominfo.setExtIcon(_rows[ii][SHOWNAME_COLUMN].text());
-                if (allowExt && extName.length() && !rominfo.isExtIcon())
-                    rominfo.setExtIcon(extName.substr(1));
+                if (allowExt) {
+                    rominfo.setExtIcon(_rows[ii][SHOWNAME_COLUMN].text());
+                    if (extName.length() && !rominfo.isExtIcon())
+                        rominfo.setExtIcon(extName.substr(1));
+                }
                 if (allowUnknown && !rominfo.isExtIcon()) rominfo.setExtIcon("unknown");
             }
         }
@@ -375,6 +395,42 @@ bool cMainList::enterDir(const std::string& dirName) {
     directoryChanged();
 
     return true;
+}
+
+std::string cMainList::getSelectedFullPath() {
+    if (!_rows.size()) return std::string("");
+    return _rows[_selectedRowId][REALNAME_COLUMN].text();
+}
+
+std::string cMainList::getSelectedShowName() {
+    if (!_rows.size()) return std::string("");
+    return _rows[_selectedRowId][SHOWNAME_COLUMN].text();
+}
+
+bool cMainList::getRomInfo(u32 rowIndex, DSRomInfo& info) const {
+    if (rowIndex < _romInfoList.size()) {
+        info = _romInfoList[rowIndex];
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void cMainList::setRomInfo(u32 rowIndex, const DSRomInfo& info) {
+    if (!_romInfoList[rowIndex].isDSRom()) return;
+
+    if (rowIndex < _romInfoList.size()) {
+        _romInfoList[rowIndex] = info;
+    }
+}
+
+void cMainList::selectRom(const std::string& romPath){
+    for(unsigned int row = 0; row < _rows.size(); row++){
+        if(romPath == _rows[row][REALNAME_COLUMN].text()){
+            selectRow(row);
+            break;
+        }
+    }
 }
 
 void cMainList::onSelectChanged(u32 index) {
@@ -416,42 +472,6 @@ void cMainList::backParentDir() {
             if (parentDir + _rows[i][SHOWNAME_COLUMN].text() == oldCurrentDir) {
                 selectRow(i);
             }
-        }
-    }
-}
-
-std::string cMainList::getSelectedFullPath() {
-    if (!_rows.size()) return std::string("");
-    return _rows[_selectedRowId][REALNAME_COLUMN].text();
-}
-
-std::string cMainList::getSelectedShowName() {
-    if (!_rows.size()) return std::string("");
-    return _rows[_selectedRowId][SHOWNAME_COLUMN].text();
-}
-
-bool cMainList::getRomInfo(u32 rowIndex, DSRomInfo& info) const {
-    if (rowIndex < _romInfoList.size()) {
-        info = _romInfoList[rowIndex];
-        return true;
-    } else {
-        return false;
-    }
-}
-
-void cMainList::setRomInfo(u32 rowIndex, const DSRomInfo& info) {
-    if (!_romInfoList[rowIndex].isDSRom()) return;
-
-    if (rowIndex < _romInfoList.size()) {
-        _romInfoList[rowIndex] = info;
-    }
-}
-
-void cMainList::selectRom(const std::string& romPath){
-    for(unsigned int row = 0; row < _rows.size(); row++){
-        if(romPath == _rows[row][REALNAME_COLUMN].text()){
-            selectRow(row);
-            break;
         }
     }
 }
@@ -591,3 +611,7 @@ void cMainList::SwitchShowAllFiles(void) {
     _showAllFiles = !_showAllFiles;
     enterDir(getCurrentDir());
 }
+
+
+
+

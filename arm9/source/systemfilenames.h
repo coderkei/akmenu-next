@@ -20,6 +20,7 @@
 #define SFN_FAVORITES SFN_SYSTEM_DIR + "favorites.ini"
 #define SFN_BACKLIGHT SFN_SYSTEM_DIR + "backlight.ini"
 #define SFN_PLUGINS_DIRECTORY (SFN_SYSTEM_DIR + "plugins/")
+#define SFN_PLUGIN_ICONS_DIRECTORY (SFN_PLUGINS_DIRECTORY + "icons/")
 
 #define SFN_UI_DIRECTORY SFN_SYSTEM_DIR + "ui/"
 #define SFN_UI_CURRENT_DIRECTORY SFN_UI_DIRECTORY + gs().uiName + "/"
@@ -57,4 +58,3 @@
 #define SFN_ICONS_DIRECTORY SFN_SYSTEM_DIR + "icons/"
 
 #define SFN_CHEATS SFN_SYSTEM_DIR + "cheats/usrcheat.dat"
-

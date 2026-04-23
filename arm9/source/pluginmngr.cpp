@@ -61,8 +61,8 @@ void cPluginManager::loadPlugins() {
             continue;
         }
 
-        std::string extension = normalizeExtension(ini.GetString(
-                "plugin", "extension", "." + fileStemFromPath(fileName)));
+        std::string extension = normalizeExtension(
+                ini.GetString("plugin", "extension", "." + fileStemFromPath(fileName)));
         std::string launcherPath = resolveLauncherPath(
                 ini.GetString("plugin", "path",
                               ini.GetString("plugin", "launcher",
@@ -73,8 +73,9 @@ void cPluginManager::loadPlugins() {
             dbg_printf("skipping invalid plugin ini: %s\n", iniPath.c_str());
             continue;
         }
+        std::string iconPath = SFN_PLUGIN_ICONS_DIRECTORY + extension.substr(1) + ".bin";
 
-        PluginAssociation plugin = {extension, launcherPath, useArgv};
+        PluginAssociation plugin = {extension, launcherPath, iconPath, useArgv};
         _plugins.push_back(plugin);
         if (std::find(_extensions.begin(), _extensions.end(), extension) == _extensions.end()) {
             _extensions.push_back(extension);
