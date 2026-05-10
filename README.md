@@ -43,7 +43,8 @@ Plugin format is `{extension}.ini` (e.g. `gba.ini`) and follows the below format
 ```
 [plugin]
 path=path/to/nds/here.nds
-argv=1
+argv=1 //If the emulator supports argv
+bootstrap=0 //If using a DSI SD card and the emulator requires nds-bootstrap-hb
 ```
 
 The specified extension will be recognised as a valid file and will launch via argv (if set to `1`) to the specified `.nds` file.
