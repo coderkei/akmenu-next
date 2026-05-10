@@ -123,7 +123,8 @@ int cMainList::init() {
     return 1;
 }
 
-static bool itemSortComp(const cListView::itemVector& item1, const cListView::itemVector& item2) {
+// Don't think this is used anymore?
+/*static bool itemSortComp(const cListView::itemVector& item1, const cListView::itemVector& item2) {
     const std::string& fn1 = item1[cMainList::SHOWNAME_COLUMN].text();
     const std::string& fn2 = item2[cMainList::SHOWNAME_COLUMN].text();
     if ("../" == fn1) return true;
@@ -133,7 +134,7 @@ static bool itemSortComp(const cListView::itemVector& item1, const cListView::it
     if ('/' == fn2[fn2.size() - 1]) return false;
 
     return fn1 < fn2;
-}
+}*/
 
 static bool extnameFilter(const std::vector<std::string>& extNames, std::string extName) {
     if (0 == extNames.size()) return true;
@@ -306,6 +307,12 @@ bool cMainList::enterDir(const std::string& dirName) {
 
                 // Don't show MacOS dotfiles
                 if (!gs().showHiddenFiles && lfn[0] == '.') {
+                    continue;
+                }
+
+                // Hide FAT hidden files unless enabled in settings
+                if (!gs().showHiddenFiles &&
+                    (FAT_getAttr((dirName + lfn).c_str()) & ATTR_HIDDEN)) {
                     continue;
                 }
 

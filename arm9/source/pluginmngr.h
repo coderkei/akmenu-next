@@ -11,6 +11,7 @@ class cPluginManager {
         std::string launcherPath;
         std::string iconPath;
         bool useArgv;
+        bool useNdsBootstrapHb = false;
     };
 
     void loadPlugins();

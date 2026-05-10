@@ -45,10 +45,24 @@
 using namespace akui;
 
 namespace {
+bool isDSPicoFlashcart() {
+    return access("fat:/_pico/picoLoader7.bin", F_OK) == 0 &&
+           access("fat:/_pico/picoLoader9.bin", F_OK) == 0;
+}
+
+bool canUsePluginHbBootstrap() {
+    return isDSiMode() && !isDSPicoFlashcart();
+}
+
 bool launchPluginFile(const cPluginManager::PluginAssociation& plugin, const std::string& selectedPath) {
     if (access(plugin.launcherPath.c_str(), F_OK) != 0) {
         printLoaderNotFound(plugin.launcherPath);
         return false;
+    }
+
+    if (plugin.useNdsBootstrapHb && canUsePluginHbBootstrap()) {
+        std::string argPath = plugin.useArgv ? selectedPath : "";
+        return NdsBootstrapLauncher().launchRom(plugin.launcherPath, argPath, 0, 0, 0, true);
     }
 
     std::vector<const char*> argv;

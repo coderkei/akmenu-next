@@ -245,11 +245,14 @@ bool NdsBootstrapLauncher::is3DS(void) {
     return result != 0;
 }
 
-bool launchHbStrap(std::string romPath){
+bool launchHbStrap(const std::string& argPath){
     progressWnd().setPercent(100);
     std::string ndsHbBootstrapPath = fsManager().resolveSystemPath("/_nds/nds-bootstrap-hb-release.nds");
     std::vector<const char*> argv;
     argv.push_back(ndsHbBootstrapPath.c_str());
+    if (!argPath.empty()) {
+        argv.push_back(argPath.c_str());
+    }
     progressWnd().hide();
     eRunNdsRetCode rc = runNdsFile(argv[0], argv.size(), &argv[0]);
     if (rc == RUN_NDS_OK) return true;
@@ -268,6 +271,9 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
     //check if rom is homebrew
     if(hbStrap){
         mRomPath = romPath;
+        // For hb-bootstrap launches, savePath is reused as an optional argv payload.
+        // Normal homebrew launches pass an empty string; plugin launches pass the selected file.
+        mSavePath = savePath;
         if(access(ndsHbBootstrapPath.c_str(), F_OK) != 0){
             progressWnd().hide();
             printLoaderNotFound(ndsHbBootstrapPath);
@@ -281,9 +287,9 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
         remove("/_nds/nds-bootstrap/nds-bootstrap.ini");
         }
         // Setup nds-bootstrap INI parameters
-        if (!prepareIni(false)) return false;
+        if (!prepareIni(true)) return false;
         progressWnd().setPercent(25);
-        launchHbStrap(romPath);
+        return launchHbStrap(savePath);
     }
 
     //has the user used nds-bootstrap before?
