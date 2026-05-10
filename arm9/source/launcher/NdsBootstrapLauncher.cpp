@@ -287,7 +287,7 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
         remove("/_nds/nds-bootstrap/nds-bootstrap.ini");
         }
         // Setup nds-bootstrap INI parameters
-        if (!prepareIni(true)) return false;
+        if (!prepareIni(false)) return false;
         progressWnd().setPercent(25);
         return launchHbStrap(savePath);
     }
