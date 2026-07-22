@@ -253,6 +253,7 @@ bool cMainList::enterDir(const std::string& dirName) {
     extNames.push_back(".nds");
     extNames.push_back(".dsi");
     extNames.push_back(".srl");
+    extNames.push_back(".ids");
     if (gs().showGbaRoms > 0) extNames.push_back(".gba");
     const std::vector<std::string>& pluginExtensions = pluginManager().extensions();
     extNames.insert(extNames.end(), pluginExtensions.begin(), pluginExtensions.end());
@@ -393,7 +394,7 @@ bool cMainList::enterDir(const std::string& dirName) {
                     memcpy(&rominfo.banner(), nds_save_banner_bin, sizeof(tNDSBanner));
                 } else if (".gba" == extName) {
                     rominfo.MayBeGbaRom(filename);
-                } else if (".nds" != extName && ".dsi" != extName && ".srl" != extName) {
+                } else if (".nds" != extName && ".dsi" != extName && ".srl" != extName && ".ids" !=extName) {
                     const cPluginManager::PluginAssociation* plugin = pluginManager().findPlugin(filename);
                     if (plugin && loadBannerFromBin(rominfo, plugin->iconPath)) {
                         allowExt = false;
