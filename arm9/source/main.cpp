@@ -13,10 +13,25 @@
 #include <list>
 #include <map>
 #include <vector>
-
+#include <string>
 #include <fat.h>
 
+#include <sys/stat.h>
 #include "dbgtool.h"
+
+namespace {
+void checkInitIni(const std::string& targetPath, const std::string& initPath) {
+    struct stat stInit;
+    if (stat(initPath.c_str(), &stInit) == 0) {
+        struct stat stTarget;
+        if (stat(targetPath.c_str(), &stTarget) == 0) {
+            remove(initPath.c_str());
+        } else {
+            rename(initPath.c_str(), targetPath.c_str());
+        }
+    }
+}
+}  // namespace
 #include "gdi.h"
 #include "ui.h"
 
@@ -84,7 +99,14 @@ int main(int argc, char* argv[]) {
     //  init fat
     fsManager().init(argc, argv);
     
-    // wait_press_b();
+    // Check and migrate -init.ini files
+    std::string sysDir = SFN_SYSTEM_DIR;
+    checkInitIni(sysDir + "globalsettings.ini", sysDir + "globalsettings-init.ini");
+    checkInitIni(sysDir + "globalsettings.ini", sysDir + "globalsettingspico-init.ini");
+    checkInitIni(sysDir + "favorites.ini", sysDir + "favorites-init.ini");
+    checkInitIni(sysDir + "backlight.ini", sysDir + "backlight-init.ini");
+    checkInitIni(sysDir + "ndsbs.ini", sysDir + "ndsbs-init.ini");
+    checkInitIni(sysDir + "lastsave.ini", sysDir + "lastsave-init.ini");
 
     // setting scripts
     gs().loadSettings();

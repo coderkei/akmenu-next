@@ -7,8 +7,7 @@ cp -r Autoboot flashcart
 cp -r _nds flashcart
 cp boot.nds flashcart\boot.nds
 cp boot.nds flashcart\_nds\akmenunext\launcher.nds
-cp flashcart\_nds\akmenunext\globalsettingspico.ini flashcart\_nds\akmenunext\globalsettings.ini
-rm flashcart\_nds\akmenunext\globalsettingspico.ini
+rm flashcart\_nds\akmenunext\globalsettingspico-init.ini
 "C:\Program Files\7-Zip\7z.exe" -tzip a -r akmenu-next-flashcart.zip ./flashcart/*
 
 :PICO
@@ -18,8 +17,8 @@ cp -r _nds pico
 cp boot.dsi pico\boot.nds
 cp boot.dsi pico\_picoboot.nds
 cp boot.dsi pico\_nds\akmenunext\launcher.nds
-cp pico\_nds\akmenunext\globalsettingspico.ini pico\_nds\akmenunext\globalsettings.ini
-rm pico\_nds\akmenunext\globalsettingspico.ini
+cp pico\_nds\akmenunext\globalsettingspico-init.ini pico\_nds\akmenunext\globalsettings-init.ini
+rm pico\_nds\akmenunext\globalsettingspico-init.ini
 "C:\Program Files\7-Zip\7z.exe" -tzip a -r akmenu-next-pico.zip ./pico/*
 
 :DSI
@@ -30,7 +29,7 @@ cp boot.dsi dsi\boot.nds
 cp boot.dsi dsi\akmenu-next.dsi
 cp boot.dsi dsi\_nds\akmenunext\launcher.nds
 rm dsi\_nds\akmenunext\PassMeLoader.nds
-rm dsi\_nds\akmenunext\globalsettingspico.ini
+rm dsi\_nds\akmenunext\globalsettingspico-init.ini
 "C:\Program Files\7-Zip\7z.exe" -tzip a -r akmenu-next-dsi.zip ./dsi/*
 
 :3DS
@@ -40,7 +39,7 @@ cp boot.dsi 3ds\boot.nds
 cp akmenu-next.cia 3ds\akmenu-next.cia
 cp boot.dsi 3ds\_nds\akmenunext\launcher.nds
 rm 3ds\_nds\akmenunext\PassMeLoader.nds
-rm 3ds\_nds\akmenunext\globalsettingspico.ini
+rm 3ds\_nds\akmenunext\globalsettingspico-init.ini
 "C:\Program Files\7-Zip\7z.exe" -tzip a -r akmenu-next-3ds.zip ./3ds/*
 
 :CLEANUP
