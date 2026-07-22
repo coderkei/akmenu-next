@@ -609,6 +609,10 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("switches", "Enable"));
     settingWnd.addSettingItem(LANG("nds bootstrap", "boostcpu"), _values, gs().boostCpu);
     _values.clear();
+    _values.push_back(LANG("switches", "Disable"));
+    _values.push_back(LANG("switches", "Enable"));
+    settingWnd.addSettingItem(LANG("nds bootstrap", "ignorecrc16"), _values, gs().ignoreCrc16);
+    _values.clear();
     _values.push_back(LANG("nds bootstrap", "release"));
     _values.push_back(LANG("nds bootstrap", "nightly"));
     settingWnd.addSettingItem(LANG("nds bootstrap", "text"), _values, gs().nightly);
@@ -696,18 +700,19 @@ void cMainWnd::setParam(void) {
     // page 4: ndsbs
     gs().dsOnly = settingWnd.getItemSelection(3, 0);
     gs().boostCpu = settingWnd.getItemSelection(3, 1);
-    gs().nightly = settingWnd.getItemSelection(3, 2);
-    gs().languageOverride = settingWnd.getItemSelection(3, 3);
+    gs().ignoreCrc16 = settingWnd.getItemSelection(3, 2);
+    gs().nightly = settingWnd.getItemSelection(3, 3);
+    gs().languageOverride = settingWnd.getItemSelection(3, 4);
 
     if (isDSiMode()) {
-        gs().phatCol = settingWnd.getItemSelection(3, 4);
+        gs().phatCol = settingWnd.getItemSelection(3, 5);
 
         if (fsManager().isFlashcart()){
-            gs().pico = settingWnd.getItemSelection(3, 5);
+            gs().pico = settingWnd.getItemSelection(3, 6);
         }
         
     }else if (fsManager().isFlashcart()) {
-        gs().pico = settingWnd.getItemSelection(3, 4);
+        gs().pico = settingWnd.getItemSelection(3, 5);
     }
 
     // page 5: other

@@ -154,8 +154,13 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
             crc = swiCRC16(0xffff, banner.icon, 0x840 - 32);
 
             if (crc != banner.crc) {
-                dbg_printf("banner crc error, %04x/%04x\n", banner.crc, crc);
-                memcpy(&_banner, nds_banner_bin, sizeof(_banner));
+                if (gs().ignoreCrc16) {
+                    dbg_printf("banner crc error, %04x/%04x (ignoring)\n", banner.crc, crc);
+                    memcpy(&_banner, &banner, sizeof(_banner));
+                } else {
+                    dbg_printf("banner crc error, %04x/%04x\n", banner.crc, crc);
+                    memcpy(&_banner, nds_banner_bin, sizeof(_banner));
+                }
             } else {
                 memcpy(&_banner, &banner, sizeof(_banner));
             }

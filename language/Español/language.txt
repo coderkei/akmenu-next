@@ -339,6 +339,7 @@ firsttimetitle = Inicializando nds-bootstrap
 firsttime = Pulsa "Aceptar" para iniciar la configuración inicial de nds-bootstrap. Este proceso puede tardar un minuto y se realiza una sola vez.
 dsmode = DS-Only Mode
 boostcpu = Velocidad CPU TWL
+ignorecrc16 = Ignorar errores CRC16
 inimissingtitle = Error De INI
 inimissing = ndsbs.ini no se encuentra en _nds/akmenunext o está dañado. Restaure este archivo o reinstale akmenu-next.
 phatCol = DS Phat Colors

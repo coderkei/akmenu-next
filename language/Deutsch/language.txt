@@ -334,6 +334,7 @@ firsttimetitle = NDS-Bootstrap wird initialisiert
 firsttime = Drücken Sie OK, um die Ersteinrichtung von NDS-Bootstrap zu starten. Dies kann eine Minute dauern und ist ein einmaliger Vorgang.
 dsmode = DS-Only Mode
 boostcpu = TWL-CPU-Geschwindigkeit
+ignorecrc16 = CRC16-Fehler ignorieren
 inimissingtitle = INI-Fehler.
 inimissing = ndsbs.ini fehlt in _nds/akmenunext oder ist beschädigt. Bitte stellen Sie diese Datei wieder her oder installieren Sie akmenu-next neu.
 phatCol = DS Phat Colors

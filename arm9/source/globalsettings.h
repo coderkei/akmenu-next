@@ -69,6 +69,7 @@ class cGlobalSettings {
     bool homebrewreset;
     bool dsOnly;
     bool boostCpu;
+    bool ignoreCrc16;
     bool phatCol;
     bool hbStrap;
     bool pico;
