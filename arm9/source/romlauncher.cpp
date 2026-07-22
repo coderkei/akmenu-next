@@ -11,6 +11,7 @@
 #include "exptools.h"
 #include "flags.h"
 #include "language.h"
+#include "recent.h"
 
 #include "launcher/HomebrewLauncher.h"
 #include "launcher/ILauncher.h"
@@ -264,6 +265,9 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
         else{
             launcher = new HomebrewLauncher();
         }
+    }
+    if (!aRomInfo.isHomebrew()) {
+        cRecent::AddToRecent(aFullPath);
     }
     launcher->launchRom(aFullPath, saveName, flags, cheatOffset, cheatSize, hb);
     return ELaunchRomOk;

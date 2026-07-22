@@ -303,6 +303,7 @@ microsd card = microSD卡
 slot2 card = Slot2卡
 slot1 card = Slot1卡
 favorites = 喜愛的
+recent = 最近遊玩
 
 [loader]
 text = 使用ROM引導器

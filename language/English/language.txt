@@ -294,6 +294,7 @@ microsd card = microSD Card
 slot2 card = Slot 2 Card
 slot1 card = Slot 1 Card
 favorites = Favorites
+recent = Recently Played
 
 [loader]
 text = Use ROM loader

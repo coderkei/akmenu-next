@@ -300,6 +300,7 @@ microsd card = Carte microSD
 slot2 card = Cartouche SLOT-2
 slot1 card = Cartouche SLOT-1
 favorites = Favories
+recent = Joués récents
 
 [loader]
 text = Utiliser le chargeur ROM

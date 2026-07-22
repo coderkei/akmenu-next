@@ -287,6 +287,7 @@ microsd card = microSD Card
 slot2 card = Slot2 Card
 slot1 card = Slot1 Card
 favorites = Favorites
+recent = 最近プレイしたゲーム
 
 [hotkeys]
 l-r-a-b-↓ = l-r-a-b-↓

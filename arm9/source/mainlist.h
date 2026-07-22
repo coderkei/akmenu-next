@@ -74,6 +74,8 @@ class cMainList : public akui::cListView {
   public:
     bool IsFavorites(void);
 
+    bool IsRecent(void);
+
     void SwitchShowAllFiles(void);
 
     const std::vector<std::string>* Saves(void);
@@ -118,6 +120,7 @@ class cMainList : public akui::cListView {
     u32 _topuSD;
     u32 _topuDSiSD;
     u32 _topFavorites;
+    u32 _topRecent;
     u32 _topSlot1;
     u32 _topSlot2;
 

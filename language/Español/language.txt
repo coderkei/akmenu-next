@@ -294,6 +294,7 @@ microsd card = Tarjeta micro SD
 slot2 card = Flashcard de SLOT-2
 slot1 card = Flashcard de SLOT-1
 favorites = Favoritos
+recent = Jugados recientemente
 
 [hotkeys]
 l-r-a-b-↓ = l+r+a+b+↓

@@ -18,6 +18,7 @@
 #define SFN_SDCARD_LIST SFN_SYSTEM_DIR + "sdlist.ini"
 #define SFN_GLOBAL_SETTINGS SFN_SYSTEM_DIR + "globalsettings.ini"
 #define SFN_FAVORITES SFN_SYSTEM_DIR + "favorites.ini"
+#define SFN_RECENT SFN_SYSTEM_DIR + "recent.ini"
 #define SFN_BACKLIGHT SFN_SYSTEM_DIR + "backlight.ini"
 #define SFN_PLUGINS_DIRECTORY (SFN_SYSTEM_DIR + "plugins/")
 #define SFN_PLUGIN_ICONS_DIRECTORY (SFN_PLUGINS_DIRECTORY + "icons/")

@@ -49,12 +49,13 @@ bool loadBannerFromBin(DSRomInfo& rominfo, const std::string& path) {
 cMainList::cMainList(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::string& text)
     : cListView(x, y, w, h, parent, text),
       _showAllFiles(false),
-      _topCount(5),
+      _topCount(6),
       _topuSD(0),
       _topuDSiSD(1),
       _topFavorites(2),
-      _topSlot1(3),
-      _topSlot2(4) {
+      _topRecent(3),
+      _topSlot1(4),
+      _topSlot2(5) {
     _viewMode = VM_LIST;
     _activeIconScale = 1;
     _activeIcon.hide();
@@ -63,36 +64,40 @@ cMainList::cMainList(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::str
     dbg_printf("_activeIcon.init\n");
 
     if (!isDSiMode()) {
-        _topCount = 3;
+        _topCount = 4;
         _topuSD = 0;
         _topFavorites = 1;
-        _topSlot2 = 2;
-        _topuDSiSD = 3;
-        _topSlot1 = 4;
+        _topRecent = 2;
+        _topSlot2 = 3;
+        _topuDSiSD = 4;
+        _topSlot1 = 5;
     } else {
         if (fsManager().isFlashcart()) {
             if (fsManager().isSDInserted()) {
-                _topCount = 3;
+                _topCount = 5;
                 _topuSD = 0;
                 _topuDSiSD = 1;
                 _topFavorites = 2;
-                _topSlot2 = 3;               
-                _topSlot1 = 4;
+                _topRecent = 3;
+                _topSlot2 = 4;               
+                _topSlot1 = 5;
             } else {
-                _topCount = 2;
+                _topCount = 4;
                 _topuSD = 0;
                 _topFavorites = 1;
-                _topSlot2 = 2;
-                _topuDSiSD = 3;
-                _topSlot1 = 4;
+                _topRecent = 2;
+                _topSlot2 = 3;
+                _topuDSiSD = 4;
+                _topSlot1 = 5;
             }
         } else {
-                _topCount = 3;      
+                _topCount = 4;      
                 _topuDSiSD = 0;
                 _topFavorites = 1;
-                _topSlot1 = 2;
-                _topuSD = 3;
-                _topSlot2 = 4;
+                _topRecent = 2;
+                _topSlot1 = 3;
+                _topuSD = 4;
+                _topSlot2 = 5;
         }
     }
 }
@@ -207,6 +212,14 @@ bool cMainList::enterDir(const std::string& dirName) {
                     rominfo.setBannerFromFile("folder", folder);
                 else
                     rominfo.setBanner("folder", folder_banner_bin);
+            } else if (_topRecent == i) {
+                a_row.push_back(LANG("mainlist", "recent"));
+                a_row.push_back("");
+                a_row.push_back("recent:/");
+                if(gs().icon)
+                    rominfo.setBannerFromFile("folder", folder);
+                else
+                    rominfo.setBanner("folder", folder_banner_bin);
             }
             insertRow(i, a_row);
             _romInfoList.push_back(rominfo);
@@ -229,10 +242,11 @@ bool cMainList::enterDir(const std::string& dirName) {
     }
 
     bool favorites = ("favorites:/" == dirName);
+    bool recent = ("recent:/" == dirName);
     DIR* dir = NULL;
     struct dirent* entry;
 
-    if (!favorites) {
+    if (!favorites && !recent) {
         dir = opendir(dirName.c_str());
 
         if (dir == NULL) {
@@ -278,8 +292,8 @@ bool cMainList::enterDir(const std::string& dirName) {
         entries.reserve(256);
 
         cwl();
-        if (favorites) {
-            CIniFile ini(SFN_FAVORITES);
+        if (favorites || recent) {
+            CIniFile ini(favorites ? SFN_FAVORITES : SFN_RECENT);
 
             std::vector<std::string> items;
             ini.GetStringVector("main", "list", items, '|');
@@ -293,6 +307,10 @@ bool cMainList::enterDir(const std::string& dirName) {
                     showname = items[ii].substr(pos + 1, items[ii].npos);  // show name
                 }
                 realname = items[ii];  // real name
+
+                // Skip missing files
+                struct stat st;
+                if (0 != stat(realname.c_str(), &st)) continue;
 
                 bool isDir = (FAT_getAttr(realname.c_str()) & ATTR_DIRECTORY) ? true : false;
 
@@ -479,12 +497,13 @@ void cMainList::onScrolled(u32 index) {
 void cMainList::backParentDir() {
     if ("..." == _currentDir) return;
 
-    bool fat1 = (fsManager().getFSRoot() == _currentDir), favorites = ("favorites:/" == _currentDir);
-    if ("fat:/" == _currentDir || "sd:/" == _currentDir || fat1 || favorites ||
+    bool fat1 = (fsManager().getFSRoot() == _currentDir), favorites = ("favorites:/" == _currentDir), recent = ("recent:/" == _currentDir);
+    if ("fat:/" == _currentDir || "sd:/" == _currentDir || fat1 || favorites || recent ||
         "/" == _currentDir) {
         enterDir("...");
         if (fat1) selectRow(_topuSD);
         if (favorites) selectRow(_topFavorites);
+        if (recent) selectRow(_topRecent);
         return;
     }
 
@@ -630,8 +649,12 @@ bool cMainList::IsFavorites(void) {
     return ("favorites:/" == _currentDir);
 }
 
+bool cMainList::IsRecent(void) {
+    return ("recent:/" == _currentDir);
+}
+
 const std::vector<std::string>* cMainList::Saves(void) {
-    return IsFavorites() ? NULL : &_saves;
+    return (IsFavorites() || IsRecent()) ? NULL : &_saves;
 }
 
 void cMainList::SwitchShowAllFiles(void) {

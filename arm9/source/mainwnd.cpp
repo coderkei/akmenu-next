@@ -790,7 +790,7 @@ void cMainWnd::showFileInfo() {
 void cMainWnd::onFolderChanged() {
     resetInputIdle();
     std::string dirShowName = _mainList->getCurrentDir();
-    if ("favorites:/" != dirShowName && "slot2:/" == _mainList->getSelectedFullPath()) {
+    if ("favorites:/" != dirShowName && "recent:/" != dirShowName && "slot2:/" == _mainList->getSelectedFullPath()) {
         u8 chk = 0;
         for (u32 i = 0xA0; i < 0xBD; ++i) {
             chk = chk - *(u8*)(0x8000000 + i);
@@ -821,7 +821,7 @@ void cMainWnd::onFolderChanged() {
             CGbaLoader::StartGBA();
         }
     }
-    if ("favorites:/" != dirShowName && "slot1:/" == _mainList->getSelectedFullPath()) {
+    if ("favorites:/" != dirShowName && "recent:/" != dirShowName && "slot1:/" == _mainList->getSelectedFullPath()) {
         Slot1Launcher().launchRom("slot1:/", "", 0, 0, 0, 0);
     }
 
