@@ -68,6 +68,7 @@ class cGlobalSettings {
     bool autorunWithLastRom;
     bool homebrewreset;
     bool dsOnly;
+    bool boostCpu;
     bool phatCol;
     bool hbStrap;
     bool pico;

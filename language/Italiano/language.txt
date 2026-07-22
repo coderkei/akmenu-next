@@ -1,4 +1,4 @@
-﻿// Updated for Wood 1.33 by linoxyard
+// Updated for Wood 1.33 by linoxyard
 
 [font]
 main = liberation.pcf
@@ -330,6 +330,7 @@ nightly = nightly
 firsttimetitle = Inizializzazione di nds-bootstrap
 firsttime = Premere OK per avviare la configurazione iniziale di nds-bootstrap. Questa operazione potrebbe richiedere un minuto ed è un'operazione da eseguire una sola volta.
 dsmode = DS-Only Mode
+boostcpu = Velocità CPU TWL
 inimissingtitle = Errore INI
 inimissing = Il file ndsbs.ini manca da _nds/akmenunext o è danneggiato. Ripristinare questo file o reinstallare akmenu-next.
 phatCol = DS Phat Colors

@@ -1,4 +1,4 @@
-﻿
+
 
 [font]
 main = liberation.pcf
@@ -158,6 +158,7 @@ nightly = nightly
 firsttimetitle = Initializing nds-bootstrap
 firsttime = Press OK to start first-time setup of nds-bootstrap. This may take a minute and is a one-time process.
 dsmode = DS-Only Mode
+boostcpu = TWL CPU Speed
 inimissingtitle = INI error
 inimissing = ndsbs.ini is missing from _nds/akmenunext or is corrupt. Please restore this file or reinstall akmenu-next.
 phatCol = DS Phat Colors

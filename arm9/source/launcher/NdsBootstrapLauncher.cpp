@@ -213,8 +213,12 @@ bool NdsBootstrapLauncher::prepareIni(bool hb) {
             break;
     }
 
-    if(gs().dsOnly) {
+    if(_romInfo.saveInfo().isDsMode()) {
         ini.SetString("NDS-BOOTSTRAP", "DSI_MODE", "0");
+    }
+
+    if(_romInfo.saveInfo().isBoostCpu()) {
+        ini.SetString("NDS-BOOTSTRAP", "BOOST_CPU", "1");
     }
     
     if(gs().phatCol && isDSiMode()) {

@@ -40,6 +40,7 @@ cGlobalSettings::cGlobalSettings() {
     saveExt = true;
     saveDir = false;
     dsOnly = false;
+    boostCpu = false;
     nightly = false;
     safeMode = false;
     show12hrClock = false;
@@ -72,6 +73,7 @@ void cGlobalSettings::loadSettings() {
     softreset = ini.GetInt("system", "softreset", softreset);
     saveDir = ini.GetInt("system", "savedir", saveDir);
     dsOnly = ini.GetInt("system", "dsonly", dsOnly);
+    boostCpu = ini.GetInt("system", "boostcpu", boostCpu);
     nightly = ini.GetInt("system", "nightly", nightly);
     dma = ini.GetInt("system", "dma", dma);
     sdsave = ini.GetInt("system", "sdsave", sdsave);
@@ -135,6 +137,7 @@ void cGlobalSettings::saveSettings() {
     ini.SetInt("system", "homebrewreset", homebrewreset);
     ini.SetInt("system", "resethotkey", resetHotKey);
     ini.SetInt("system", "dsonly", dsOnly);
+    ini.SetInt("system", "boostcpu", boostCpu);
     ini.SetInt("system", "languageOverride", languageOverride);
     ini.SetInt("system", "hbstrap", hbStrap);
     ini.SetInt("system", "pico", pico);

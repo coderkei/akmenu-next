@@ -1,4 +1,4 @@
-﻿// Spanish language file for the Wood Firmwares by Yellow Wood Goblin:
+// Spanish language file for the Wood Firmwares by Yellow Wood Goblin:
 // Modified and updated by PabloACZ.
 // Very thanks to germich3, pichon64, Mhetralla and pepeluis33, for starting the translation project.
 // ______________________________________________________________
@@ -337,6 +337,7 @@ nightly = nightly
 firsttimetitle = Inicializando nds-bootstrap
 firsttime = Pulsa "Aceptar" para iniciar la configuración inicial de nds-bootstrap. Este proceso puede tardar un minuto y se realiza una sola vez.
 dsmode = DS-Only Mode
+boostcpu = Velocidad CPU TWL
 inimissingtitle = Error De INI
 inimissing = ndsbs.ini no se encuentra en _nds/akmenunext o está dañado. Restaure este archivo o reinstale akmenu-next.
 phatCol = DS Phat Colors

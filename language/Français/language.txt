@@ -1,4 +1,4 @@
-﻿// Thanks to Antoine L., Shad and Supercarte for the translation. (edited by Astro0710)
+// Thanks to Antoine L., Shad and Supercarte for the translation. (edited by Astro0710)
 
 [font]
 main = liberation.pcf
@@ -158,6 +158,7 @@ nightly = Bêta
 firsttimetitle = Initialisation d'NDS-Bootstrap
 firsttime = Appuyez sur OK pour lancer la première configuration d'NDS-Bootstrap. Cette opération peut prendre une minute et est unique.
 dsmode = Mode DS seulement
+boostcpu = Vitesse CPU TWL
 inimissingtitle = Erreur INI
 inimissing = Le fichier ndsbs.ini est manquant dans _nds/akmenunext ou corrompu. Veuillez restaurer ce fichier ou réinstaller akmenu-next.
 phatCol = Couleur DS 2003
