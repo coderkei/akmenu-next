@@ -225,6 +225,7 @@ ndshb = nds-bootstrap
 Enable = An
 Disable = Aus
 Global = Global(%s)
+Auto = Auto
 
 [ram allocation]
 title = Fehler
@@ -339,6 +340,7 @@ inimissingtitle = INI-Fehler.
 inimissing = ndsbs.ini fehlt in _nds/akmenunext oder ist beschädigt. Bitte stellen Sie diese Datei wieder her oder installieren Sie akmenu-next neu.
 phatCol = DS Phat Colors
 loader = Spiellader
+carddma = Card Read DMA
 
 [resethotkey]
 text = Menü-Hotkey

@@ -609,9 +609,10 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("switches", "Enable"));
     settingWnd.addSettingItem(LANG("nds bootstrap", "boostcpu"), _values, gs().boostCpu);
     _values.clear();
-    _values.push_back(LANG("switches", "Disable"));
+    _values.push_back(LANG("switches", "Auto"));
     _values.push_back(LANG("switches", "Enable"));
-    settingWnd.addSettingItem(LANG("nds bootstrap", "ignorecrc16"), _values, gs().ignoreCrc16);
+    _values.push_back(LANG("switches", "Disable"));
+    settingWnd.addSettingItem(LANG("nds bootstrap", "carddma"), _values, gs().cardReadDma);
     _values.clear();
     _values.push_back(LANG("nds bootstrap", "release"));
     _values.push_back(LANG("nds bootstrap", "nightly"));
@@ -636,13 +637,6 @@ void cMainWnd::setParam(void) {
         settingWnd.addSettingItem(LANG("nds bootstrap", "phatCol"), _values, gs().phatCol);
     }
 
-    if (fsManager().isFlashcart()){
-        _values.clear();
-        _values.push_back("nds-bootstrap");
-        _values.push_back("Pico-Loader");
-        settingWnd.addSettingItem(LANG("nds bootstrap", "loader"), _values, gs().pico);
-    }
-
     // page 5: other
     settingWnd.addSettingTab(LANG("gba settings", "title"));
     _values.clear();
@@ -659,11 +653,23 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("switches", "Enable"));
     settingWnd.addSettingItem(LANG("autorun", "text"), _values, gs().autorunWithLastRom);
 
+    _values.clear();
+    _values.push_back(LANG("switches", "Disable"));
+    _values.push_back(LANG("switches", "Enable"));
+    settingWnd.addSettingItem(LANG("nds bootstrap", "ignorecrc16"), _values, gs().ignoreCrc16);
+
     if (isDSiMode()) {
         _values.clear(); 
         _values.push_back(LANG("patches", "default"));
         _values.push_back(LANG("patches", "ndshb"));
         settingWnd.addSettingItem(LANG("patches", "hbstrap"), _values, gs().hbStrap);
+    }
+
+    if (fsManager().isFlashcart()){
+        _values.clear();
+        _values.push_back("nds-bootstrap");
+        _values.push_back("Pico-Loader");
+        settingWnd.addSettingItem(LANG("nds bootstrap", "loader"), _values, gs().pico);
     }
 
     u32 ret = settingWnd.doModal();
@@ -700,28 +706,28 @@ void cMainWnd::setParam(void) {
     // page 4: ndsbs
     gs().dsOnly = settingWnd.getItemSelection(3, 0);
     gs().boostCpu = settingWnd.getItemSelection(3, 1);
-    gs().ignoreCrc16 = settingWnd.getItemSelection(3, 2);
+    gs().cardReadDma = settingWnd.getItemSelection(3, 2);
     gs().nightly = settingWnd.getItemSelection(3, 3);
     gs().languageOverride = settingWnd.getItemSelection(3, 4);
 
     if (isDSiMode()) {
         gs().phatCol = settingWnd.getItemSelection(3, 5);
-
-        if (fsManager().isFlashcart()){
-            gs().pico = settingWnd.getItemSelection(3, 6);
-        }
-        
-    }else if (fsManager().isFlashcart()) {
-        gs().pico = settingWnd.getItemSelection(3, 5);
     }
 
     // page 5: other
     gs().cheats = settingWnd.getItemSelection(4, 0);
     gs().slot2mode = settingWnd.getItemSelection(4, 1);
     gs().autorunWithLastRom = settingWnd.getItemSelection(4, 2);
+    gs().ignoreCrc16 = settingWnd.getItemSelection(4, 3);
 
     if (isDSiMode()){
-        gs().hbStrap = settingWnd.getItemSelection(4, 3);
+        gs().hbStrap = settingWnd.getItemSelection(4, 4);
+
+        if (fsManager().isFlashcart()){
+            gs().pico = settingWnd.getItemSelection(4, 5);
+        }
+    } else if (fsManager().isFlashcart()) {
+        gs().pico = settingWnd.getItemSelection(4, 4);
     }
 
 

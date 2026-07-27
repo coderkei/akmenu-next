@@ -164,6 +164,7 @@ inimissingtitle = INI error
 inimissing = ndsbs.ini is missing from _nds/akmenunext or is corrupt. Please restore this file or reinstall akmenu-next.
 phatCol = DS Phat Colors
 loader = Game Loader
+carddma = Card Read DMA
 
 
 [language]
@@ -231,6 +232,7 @@ ndshb = nds-bootstrap
 Enable = on
 Disable = off
 Global = global(%s)
+Auto = Auto
 
 [ram allocation]
 title = Error

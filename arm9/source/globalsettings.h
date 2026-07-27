@@ -74,6 +74,7 @@ class cGlobalSettings {
     bool hbStrap;
     bool pico;
     bool icon;
+    int cardReadDma;
 };
 
 typedef t_singleton<cGlobalSettings> globalSettings_s;

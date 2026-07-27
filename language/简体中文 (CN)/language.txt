@@ -173,6 +173,7 @@ inimissingtitle = INI 错误
 inimissing = _nds/akmenunext 中缺少 ndsbs.ini 文件或该文件已损坏。请恢复此文件或重新安装 akmenu-next。
 phatCol = 初版DS颜色
 loader = 游戏加载器
+carddma = 卡带读取DMA
 
 
 [language]
@@ -240,6 +241,7 @@ ndshb = ndsbootstrap
 Enable = 启用
 Disable = 禁用
 Global = 全部(%s)
+Auto = 自动
 
 [ram allocation]
 title = 文件复制错误

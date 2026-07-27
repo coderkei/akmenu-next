@@ -53,6 +53,7 @@ cGlobalSettings::cGlobalSettings() {
     hbStrap = 0;
     pico = 0;
     icon = 1;
+    cardReadDma = 0;
 }
 
 void cGlobalSettings::loadSettings() {
@@ -89,6 +90,7 @@ void cGlobalSettings::loadSettings() {
     hbStrap = ini.GetInt("system", "hbstrap", hbStrap);
     pico = ini.GetInt("system", "pico", pico);
     icon = ini.GetInt("system", "icon", icon);
+    cardReadDma = ini.GetInt("system", "cardReadDma", cardReadDma);
     
     temp = ini.GetString("system", "saveext", ".sav");
     saveExt = (temp == ".sav");
@@ -145,6 +147,7 @@ void cGlobalSettings::saveSettings() {
     ini.SetInt("system", "hbstrap", hbStrap);
     ini.SetInt("system", "pico", pico);
     ini.SetInt("system", "icon", icon);
+    ini.SetInt("system", "cardReadDma", cardReadDma);
     ini.SetInt("system", "phatCol", phatCol);
     ini.SetInt("system", "autorunWithLastRom", autorunWithLastRom);
     ini.SetString(

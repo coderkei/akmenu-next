@@ -164,6 +164,7 @@ inimissingtitle = Erreur INI
 inimissing = Le fichier ndsbs.ini est manquant dans _nds/akmenunext ou corrompu. Veuillez restaurer ce fichier ou réinstaller akmenu-next.
 phatCol = Couleur DS 2003
 loader = Chargeur de jeu
+carddma = Card Read DMA
 
 [rom trim]
 text = Trimmer lors de la copie
@@ -237,6 +238,7 @@ ndshb = NDS-Bootstrap
 Enable = ON
 Disable = OFF
 Global = Global(%s)
+Auto = Auto
 
 [ram allocation]
 title = Erreur

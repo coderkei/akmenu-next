@@ -340,6 +340,13 @@ void cRomInfoWnd::pressSaveType(void) {
         _values.push_back(LANG("save type", "default"));
         settingWnd.addSettingItem(LANG("nds bootstrap", "boostcpu"), _values,
                                 _romInfo.saveInfo().getBoostCpu());
+
+        _values.clear();
+        _values.push_back(LANG("switches", "Disable"));
+        _values.push_back(LANG("switches", "Enable"));
+        _values.push_back(LANG("save type", "default"));
+        settingWnd.addSettingItem(LANG("nds bootstrap", "carddma"), _values,
+                                _romInfo.saveInfo().getCardReadDma());
     }
 
     settingWnd.addSettingTab(LANG("save type", "tab2"));
@@ -402,27 +409,30 @@ void cRomInfoWnd::pressSaveType(void) {
         addCode();
     }
 
-    u8 loader_choice = 2, nightly_choice = 2, dsmode_choice = 2, boostcpu_choice = 2;
+    u8 loader_choice = 2, nightly_choice = 2, dsmode_choice = 2, boostcpu_choice = 2, cardreaddma_choice = 2;
     if (fsManager().isFlashcart()) {
         loader_choice = settingWnd.getItemSelection(0, 1);
         nightly_choice = settingWnd.getItemSelection(0, 2);
         dsmode_choice = settingWnd.getItemSelection(0, 3);
         boostcpu_choice = settingWnd.getItemSelection(0, 4);
+        cardreaddma_choice = settingWnd.getItemSelection(0, 5);
     } else {
         nightly_choice = settingWnd.getItemSelection(0, 1);
         dsmode_choice = settingWnd.getItemSelection(0, 2);
         boostcpu_choice = settingWnd.getItemSelection(0, 3);
+        cardreaddma_choice = settingWnd.getItemSelection(0, 4);
     }
 
     if (loader_choice == (u8)-1) loader_choice = 2;
     if (nightly_choice == (u8)-1) nightly_choice = 2;
     if (dsmode_choice == (u8)-1) dsmode_choice = 2;
     if (boostcpu_choice == (u8)-1) boostcpu_choice = 2;
+    if (cardreaddma_choice == (u8)-1) cardreaddma_choice = 2;
 
     _romInfo.saveInfo().setFlags(
             0, 0, 0, settingWnd.getItemSelection(ITEM_CHEATS),
             settingWnd.getItemSelection(ITEM_SAVESLOT), 2, 0, 0, settingWnd.getItemSelection(ITEM_ICON), 0, 0,
-            loader_choice, nightly_choice, dsmode_choice, boostcpu_choice);
+            loader_choice, nightly_choice, dsmode_choice, boostcpu_choice, cardreaddma_choice);
 
     saveManager().updateCustomSaveList(_romInfo.saveInfo());
 }

@@ -223,6 +223,7 @@ ndshb = nds-bootstrap
 Enable = オン
 Disable = オフ
 Global = 全体(%s)
+Auto = 自動
 
 [ram allocation]
 title = エラー
@@ -337,6 +338,7 @@ inimissingtitle = INI エラー
 inimissing = ndsbs.ini が _nds/akmenunext に存在しないか、破損しています。このファイルを復元するか、akmenu-next を再インストールしてください。
 phatCol = DSオリジナルカラー
 loader = ゲームローダー
+carddma = Card Read DMA
 
 [resethotkey]
 text = メニューホットキー

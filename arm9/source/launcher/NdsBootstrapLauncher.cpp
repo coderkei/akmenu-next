@@ -220,6 +220,16 @@ bool NdsBootstrapLauncher::prepareIni(bool hb) {
     if(_romInfo.saveInfo().isBoostCpu()) {
         ini.SetString("NDS-BOOTSTRAP", "BOOST_CPU", "1");
     }
+
+    u8 cardReadDmaSetting = _romInfo.saveInfo().getCardReadDma();
+    if (cardReadDmaSetting == 2) {
+        cardReadDmaSetting = gs().cardReadDma;
+    }
+    if (cardReadDmaSetting == 1) {
+        ini.SetInt("NDS-BOOTSTRAP", "CARD_READ_DMA", 1);
+    } else if (cardReadDmaSetting == 2 || (cardReadDmaSetting == 0 && _romInfo.saveInfo().getCardReadDma() != 2)) {
+        ini.SetInt("NDS-BOOTSTRAP", "CARD_READ_DMA", 0);
+    }
     
     if(gs().phatCol && isDSiMode()) {
         ini.SetString("NDS-BOOTSTRAP", "PHAT_COLORS", "1");

@@ -88,6 +88,8 @@ enum DISPLAY_SAVE_TYPE {
 #define SAVE_INFO_EX_GLOBAL_DS_MODE (BIT(18))
 #define SAVE_INFO_EX_BOOST_CPU (BIT(19))
 #define SAVE_INFO_EX_GLOBAL_BOOST_CPU (BIT(20))
+#define SAVE_INFO_EX_CARD_READ_DMA (BIT(21))
+#define SAVE_INFO_EX_GLOBAL_CARD_READ_DMA (BIT(22))
 
 typedef struct SAVE_INFO_EX_T {
     u8 gameTitle[12];
@@ -126,6 +128,9 @@ typedef struct SAVE_INFO_EX_T {
     u8 getBoostCpu(void) {
         return getFlag(SAVE_INFO_EX_BOOST_CPU, SAVE_INFO_EX_GLOBAL_BOOST_CPU, true);
     };
+    u8 getCardReadDma(void) {
+        return getFlag(SAVE_INFO_EX_CARD_READ_DMA, SAVE_INFO_EX_GLOBAL_CARD_READ_DMA, true);
+    };
     bool isDownloadPlay(void) {
         return getState(SAVE_INFO_EX_DOWNLOAD_PLAY, SAVE_INFO_EX_GLOBAL_DOWNLOAD_PLAY, false,
                         false);
@@ -157,7 +162,7 @@ typedef struct SAVE_INFO_EX_T {
     };
     void setFlags(u8 rumble, u8 downloadplay, u8 reset, u8 cheat, u8 slot, u8 dma, u8 protection,
                   u8 linkage, u8 icon, u8 sdsave, u8 language, u8 ndsbootstrap, u8 nightly,
-                  u8 dsmode = 2, u8 boostcpu = 2) {
+                  u8 dsmode = 2, u8 boostcpu = 2, u8 cardreaddma = 2) {
         flags = rumble & SAVE_INFO_EX_RUMBLE;
         flags2 = 0;
         setFlag(SAVE_INFO_EX_DOWNLOAD_PLAY, SAVE_INFO_EX_GLOBAL_DOWNLOAD_PLAY, downloadplay, false);
@@ -174,6 +179,7 @@ typedef struct SAVE_INFO_EX_T {
         setFlag(SAVE_INFO_EX_NIGHTLY, SAVE_INFO_EX_GLOBAL_NIGHTLY, nightly, true);
         setFlag(SAVE_INFO_EX_DS_MODE, SAVE_INFO_EX_GLOBAL_DS_MODE, dsmode, true);
         setFlag(SAVE_INFO_EX_BOOST_CPU, SAVE_INFO_EX_GLOBAL_BOOST_CPU, boostcpu, true);
+        setFlag(SAVE_INFO_EX_CARD_READ_DMA, SAVE_INFO_EX_GLOBAL_CARD_READ_DMA, cardreaddma, true);
     };
     u8 getFlag(u32 personal, u32 global, bool style) {
         return (flags2 & global) ? 2 : ((style ? (flags2 & personal) : (flags & personal)) ? 1 : 0);
@@ -210,7 +216,8 @@ typedef struct SAVE_INFO_EX_T {
         flags2 = SAVE_INFO_EX_GLOBAL_SOFT_RESET | SAVE_INFO_EX_GLOBAL_CHEAT |
                  SAVE_INFO_EX_GLOBAL_DMA | SAVE_INFO_EX_GLOBAL_SD_SAVE |
                  SAVE_INFO_EX_GLOBAL_LOADER | SAVE_INFO_EX_GLOBAL_NIGHTLY |
-                 SAVE_INFO_EX_GLOBAL_DS_MODE | SAVE_INFO_EX_GLOBAL_BOOST_CPU;
+                 SAVE_INFO_EX_GLOBAL_DS_MODE | SAVE_INFO_EX_GLOBAL_BOOST_CPU |
+                 SAVE_INFO_EX_GLOBAL_CARD_READ_DMA;
         reserved[0] = reserved[1] = 0;
     };
 } SAVE_INFO_EX;
