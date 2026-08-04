@@ -8,7 +8,7 @@ language = 4
 Setting = Impostazioni
 Set favorite = Imposta preferito
 Unset favorite = Rimuovi dai preferiti
-Info = Info File
+Info = Info file
 Help = Aiuto
 Tools = Strumenti
 START = START
@@ -83,7 +83,7 @@ system = Sistema
 interface = Interfaccia
 filesystem = File system
 gba = GBA
-patches = nds-bootstrap settings
+patches = Impostazioni nds-bootstrap
 
 [save type]
 title = Impostazioni
@@ -100,7 +100,7 @@ No Save = nessuno
 16M = 16M
 32M = 32M
 64M = 64M
-default = default
+default = predefinito
 save slot = Scegli Slot
 tab1 = Compatibilità
 tab2 = Caratteristiche
@@ -110,7 +110,7 @@ title = Impostazioni di sistema
 safe mode = Modalità sicura
 
 [autorun]
-text = Autorun Last ROM
+text = Avvia ultima ROM
 
 [rom info]
 title = Informazioni
@@ -118,12 +118,12 @@ file date = Ultima modifica: %d/%d/%d %02d:%02d:%02d(GMT)
 file size = Dimensione: %s
 save type = Tipo salvataggio: %s
 game code = Codice: %s
-copy slot = Copia lo Slot
+copy slot = Copia lo slot
 
 [disk info]
-total = Capacità Disco: %s
-used = Spazio Usato: %s
-free = Spazio Libero: %s
+total = Capacità disco: %s
+used = Spazio usato: %s
+free = Spazio libero: %s
 
 [no free space]
 title = Errore
@@ -152,7 +152,7 @@ item1 = NDS + SAV
 item2 = TUTTI
 
 [rom trim]
-text = Trimma rom durante la copia
+text = Trimma ROM durante la copia
 item0 = No
 item1 = Sì
 
@@ -168,7 +168,7 @@ cn = 简体中文
 zh = 繁體中文
 
 [ui style]
-text = Stile Interfaccia Utente
+text = Stile interfaccia utente
 
 [help window]
 title = Informazioni di aiuto
@@ -178,13 +178,13 @@ item2 = %c  Indietro/Annulla/NO
 item3 = %c  Vedi info file/Scegli tipo di salvataggio
 item4 = %c  Cambia SD/FLASH o SD/Preferiti
 item5 = %c  Ritorna alla root
-item6 = %c  Imposta Luminosità
+item6 = %c  Imposta luminosità
 item7 = %s  Menù Start
 item8 = %s  Stile menù nuovo/classico
 
 [exp window]
 button = 3in1
-title = Impostazioni 3in1 expansion pack
+title = Impostazioni expansion pack 3in1
 ram = RAM
 sram = sRAM
 off = off
@@ -201,21 +201,21 @@ text = Vuoi annullare il salvataggio in corso?
 
 [gba warn]
 title = Attenzione
-text = Non sono supportate le rom GBA maggiori di 32M!
+text = Non sono supportate le ROM GBA maggiori di 32M!
 
 [patches]
-download play = Supporto Download Play
-cheating system = Codici trucchi(AR)
+download play = Supporto modalità download
+cheating system = Trucchi (AR)
 reset in game = Reset durante il gioco
 dma = Modalità DMA
-protection = Bypassa Protezione
+protection = Bypassa protezione
 linkage = Link con GBA
 sd save = Salva direttamente nella SD
 homebrew reset = Reset durante l'Homebrew
 reset hotkey = Combinazione di Reset
-rts = Real Time Save
+rts = Salvataggio in tempo reale
 carddma = Card read DMA
-hbstrap = Homebrew Loader
+hbstrap = Loader homebrew
 default = AKMenu-Next
 ndshb = nds-bootstrap
 
@@ -244,17 +244,17 @@ use saves folder = Usa cartella 'saves'
 title = Impostazioni interfaccia
 scrolling speed = Velocità di scorrimento
 filelist style = Stile della lista dei file
-oldschool = Vecchia scuola
+oldschool = Classico
 modern = Moderno
 internal = Interno
-small = Small icons
+small = Icone piccole
 animation = Animazione
 12 hour = Orologio 12-ore
 custom icons = Icone personalizzate
 
 [gba settings]
 title = Altre impostazioni
-sleephack = Sleep Universale
+sleephack = Mod. riposo universale
 autosave = Backup del salvataggio all'avvio
 mode = Modalità Slot-2
 modegba = gba
@@ -278,13 +278,13 @@ info = Altro…
 deselect = Deseleziona
 
 [saveslot]
-title = Copia Slot Salvataggio
+title = Copia slot salvataggio
 confirm = Sei sicuro di voler copiare lo slot?
-target slot = Slot Salvataggio di destinazione
+target slot = Slot salvataggio di destinazione
 
 [mainlist]
-flash memory = Memoria Flash
-microsd card = MicroSD
+flash memory = Memoria flash
+microsd card = Scheda microSD
 slot2 card = Slot 2
 slot1 card = Slot 1
 favorites = Preferiti
@@ -303,7 +303,7 @@ update ? = Vuoi aggiornare?
 updater = Modulo di aggiornamento
 menu = Modulo principale
 savesize.bin = savesize.bin
-cheats = Database dei Codici
+cheats = Database dei trucchi
 connecting = Connessione in corso
 failed = Aggiornamento fallito
 updated = File aggiornato
@@ -314,11 +314,11 @@ unpack = Decompressione
 
 [crc32]
 crc32 = CRC32
-calculation = Calcolo del CRC32 in Corso
+calculation = Calcolo del CRC32 in corso
 
 [loader]
-text = Utilizzare il caricatore ROM
-not found = Caricatore non trovato
+text = Utilizzare il loader ROM
+not found = Loader non trovato
 error = Error
 info = Information
 
@@ -326,18 +326,18 @@ info = Information
 load text = Attendere prego…
 
 [nds bootstrap]
-text = nds-bootstrap version
+text = Versione nds-bootstrap
 release = release
 nightly = nightly
 firsttimetitle = Inizializzazione di nds-bootstrap
 firsttime = Premere OK per avviare la configurazione iniziale di nds-bootstrap. Questa operazione potrebbe richiedere un minuto ed è un'operazione da eseguire una sola volta.
-dsmode = DS-Only Mode
+dsmode = Modalità DS
 boostcpu = Velocità CPU TWL
 ignorecrc16 = Ignora errori CRC16
 inimissingtitle = Errore INI
 inimissing = Il file ndsbs.ini manca da _nds/akmenunext o è danneggiato. Ripristinare questo file o reinstallare akmenu-next.
-phatCol = DS Phat Colors
-loader = Caricatore di gioco
+phatCol = Colori DS Phat
+loader = Loader per i giochi
 carddma = Card Read DMA
 
 [resethotkey]
@@ -348,7 +348,7 @@ text = Pulsanti del menu
 3 = l-r-a-b-↓
 4 = l-r-b-y-↓
 5 = l-r-a-b-x-y
-6 = Costume
+6 = Personalizzato
 
 [override]
 text = Sostituzione della lingua
