@@ -42,4 +42,8 @@ class cHelpWnd : public akui::cForm {
     akui::cFormDesc _renderDesc;
 
     std::string _helpText;
+
+    size_t _firstVisibleLine;
+    size_t _lineCount;
+    size_t _visibleLineCount;
 };

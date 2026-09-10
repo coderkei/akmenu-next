@@ -13,7 +13,7 @@ Setting = 設定
 Set favorite = 設為喜愛的
 Unset favorite = 取消設為喜愛的
 Info = 檔案資訊
-Help = 說明與關於
+About = 關於
 Tools = 工具
 START = START
 
@@ -191,17 +191,24 @@ ru = Русский
 [ui style]
 text = 面版
 
-[help window]
-title = 說明主題
-item0 = %c  選擇檔案
-item1 = %c  是/開始/確定
-item2 = %c  否/後退/取消
-item3 = %c  查詢檔案資訊 / 選擇存檔類型
-item4 = %c  喜愛的
-item5 = %c  上一頁
-item6 = %c  調整四階亮度（僅限DS/DSL）
-item7 = %s  開始選單
-item8 = %s  切換 圖示/文字 模式
+[about window]
+title = 關於
+app version = AKMenu-Next %s
+mode = 模式：%s - %s
+ds mode = DS 模式
+dsi mode = DSi 模式
+sd card = SD 卡
+flashcart = 燒錄卡
+dspico = DSpico
+installed loaders = 已安裝的載入器：
+nds-bootstrap = nds-bootstrap：%s - %s
+pico-loader = Pico-Loader：%s - %s
+help = 如需說明，請造訪：%s
+source = 如需原始碼，請造訪：%s
+license = AKMenu-Next 依據 GNU General Public License v3.0 及更新版本授權。
+license details = 詳情請參閱 license.txt。
+credits = ~本專案由 coderkei 提供~
+not available = 無法使用
 
 [exp window]
 button = EZ3合1

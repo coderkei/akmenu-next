@@ -9,7 +9,7 @@ Setting = Paramètres
 Set favorite = Ajouter aux fav.
 Unset favorite = Retirer des fav.
 Info = Info du fichier
-Help = Aide
+About = À propos
 Tools = Outils
 START = START
 
@@ -186,17 +186,24 @@ ru = Русский
 [ui style]
 text = Thème
 
-[help window]
-title = Aide
-item0 = %c  Sélectionner un logiciel
-item1 = %c  Lancer/OK/Oui
-item2 = %c  Retour/Annuler/Non
-item3 = %c  Propriétés/Type sauvegarde
-item4 = %c  Basculer SD/FLASH
-item5 = %c  Précédent répertoire
-item6 = %c  Ajuster la luminosité
-item7 = %s  Menu de démarrage
-item8 = %s  Style nouveau/classique
+[about window]
+title = À propos
+app version = AKMenu-Next %s
+mode = Mode : %s - %s
+ds mode = Mode DS
+dsi mode = Mode DSi
+sd card = Carte SD
+flashcart = Flashcart
+dspico = DSpico
+installed loaders = Chargeurs installés :
+nds-bootstrap = nds-bootstrap : %s - %s
+pico-loader = Pico-Loader : %s - %s
+help = Pour obtenir de l'aide, visitez : %s
+source = Pour voir le code source, visitez : %s
+license = AKMenu-Next est distribué sous licence GNU General Public License v3.0 ou ultérieure.
+license details = Veuillez consulter license.txt pour plus de détails.
+credits = ~Ce projet vous est proposé par coderkei~
+not available = Indisponible
 
 [exp window]
 button = 3in1

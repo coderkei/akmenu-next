@@ -9,7 +9,3 @@
 
 #define AKMENU_VERSION_MAIN "2"
 #define AKMENU_VERSION_SUB "3.1"
-
-#define AKMENU_LOADER_NAME "nds-bootstrap"
-#define AKMENU_PICO_NAME "Pico-Loader"
-#define AKMENU_LOADER_VERSION ""

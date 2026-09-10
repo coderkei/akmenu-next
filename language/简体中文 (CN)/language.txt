@@ -13,7 +13,7 @@ Setting = 设置
 Set favorite = 放入收藏夹
 Unset favorite = 移出收藏夹
 Info = 文件信息
-Help = 帮助与关于
+About = 关于
 Tools = 工具
 START = 菜单
 
@@ -191,17 +191,24 @@ ru = Русский
 [ui style]
 text = 界面风格
 
-[help window]
-title = 帮助信息
-item0 = %c  选择游戏（上/下/翻页）
-item1 = %c  开始/确定/是
-item2 = %c  后退/取消/否
-item3 = %c  查看文件信息 / 选择存档类型
-item4 = %c  收藏夹
-item5 = %c  返回上一级目录
-item6 = %c  调节四级亮度（仅DS/DSL）
-item7 = %s  开始菜单
-item8 = %s  切换　新列表模式/经典模式
+[about window]
+title = 关于
+app version = AKMenu-Next %s
+mode = 模式：%s - %s
+ds mode = DS 模式
+dsi mode = DSi 模式
+sd card = SD 卡
+flashcart = 烧录卡
+dspico = DSpico
+installed loaders = 已安装的加载器：
+nds-bootstrap = nds-bootstrap：%s - %s
+pico-loader = Pico-Loader：%s - %s
+help = 获取帮助，请访问：%s
+source = 查看源代码，请访问：%s
+license = AKMenu-Next 根据 GNU General Public License v3.0 及更高版本授权。
+license details = 详情请参阅 license.txt。
+credits = ~本项目由 coderkei 提供~
+not available = 不可用
 
 [exp window]
 button = EZ3合1

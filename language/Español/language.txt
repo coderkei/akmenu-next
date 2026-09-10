@@ -16,7 +16,7 @@ Setting = Opciones
 Set favorite = Añadir a favoritos
 Unset favorite = Eliminar de favoritos
 Info = Información
-Help = Ayuda
+About = Acerca de
 Tools = Herramientas
 START = Inicio
 
@@ -178,17 +178,24 @@ ru = Русский
 [ui style]
 text = Interfaz gráfica
 
-[help window]
-title = Información de ayuda
-item0 = %c  Moverse en los menús / elegir opciones
-item1 = %c  Iniciar / cargar / aceptar
-item2 = %c  Atrás / cancelar
-item3 = %c  Ver info de elemento / elegir tipo de save
-item4 = %c  Alternar entre micro SD y Favoritos
-item5 = %c  Regresar un directorio atrás
-item6 = %c  Ajustar retroiluminación
-item7 = %s  Menú de inicio
-item8 = %s  Cambiar el estilo de la lista de archivos
+[about window]
+title = Acerca de
+app version = AKMenu-Next %s
+mode = Modo: %s - %s
+ds mode = Modo DS
+dsi mode = Modo DSi
+sd card = Tarjeta SD
+flashcart = Flashcart
+dspico = DSpico
+installed loaders = Cargadores instalados:
+nds-bootstrap = nds-bootstrap: %s - %s
+pico-loader = Pico-Loader: %s - %s
+help = Para obtener ayuda, visita: %s
+source = Para ver el código fuente, visita: %s
+license = AKMenu-Next está bajo la licencia GNU General Public License v3.0 y posteriores.
+license details = Consulta license.txt para más información.
+credits = ~Este proyecto es cortesía de coderkei~
+not available = No disponible
 
 [exp window]
 button = 3 en 1

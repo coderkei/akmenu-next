@@ -12,7 +12,7 @@ Setting = Настройки
 Set favorite = Избранное [+]
 Unset favorite = Избранное [-]
 Info = О файле
-Help = Справка
+About = О программе
 Tools = Настройки "3in1"
 START = START
 
@@ -185,17 +185,24 @@ ru = Русский
 [ui style]
 text = Скин
 
-[help window]
-title = Справка
-item0 = %c  Навигация
-item1 = %c  Старт / ОК / Да
-item2 = %c  Назад / Отмена / Нет
-item3 = %c  О файле / Тип сохранения
-item4 = %c  Избранное
-item5 = %c  Вернуться в родительскую папку
-item6 = %c  Изменение яркости (только DS)
-item7 = [%s]  Меню "START"
-item8 = [%s]  Сменить стиль списка файлов
+[about window]
+title = О программе
+app version = AKMenu-Next %s
+mode = Режим: %s - %s
+ds mode = Режим DS
+dsi mode = Режим DSi
+sd card = SD-карта
+flashcart = Флэш-картридж
+dspico = DSpico
+installed loaders = Установленные загрузчики:
+nds-bootstrap = nds-bootstrap: %s - %s
+pico-loader = Pico-Loader: %s - %s
+help = Для справки посетите: %s
+source = Исходный код: %s
+license = AKMenu-Next распространяется по лицензии GNU General Public License v3.0 или более поздней версии.
+license details = Подробнее см. в файле license.txt.
+credits = ~Проект создан при поддержке coderkei~
+not available = Недоступно
 
 [exp window]
 button = 3in1

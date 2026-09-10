@@ -243,12 +243,14 @@ void cMainWnd::startMenuItemClicked(s16 i) {
 
     else if (START_MENU_ITEM_HELP == i) {
         CIniFile ini(SFN_UI_SETTINGS);  //(256-)/2,(192-128)/2, 220, 128
-        u32 w = 200;
-        u32 h = 160;
+        u32 w = 250;
+        u32 h = 188;
         w = ini.GetInt("help window", "w", w);
         h = ini.GetInt("help window", "h", h);
+        if (w < 250) w = 250;
+        if (h < 188) h = 188;
         cHelpWnd* helpWnd = new cHelpWnd((256 - w) / 2, (192 - h) / 2, w, h, this,
-                                         LANG("help window", "title"));
+                                         LANG("about window", "title"));
         helpWnd->doModal();
         delete helpWnd;
     } else if (START_MENU_ITEM_TOOLS == i) {
