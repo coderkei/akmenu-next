@@ -39,6 +39,13 @@ class cSettingWnd : public akui::cForm {
     }
 
   protected:
+    enum {
+        MAX_VISIBLE_ITEMS = 5,
+        ITEM_PITCH = 20,
+        SETTING_WINDOW_HEIGHT = 165,
+        SCROLL_INDICATOR_Y = 124
+    };
+
     struct sSetingItem {
         akui::cStaticText* _label;
         akui::cSpinBox* _item;
@@ -47,8 +54,9 @@ class cSettingWnd : public akui::cForm {
     struct sSetingTab {
         std::vector<sSetingItem>* _tab;
         std::string _title;
+        size_t _firstVisibleItem;
         sSetingTab(std::vector<sSetingItem>* tab, const std::string& title)
-            : _tab(tab), _title(title){};
+            : _tab(tab), _title(title), _firstVisibleItem(0){};
     };
 
   protected:
@@ -69,6 +77,9 @@ class cSettingWnd : public akui::cForm {
     void HideTab(size_t index);
     void ShowTab(size_t index);
     void SwitchTab(size_t oldIndex, size_t newIndex);
+    void updateTabLayout(size_t index, bool showItems);
+    void focusItem(size_t index);
+    void repositionButtons(void);
 
     std::vector<sSetingItem>& items(size_t index) { return *_tabs[index]._tab; };
 
@@ -77,7 +88,6 @@ class cSettingWnd : public akui::cForm {
     bool _simpleTabs;
     std::vector<sSetingTab> _tabs;
     size_t _currentTab;
-    size_t _maxTabSize;
     std::string _confirmMessage;
 
     akui::cSpinBox _tabSwitcher;

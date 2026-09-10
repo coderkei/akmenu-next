@@ -482,7 +482,15 @@ void cMainWnd::onKeyBPressed() {
 void cMainWnd::setParam(void) {
     cSettingWnd settingWnd(0, 0, 252, 188, NULL, LANG("system setting", "title"));
 
-    // page 1: system
+    enum {
+        TAB_SYSTEM = 0,
+        TAB_INTERFACE,
+        TAB_FILES,
+        TAB_NDS_BOOTSTRAP,
+        TAB_OTHER
+    };
+
+    // System: settings that affect the menu itself or require a restart.
     std::string currentUIStyle = gs().uiName;
     std::vector<std::string> _values;
     u32 uiIndex = 0, langIndex = 0;
@@ -529,14 +537,6 @@ void cMainWnd::setParam(void) {
     langNames = _values;
     settingWnd.addSettingItem(LANG("language", "text"), _values, langIndex);
 
-    // file list type
-    _values.clear();
-    for (size_t ii = 0; ii < 3; ++ii) {
-        std::string itemName = formatString("item%d", ii);
-        _values.push_back(LANG("filelist type", itemName));
-    }
-    settingWnd.addSettingItem(LANG("filelist type", "text"), _values, gs().fileListType);
-
     // reset hotkey
     _values.clear();
     _values.push_back(LANG("resethotkey", "0"));
@@ -548,7 +548,7 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("resethotkey", "6"));
     settingWnd.addSettingItem(LANG("resethotkey", "text"), _values, gs().resetHotKey);
 
-    // page 2: interface
+    // Interface: the appearance and behaviour of the file browser.
     settingWnd.addSettingTab(LANG("interface settings", "title"));
     size_t scrollSpeed = 0;
     switch (gs().scrollSpeed) {
@@ -563,6 +563,12 @@ void cMainWnd::setParam(void) {
             break;
     }
     _values.clear();
+    _values.push_back(LANG("interface settings", "oldschool"));
+    _values.push_back(LANG("interface settings", "modern"));
+    _values.push_back(LANG("interface settings", "internal"));
+    _values.push_back(LANG("interface settings", "small"));
+    settingWnd.addSettingItem(LANG("interface settings", "filelist style"), _values, gs().viewMode);
+    _values.clear();
     _values.push_back(LANG("scrolling", "fast"));
     _values.push_back(LANG("scrolling", "medium"));
     _values.push_back(LANG("scrolling", "slow"));
@@ -572,19 +578,19 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("switches", "Enable"));
     settingWnd.addSettingItem(LANG("interface settings", "custom icons"), _values, gs().icon);
     _values.clear();
-    _values.push_back(LANG("interface settings", "oldschool"));
-    _values.push_back(LANG("interface settings", "modern"));
-    _values.push_back(LANG("interface settings", "internal"));
-    _values.push_back(LANG("interface settings", "small"));
-    settingWnd.addSettingItem(LANG("interface settings", "filelist style"), _values, gs().viewMode);
-    _values.clear();
     _values.push_back(LANG("switches", "Disable"));
     _values.push_back(LANG("switches", "Enable"));
     settingWnd.addSettingItem(LANG("interface settings", "animation"), _values, gs().Animation);
     settingWnd.addSettingItem(LANG("interface settings", "12 hour"), _values, gs().show12hrClock);
 
-    // page 3: filesystem
+    // File system: file visibility, filtering, and save-file handling.
     settingWnd.addSettingTab(LANG("file settings", "title"));
+    _values.clear();
+    for (size_t ii = 0; ii < 3; ++ii) {
+        std::string itemName = formatString("item%d", ii);
+        _values.push_back(LANG("filelist type", itemName));
+    }
+    settingWnd.addSettingItem(LANG("filelist type", "text"), _values, gs().fileListType);
     _values.clear();
     _values.push_back(LANG("switches", "Disable"));
     _values.push_back(LANG("switches", "Enable"));
@@ -598,26 +604,48 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("message box", "yes"));
     settingWnd.addSettingItem(LANG("file settings", "use saves folder"), _values, gs().saveDir);
 
-    // page 4: ndsbs
-    settingWnd.addSettingTab(LANG("setting window", "patches"));
+    // Game loader: keep all loader and compatibility settings together.
+    settingWnd.addSettingTab(LANG("setting window", "game loader"));
+    size_t ndsItem = 0;
+    size_t ndsLoaderItem = (size_t)-1;
+    size_t ndsVersionItem;
+    size_t ndsDsModeItem;
+    size_t ndsBoostCpuItem;
+    size_t ndsCardDmaItem;
+    size_t ndsLanguageOverrideItem;
+    size_t ndsPhatColorItem = (size_t)-1;
+    size_t ndsHomebrewLoaderItem = (size_t)-1;
+
+    if (fsManager().isFlashcart()) {
+        _values.clear();
+        _values.push_back("nds-bootstrap");
+        _values.push_back("Pico-Loader");
+        ndsLoaderItem = ndsItem++;
+        settingWnd.addSettingItem(LANG("nds bootstrap", "loader"), _values, gs().pico);
+    }
+
+    _values.clear();
+    _values.push_back(LANG("nds bootstrap", "release"));
+    _values.push_back(LANG("nds bootstrap", "nightly"));
+    ndsVersionItem = ndsItem++;
+    settingWnd.addSettingItem(LANG("nds bootstrap", "text"), _values, gs().nightly);
+
     _values.clear();
     _values.push_back(LANG("switches", "Disable"));
     _values.push_back(LANG("switches", "Enable"));
+    ndsDsModeItem = ndsItem++;
     settingWnd.addSettingItem(LANG("nds bootstrap", "dsmode"), _values, gs().dsOnly);
     _values.clear();
     _values.push_back(LANG("switches", "Disable"));
     _values.push_back(LANG("switches", "Enable"));
+    ndsBoostCpuItem = ndsItem++;
     settingWnd.addSettingItem(LANG("nds bootstrap", "boostcpu"), _values, gs().boostCpu);
     _values.clear();
     _values.push_back(LANG("switches", "Auto"));
     _values.push_back(LANG("switches", "Enable"));
     _values.push_back(LANG("switches", "Disable"));
+    ndsCardDmaItem = ndsItem++;
     settingWnd.addSettingItem(LANG("nds bootstrap", "carddma"), _values, gs().cardReadDma);
-    _values.clear();
-    _values.push_back(LANG("nds bootstrap", "release"));
-    _values.push_back(LANG("nds bootstrap", "nightly"));
-    settingWnd.addSettingItem(LANG("nds bootstrap", "text"), _values, gs().nightly);
-
     _values.clear();
     _values.push_back(LANG("override", "0"));
     _values.push_back(LANG("override", "1"));
@@ -628,61 +656,61 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("override", "6"));
     _values.push_back(LANG("override", "7"));
     _values.push_back(LANG("override", "8"));
+    ndsLanguageOverrideItem = ndsItem++;
     settingWnd.addSettingItem(LANG("override", "text"), _values, gs().languageOverride);
 
-    if (isDSiMode()){
+    if (isDSiMode()) {
         _values.clear();
         _values.push_back(LANG("switches", "Disable"));
         _values.push_back(LANG("switches", "Enable"));
+        ndsPhatColorItem = ndsItem++;
         settingWnd.addSettingItem(LANG("nds bootstrap", "phatCol"), _values, gs().phatCol);
     }
 
-    // page 5: other
-    settingWnd.addSettingTab(LANG("gba settings", "title"));
-    _values.clear();
-    _values.push_back(LANG("switches", "Disable"));
-    _values.push_back(LANG("switches", "Enable"));
-    settingWnd.addSettingItem(LANG("patches", "cheating system"), _values, gs().cheats);
-    _values.clear();
-    _values.push_back(LANG("gba settings", "modeask"));
-    _values.push_back(LANG("gba settings", "modegba"));
-    _values.push_back(LANG("gba settings", "modends"));
-    settingWnd.addSettingItem(LANG("gba settings", "mode"), _values, gs().slot2mode);
-    _values.clear();
-    _values.push_back(LANG("switches", "Disable"));
-    _values.push_back(LANG("switches", "Enable"));
-    settingWnd.addSettingItem(LANG("autorun", "text"), _values, gs().autorunWithLastRom);
+    if (isDSiMode()) {
+        _values.clear();
+        _values.push_back(LANG("patches", "default"));
+        _values.push_back(LANG("patches", "ndshb"));
+        ndsHomebrewLoaderItem = ndsItem++;
+        settingWnd.addSettingItem(LANG("patches", "hbstrap"), _values, gs().hbStrap);
+    }
 
+    // Other: game compatibility, cheats, Slot-2 behaviour, and launch convenience settings.
+    settingWnd.addSettingTab(LANG("gba settings", "title"));
+    size_t otherItem = 0;
+    size_t otherIgnoreCrcItem = otherItem++;
     _values.clear();
     _values.push_back(LANG("switches", "Disable"));
     _values.push_back(LANG("switches", "Enable"));
     settingWnd.addSettingItem(LANG("nds bootstrap", "ignorecrc16"), _values, gs().ignoreCrc16);
 
-    if (isDSiMode()) {
-        _values.clear(); 
-        _values.push_back(LANG("patches", "default"));
-        _values.push_back(LANG("patches", "ndshb"));
-        settingWnd.addSettingItem(LANG("patches", "hbstrap"), _values, gs().hbStrap);
-    }
-
-    if (fsManager().isFlashcart()){
-        _values.clear();
-        _values.push_back("nds-bootstrap");
-        _values.push_back("Pico-Loader");
-        settingWnd.addSettingItem(LANG("nds bootstrap", "loader"), _values, gs().pico);
-    }
+    _values.clear();
+    _values.push_back(LANG("switches", "Disable"));
+    _values.push_back(LANG("switches", "Enable"));
+    size_t otherCheatsItem = otherItem++;
+    settingWnd.addSettingItem(LANG("patches", "cheating system"), _values, gs().cheats);
+    _values.clear();
+    _values.push_back(LANG("gba settings", "modeask"));
+    _values.push_back(LANG("gba settings", "modegba"));
+    _values.push_back(LANG("gba settings", "modends"));
+    size_t otherSlot2Item = otherItem++;
+    settingWnd.addSettingItem(LANG("gba settings", "mode"), _values, gs().slot2mode);
+    _values.clear();
+    _values.push_back(LANG("switches", "Disable"));
+    _values.push_back(LANG("switches", "Enable"));
+    size_t otherAutorunItem = otherItem++;
+    settingWnd.addSettingItem(LANG("autorun", "text"), _values, gs().autorunWithLastRom);
 
     u32 ret = settingWnd.doModal();
     if (ID_CANCEL == ret) return;
 
-    // page 1: system
-    u32 uiIndexAfter = settingWnd.getItemSelection(0, 0);
-    u32 langIndexAfter = settingWnd.getItemSelection(0, 1);
-    gs().fileListType = settingWnd.getItemSelection(0, 2);
-    gs().resetHotKey = settingWnd.getItemSelection(0, 3);
+    // System
+    u32 uiIndexAfter = settingWnd.getItemSelection(TAB_SYSTEM, 0);
+    u32 langIndexAfter = settingWnd.getItemSelection(TAB_SYSTEM, 1);
+    gs().resetHotKey = settingWnd.getItemSelection(TAB_SYSTEM, 2);
 
-    // page 2: interface
-    switch (settingWnd.getItemSelection(1, 0)) {
+    // Interface
+    switch (settingWnd.getItemSelection(TAB_INTERFACE, 1)) {
         case 0:
             gs().scrollSpeed = cGlobalSettings::EScrollFast;
             break;
@@ -693,42 +721,38 @@ void cMainWnd::setParam(void) {
             gs().scrollSpeed = cGlobalSettings::EScrollSlow;
             break;
     }
-    gs().icon = settingWnd.getItemSelection(1, 1);
-    gs().viewMode = settingWnd.getItemSelection(1, 2);
-    gs().Animation = settingWnd.getItemSelection(1, 3);
-    gs().show12hrClock = settingWnd.getItemSelection(1, 4);
+    gs().viewMode = settingWnd.getItemSelection(TAB_INTERFACE, 0);
+    gs().icon = settingWnd.getItemSelection(TAB_INTERFACE, 2);
+    gs().Animation = settingWnd.getItemSelection(TAB_INTERFACE, 3);
+    gs().show12hrClock = settingWnd.getItemSelection(TAB_INTERFACE, 4);
 
-    // page 3: filesystem
-    gs().showHiddenFiles = settingWnd.getItemSelection(2, 0);
-    gs().saveExt = settingWnd.getItemSelection(2, 1);
-    gs().saveDir = settingWnd.getItemSelection(2, 2);
+    // File system
+    gs().fileListType = settingWnd.getItemSelection(TAB_FILES, 0);
+    gs().showHiddenFiles = settingWnd.getItemSelection(TAB_FILES, 1);
+    gs().saveExt = settingWnd.getItemSelection(TAB_FILES, 2);
+    gs().saveDir = settingWnd.getItemSelection(TAB_FILES, 3);
 
-    // page 4: ndsbs
-    gs().dsOnly = settingWnd.getItemSelection(3, 0);
-    gs().boostCpu = settingWnd.getItemSelection(3, 1);
-    gs().cardReadDma = settingWnd.getItemSelection(3, 2);
-    gs().nightly = settingWnd.getItemSelection(3, 3);
-    gs().languageOverride = settingWnd.getItemSelection(3, 4);
+    // nds-bootstrap
+    gs().nightly = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsVersionItem);
+    gs().dsOnly = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsDsModeItem);
+    gs().boostCpu = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsBoostCpuItem);
+    gs().cardReadDma = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsCardDmaItem);
+    gs().languageOverride =
+            settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsLanguageOverrideItem);
 
+    if (fsManager().isFlashcart()) {
+        gs().pico = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsLoaderItem);
+    }
     if (isDSiMode()) {
-        gs().phatCol = settingWnd.getItemSelection(3, 5);
+        gs().phatCol = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsPhatColorItem);
+        gs().hbStrap = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsHomebrewLoaderItem);
     }
 
-    // page 5: other
-    gs().cheats = settingWnd.getItemSelection(4, 0);
-    gs().slot2mode = settingWnd.getItemSelection(4, 1);
-    gs().autorunWithLastRom = settingWnd.getItemSelection(4, 2);
-    gs().ignoreCrc16 = settingWnd.getItemSelection(4, 3);
-
-    if (isDSiMode()){
-        gs().hbStrap = settingWnd.getItemSelection(4, 4);
-
-        if (fsManager().isFlashcart()){
-            gs().pico = settingWnd.getItemSelection(4, 5);
-        }
-    } else if (fsManager().isFlashcart()) {
-        gs().pico = settingWnd.getItemSelection(4, 4);
-    }
+    // Other
+    gs().ignoreCrc16 = settingWnd.getItemSelection(TAB_OTHER, otherIgnoreCrcItem);
+    gs().cheats = settingWnd.getItemSelection(TAB_OTHER, otherCheatsItem);
+    gs().slot2mode = settingWnd.getItemSelection(TAB_OTHER, otherSlot2Item);
+    gs().autorunWithLastRom = settingWnd.getItemSelection(TAB_OTHER, otherAutorunItem);
 
 
     if (uiIndex != uiIndexAfter) {

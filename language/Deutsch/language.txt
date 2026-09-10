@@ -85,7 +85,7 @@ system = System
 interface = Oberfläche
 filesystem = Dateisystem
 gba = GBA
-patches = nds-bootstrap Einstellungen
+game loader = Spiele-Loader-Einstellungen
 
 [save type]
 title = Einstellungen

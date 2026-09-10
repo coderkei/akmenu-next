@@ -87,7 +87,7 @@ system = 系统
 interface = 接口
 filesystem = 文件系统
 gba = GBA
-patches = nds-bootstrap 设置
+game loader = 游戏加载器设置
 
 [save type]
 title = 设置

@@ -86,7 +86,7 @@ system = Система
 interface = Интерфейс
 filesystem = Файлы krolik
 gba = GBA
-patches = Настройки nds-bootstrap [4/5]
+game loader = Настройки загрузчика игр
 
 [save type]
 title = Настройки

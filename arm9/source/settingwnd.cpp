@@ -18,6 +18,17 @@
 
 using namespace akui;
 
+static void drawScrollChevron(s16 x, s16 y, bool up, u16 color, GRAPHICS_ENGINE engine) {
+    gdi().setPenColor(color, engine);
+    if (up) {
+        gdi().drawLine(x, y + 4, x + 4, y, engine);
+        gdi().drawLine(x + 4, y, x + 8, y + 4, engine);
+    } else {
+        gdi().drawLine(x, y, x + 4, y + 4, engine);
+        gdi().drawLine(x + 4, y + 4, x + 8, y, engine);
+    }
+}
+
 cSettingWnd::cSettingWnd(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::string& text)
     : cForm(x, y, w, h, parent, text),
       _tabSwitcher(0, 0, w, 18, this, "spin"),
@@ -77,9 +88,16 @@ cSettingWnd::cSettingWnd(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std:
     CIniFile ini(SFN_UI_SETTINGS);
     _spinBoxWidth = ini.GetInt("setting window", "spinBoxWidth", 108);
     _simpleTabs = ini.GetInt("setting window", "simpleTabs", 0);
-    ;
-    _maxTabSize = 0;
     _confirmMessage = LANG("setting window", "confirm text");
+
+    // Keep a fixed-sized viewport so every theme has the same five-row settings area.
+    // The original implementation grew the dialog for every row, eventually placing
+    // the lower rows and buttons outside the 192-pixel DS screen.
+    setSize(cSize(_size.x, SETTING_WINDOW_HEIGHT));
+    _position.x = (SCREEN_WIDTH - _size.x) / 2;
+    _position.y = (SCREEN_HEIGHT - _size.y) / 2;
+    repositionButtons();
+    arrangeChildren();
 }
 
 void cSettingWnd::setConfirmMessage(const std::string& text) {
@@ -99,6 +117,42 @@ cSettingWnd::~cSettingWnd() {
 void cSettingWnd::draw(void) {
     _renderDesc.draw(windowRectangle(), _engine);
     cForm::draw();
+
+    if (_currentTab < _tabs.size() && items(_currentTab).size() > MAX_VISIBLE_ITEMS) {
+        const size_t totalItems = items(_currentTab).size();
+        const size_t maxFirstVisible = totalItems - MAX_VISIBLE_ITEMS;
+        const size_t firstVisible =
+                _tabs[_currentTab]._firstVisibleItem > maxFirstVisible
+                        ? maxFirstVisible
+                        : _tabs[_currentTab]._firstVisibleItem;
+        const bool canScrollUp = firstVisible > 0;
+        const bool canScrollDown = firstVisible < maxFirstVisible;
+
+        // Use a small vertical scrollbar cue instead of the old "1-5/7" range.
+        // Both arrows are always present, while the themed focus color identifies
+        // the directions that can currently be used.
+        const s16 indicatorX = position().x + size().x / 2 - 8;
+        const s16 indicatorY = position().y + SCROLL_INDICATOR_Y;
+        const u16 activeColor = uis().spinBoxFocusColor;
+        const u16 inactiveColor = uis().spinBoxFrameColor;
+
+        drawScrollChevron(indicatorX, indicatorY, true,
+                          canScrollUp ? activeColor : inactiveColor, _engine);
+        drawScrollChevron(indicatorX, indicatorY + 8, false,
+                          canScrollDown ? activeColor : inactiveColor, _engine);
+
+        // A short themed track and thumb give a subtle indication of position
+        // without adding another theme asset or taking space from the controls.
+        const s16 trackX = indicatorX + 12;
+        const u16 trackHeight = 12;
+        const u16 thumbHeight = 4;
+        gdi().setPenColor(inactiveColor, _engine);
+        gdi().frameRect(trackX, indicatorY, 5, trackHeight, _engine);
+        const s16 thumbY = indicatorY +
+                           (s16)((firstVisible * (trackHeight - thumbHeight)) /
+                                  maxFirstVisible);
+        gdi().fillRect(activeColor, activeColor, trackX, thumbY, 5, thumbHeight, _engine);
+    }
 }
 
 bool cSettingWnd::process(const akui::cMessage& msg) {
@@ -198,18 +252,6 @@ void cSettingWnd::addSettingItem(const std::string& text, const std::vector<std:
     if (_maxLabelLength < text.length()) _maxLabelLength = text.length();
     size_t lastTab = _tabs.size() - 1;
 
-    // recompute window size and position
-    if (_maxTabSize < (items(lastTab).size() + 1)) {
-        _maxTabSize = (items(lastTab).size() + 1);
-        setSize(cSize(_size.x, _maxTabSize * 20 + 41 + TOP_MARGIN));
-        _position.x = (SCREEN_WIDTH - _size.x) / 2;
-        _position.y = (SCREEN_HEIGHT - _size.y) / 2;
-    }
-
-    // insert label, item and set their position
-    s32 itemY = items(lastTab).size() * 20 + 18 + TOP_MARGIN;
-    s32 itemX = 8;
-
     cSpinBox* item = new cSpinBox(0, 0, 108, 18, this, "spin");
     for (size_t ii = 0; ii < itemTexts.size(); ++ii) {
         item->insertItem(itemTexts[ii], ii);
@@ -217,28 +259,21 @@ void cSettingWnd::addSettingItem(const std::string& text, const std::vector<std:
 
     item->loadAppearance("");
     item->setSize(cSize(_spinBoxWidth, 18));
-    item->setRelativePosition(cPoint(_size.x - _spinBoxWidth - 4, itemY));
+    item->setRelativePosition(cPoint(_size.x - _spinBoxWidth - 4, 0));
     item->hide();
     addChildWindow(item);
     item->selectItem(defaultValue);
 
     cStaticText* label = new cStaticText(0, 0, _maxLabelLength * 6, gs().fontHeight, this, text);
-    itemY += (item->windowRectangle().height() - label->windowRectangle().height()) / 2;
-    label->setRelativePosition(cPoint(itemX, itemY));
+    label->setRelativePosition(cPoint(8, 0));
     label->setTextColor(uis().formTextColor);
     label->setSize(cSize(_size.x / 2 + 8, 12));
     label->hide();
     addChildWindow(label);
 
     items(lastTab).push_back(sSetingItem(label, item));
-
-    // recompute button position
-    s16 buttonY = size().y - _buttonCancel.size().y - 4;
-
-    _buttonCancel.setRelativePosition(cPoint(_buttonCancel.relativePosition().x, buttonY));
-    _buttonOK.setRelativePosition(cPoint(_buttonOK.relativePosition().x, buttonY));
-    _buttonY.setRelativePosition(cPoint(_buttonY.relativePosition().x, buttonY));
-
+    updateTabLayout(lastTab, lastTab == _currentTab);
+    repositionButtons();
     arrangeChildren();
 }
 
@@ -247,15 +282,21 @@ void cSettingWnd::onShow(void) {
 }
 
 void cSettingWnd::onUIKeyUP(void) {
-    ssize_t focusItem = focusedItemId();
-    if (--focusItem < 0) focusItem = items(_currentTab).size() - 1;
-    windowManager().setFocusedWindow(items(_currentTab)[focusItem]._item);
+    if (items(_currentTab).empty()) return;
+
+    ssize_t focus = focusedItemId();
+    size_t next = (focus < 0) ? items(_currentTab).size() - 1
+                               : (focus == 0 ? items(_currentTab).size() - 1 : focus - 1);
+    focusItem(next);
 }
 
 void cSettingWnd::onUIKeyDOWN(void) {
-    ssize_t focusItem = focusedItemId();
-    if (++focusItem >= (ssize_t)items(_currentTab).size()) focusItem = 0;
-    windowManager().setFocusedWindow(items(_currentTab)[focusItem]._item);
+    if (items(_currentTab).empty()) return;
+
+    ssize_t focus = focusedItemId();
+    size_t next = (focus < 0) ? 0
+                               : (focus + 1 >= (ssize_t)items(_currentTab).size() ? 0 : focus + 1);
+    focusItem(next);
 }
 
 void cSettingWnd::onUIKeyLEFT(void) {
@@ -313,11 +354,11 @@ void cSettingWnd::HideTab(size_t index) {
 
 void cSettingWnd::ShowTab(size_t index) {
     if (index >= _tabs.size()) return;
-    for (size_t ii = 0; ii < items(index).size(); ++ii) {
-        items(index)[ii]._label->show();
-        items(index)[ii]._item->show();
+    updateTabLayout(index, true);
+    arrangeChildren();
+    if (items(index).size()) {
+        windowManager().setFocusedWindow(items(index)[_tabs[index]._firstVisibleItem]._item);
     }
-    if (items(index).size()) windowManager().setFocusedWindow(items(index)[0]._item);
 }
 
 void cSettingWnd::SwitchTab(size_t oldIndex, size_t newIndex) {
@@ -327,6 +368,58 @@ void cSettingWnd::SwitchTab(size_t oldIndex, size_t newIndex) {
 
 void cSettingWnd::onItemChanged(akui::cSpinBox* item) {
     size_t newTab = item->selectedItemId();
-    SwitchTab(_currentTab, newTab);
+    size_t oldTab = _currentTab;
     _currentTab = newTab;
+    SwitchTab(oldTab, newTab);
+}
+
+void cSettingWnd::updateTabLayout(size_t index, bool showItems) {
+    if (index >= _tabs.size()) return;
+
+    std::vector<sSetingItem>& tabItems = items(index);
+    size_t maxFirstVisible = tabItems.size() > MAX_VISIBLE_ITEMS
+                                   ? tabItems.size() - MAX_VISIBLE_ITEMS
+                                   : 0;
+    if (_tabs[index]._firstVisibleItem > maxFirstVisible) {
+        _tabs[index]._firstVisibleItem = maxFirstVisible;
+    }
+
+    size_t first = _tabs[index]._firstVisibleItem;
+    for (size_t ii = 0; ii < tabItems.size(); ++ii) {
+        bool visible = showItems && ii >= first && ii < first + MAX_VISIBLE_ITEMS;
+        if (visible) {
+            s32 itemY = (ii - first) * ITEM_PITCH + 18 + TOP_MARGIN;
+            s32 labelY = itemY + (tabItems[ii]._item->size().y - tabItems[ii]._label->size().y) / 2;
+            tabItems[ii]._item->setRelativePosition(
+                    cPoint(_size.x - _spinBoxWidth - 4, itemY));
+            tabItems[ii]._label->setRelativePosition(cPoint(8, labelY));
+            tabItems[ii]._label->show();
+            tabItems[ii]._item->show();
+        } else {
+            tabItems[ii]._label->hide();
+            tabItems[ii]._item->hide();
+        }
+    }
+}
+
+void cSettingWnd::focusItem(size_t index) {
+    if (_currentTab >= _tabs.size() || index >= items(_currentTab).size()) return;
+
+    size_t& first = _tabs[_currentTab]._firstVisibleItem;
+    if (index < first) {
+        first = index;
+    } else if (index >= first + MAX_VISIBLE_ITEMS) {
+        first = index - MAX_VISIBLE_ITEMS + 1;
+    }
+
+    updateTabLayout(_currentTab, true);
+    arrangeChildren();
+    windowManager().setFocusedWindow(items(_currentTab)[index]._item);
+}
+
+void cSettingWnd::repositionButtons(void) {
+    s16 buttonY = size().y - _buttonCancel.size().y - 4;
+    _buttonCancel.setRelativePosition(cPoint(_buttonCancel.relativePosition().x, buttonY));
+    _buttonOK.setRelativePosition(cPoint(_buttonOK.relativePosition().x, buttonY));
+    _buttonY.setRelativePosition(cPoint(_buttonY.relativePosition().x, buttonY));
 }
