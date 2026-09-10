@@ -194,12 +194,15 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
             }
         else useSavesPath = aFullPath;
 
-        saveName = cSaveManager::generateSaveName(savesFolderPath, aRomInfo.saveInfo().getSlot());
+        const u8 saveSlot = gs().saveSlotOverride >= 0
+                                    ? gs().saveSlotOverride
+                                    : aRomInfo.saveInfo().getSlot();
+        saveName = cSaveManager::generateSaveName(savesFolderPath, saveSlot);
 
         // Pico Loader creates the DSiWare .pub/.prv/.bnr files itself.  Do not
         // create a regular DS .sav file (including the big-save special cases).
         if (!isDsiWare && isBigSave) {
-            isBigSave = cSaveManager::initializeSaveFile(useSavesPath, aRomInfo.saveInfo().getSlot(),
+            isBigSave = cSaveManager::initializeSaveFile(useSavesPath, saveSlot,
                                                          bigSaveSize);
             if (!isBigSave) return ELaunchNoFreeSpace;
             flags |= PATCH_SD_SAVE | (bigSaveMask << PATCH_SAVE_SHIFT);
@@ -216,8 +219,7 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
                     saveManager().updateCustomSaveList(aRomInfo.saveInfo());
                 }
             }
-            if (cSaveManager::initializeSaveFile(useSavesPath, aRomInfo.saveInfo().getSlot(),
-                                                 SaveSize(st))) {
+            if (cSaveManager::initializeSaveFile(useSavesPath, saveSlot, SaveSize(st))) {
                 flags |= PATCH_SD_SAVE | (SaveMask(st) << PATCH_SAVE_SHIFT);
                 saveManager().saveLastInfo(aFullPath, favorite);
             } else {

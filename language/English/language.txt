@@ -278,6 +278,7 @@ modegba = gba
 modends = nds
 modeask = ask
 modetext = Launch slot-2 in NDS mode?
+save slot = Save Slot Override
 
 [sd save]
 title = Warning

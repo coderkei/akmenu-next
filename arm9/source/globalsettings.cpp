@@ -30,6 +30,7 @@ cGlobalSettings::cGlobalSettings() {
     viewMode = EViewInternal;
     gbaSleepHack = false;
     gbaAutoSave = false;
+    saveSlotOverride = -1;
     Animation = true;
     cheats = false;
     softreset = true;
@@ -108,6 +109,8 @@ void cGlobalSettings::loadSettings() {
     slot2mode = (temp == "gba") ? ESlot2Gba
             : (temp == "nds") ? ESlot2Nds
             : ESlot2Ask;
+    saveSlotOverride = ini.GetInt("system", "saveSlotOverride", saveSlotOverride);
+    if (saveSlotOverride < -1 || saveSlotOverride > 3) saveSlotOverride = -1;
 
     struct stat st;
     if (0 == stat((SFN_CHEATS).c_str(), &st)) cheatDB = true;
@@ -173,6 +176,7 @@ void cGlobalSettings::saveSettings() {
         : (slot2mode == ESlot2Nds) ? "nds"
         : (slot2mode == ESlot2Ask) ? "ask"
         : "ask" );
+    ini.SetInt("system", "saveSlotOverride", saveSlotOverride);
 
     ini.SaveIniFile(SFN_GLOBAL_SETTINGS);
     updateSafeMode();

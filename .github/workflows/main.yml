@@ -18,8 +18,15 @@ jobs:
 
       - name: Update packages
         run: |
+          sudo -n sed -i '/bullseye-security/d' /etc/apt/sources.list 2>/dev/null || true
+
+          for f in /etc/apt/sources.list.d/*.list; do
+            [ -e "$f" ] || continue
+            sudo -n sed -i '/bullseye-security/d' "$f"
+          done
+
           sudo -n apt-get update
-          sudo -n apt-get upgrade -y fakeroot zip p7zip-full
+          sudo -n apt-get install -y fakeroot zip p7zip-full
 
       - name: Silence all git safe directory warnings
         run: git config --system --add safe.directory '*'

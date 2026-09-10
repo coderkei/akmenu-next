@@ -699,6 +699,15 @@ void cMainWnd::setParam(void) {
     settingWnd.addSettingItem(LANG("gba settings", "mode"), _values, gs().slot2mode);
     _values.clear();
     _values.push_back(LANG("switches", "Disable"));
+    _values.push_back("0");
+    _values.push_back("1");
+    _values.push_back("2");
+    _values.push_back("3");
+    size_t otherSaveSlotItem = otherItem++;
+    settingWnd.addSettingItem(LANG("gba settings", "save slot"), _values,
+                              gs().saveSlotOverride + 1);
+    _values.clear();
+    _values.push_back(LANG("switches", "Disable"));
     _values.push_back(LANG("switches", "Enable"));
     size_t otherAutorunItem = otherItem++;
     settingWnd.addSettingItem(LANG("autorun", "text"), _values, gs().autorunWithLastRom);
@@ -754,6 +763,7 @@ void cMainWnd::setParam(void) {
     gs().ignoreCrc16 = settingWnd.getItemSelection(TAB_OTHER, otherIgnoreCrcItem);
     gs().cheats = settingWnd.getItemSelection(TAB_OTHER, otherCheatsItem);
     gs().slot2mode = settingWnd.getItemSelection(TAB_OTHER, otherSlot2Item);
+    gs().saveSlotOverride = settingWnd.getItemSelection(TAB_OTHER, otherSaveSlotItem) - 1;
     gs().autorunWithLastRom = settingWnd.getItemSelection(TAB_OTHER, otherAutorunItem);
 
 

@@ -49,6 +49,8 @@ class cGlobalSettings {
     int romLauncher;
     int viewMode;
     int slot2mode;
+    // -1 keeps the per-game save slot setting; 0-3 force a global slot.
+    int saveSlotOverride;
     bool showHiddenFiles;
     bool enterLastDirWhenBoot;
     bool showGbaRoms;
