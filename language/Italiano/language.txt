@@ -166,6 +166,7 @@ it = Italiano
 es = Español
 cn = 简体中文
 zh = 繁體中文
+ru = Русский
 
 [ui style]
 text = Stile interfaccia utente

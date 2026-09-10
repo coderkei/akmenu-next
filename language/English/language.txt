@@ -170,13 +170,14 @@ carddma = Card Read DMA
 [language]
 text = Language
 ja = 日本語
-en = english
-fr = français
-de = deutsch
-it = italiano
-es = español
+en = English
+fr = Français
+de = Deutsch
+it = Italiano
+es = Español
 cn = 简体中文
 zh = 繁體中文
+ru = Русский
 
 [ui style]
 text = User Interface style

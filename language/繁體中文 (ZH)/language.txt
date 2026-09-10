@@ -178,14 +178,15 @@ carddma = 遊戲卡讀取DMA
 
 [language]
 text = 系統語言
-ja = 日文
-en = 英文
-fr = 法文
-de = 德文
-it = 義大利文
-es = 西班牙文
+ja = 日本語
+en = English
+fr = Français
+de = Deutsch
+it = Italiano
+es = Español
 cn = 简体中文
 zh = 繁體中文
+ru = Русский
 
 [ui style]
 text = 面版

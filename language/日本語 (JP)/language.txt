@@ -159,13 +159,14 @@ item1 = トリム有効
 [language]
 text = 言語
 ja = 日本語
-en = english
-fr = français
-de = deutsch
-it = italiano
-es = español
+en = English
+fr = Français
+de = Deutsch
+it = Italiano
+es = Español
 cn = 简体中文
 zh = 繁體中文
+ru = Русский
 
 [ui style]
 text = ユーザー設定 スタイル

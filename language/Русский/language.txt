@@ -1,0 +1,337 @@
+// by Rabbit
+// https://github.com/999px
+// 2026-07-31
+
+
+[font]
+main = liberation.pcf
+language = 1
+
+[start menu]
+Setting = Настройки
+Set favorite = Избранное [+]
+Unset favorite = Избранное [-]
+Info = О файле
+Help = Справка
+Tools = Настройки "3in1"
+START = START
+
+[message box]
+yes = Да
+no = Нет
+ok = ОК
+cancel = Отмена
+
+[progress window]
+processing save = Создание сохранения, не выключайте
+processing copy = Копирование, не выключайте, %c - отмена
+first use sd = Проверка SD-карты при первом запуске
+gba load = Загрузка GBA игры
+gba save load = Загрузка GBA сохранения
+gba save store = Сохранение GBA, не выключайте
+erase nor = Очистка NOR flash
+
+[copy file error]
+title = Ошибка
+text = Файл не существует
+
+[copy file exists]
+title = Предупреждение
+text = Файл с таким именем уже существует, замените его?
+
+[copy dest is directory]
+title = Ошибка
+text = Папка с таким именем уже есть, копирование невозможно.
+
+[move dest is directory]
+title = Ошибка
+text = Папка с таким именем уже есть, перемещение невозможно.
+
+[no copy dir]
+title = Ошибка
+text = Копирование/перемещение папок пока не поддерживается.
+
+[stop copying file]
+title = Прервать копирование
+text = Вы хотите прервать копирование?
+
+[confirm delete file]
+title = Подтвердите
+text = Файл "%s" будет удалён безвозвратно. Продолжить?
+
+[do not delete directory]
+title = Предупреждение
+text = Папка не пуста, удалить его невозможно.
+
+[restore save fail]
+title = Ошибка
+text = Не удалось восстановить сохранение.
+
+[language changed]
+title = Вопрос
+text = Язык изменён. "Да" - Применить и перезапустить сейчас? "Нет" - Оставить текущий язык.
+
+[ui style changed]
+title = Вопрос
+text = Скин изменён. "Да" - Применить и перезапустить сейчас? "Нет" - Оставить текущий Скин.
+
+[setting window]
+ok = ОК
+savetype = Настройки
+cancel = Отмена
+confirm = Применить
+confirm text = Сохранить настройки?
+close = Закрыть
+system = Система
+interface = Интерфейс
+filesystem = Файлы krolik
+gba = GBA
+patches = Настройки nds-bootstrap [4/5]
+
+[save type]
+title = Настройки
+text = Тип сохранения
+Unknown = Неизв./Авто
+No Save = No save
+4K = 4K
+64K = 64K
+512K = 512K
+1M = 1M
+2M = 2M
+4M = 4M
+8M = 8M
+16M = 16M
+32M = 32M
+64M = 64M
+default = default
+save slot = Слот сохранения
+tab1 = Совместимость [1/2]
+tab2 = Возможности [2/2]
+
+[system setting]
+title = Настройки системы [1/5]
+safe mode = Безопасный режим
+
+[autorun]
+text = Автозапуск послед. ROM
+
+[rom info]
+title = О файле
+file date = Дата/Время: %d/%d/%d %02d:%02d:%02d(GMT)
+file size = Размер файла: %s
+save type = Тип сохранения: %s
+game code = Код игры: %s
+copy slot = Копировать слот
+
+[disk info]
+total = Объём диска: %s
+used = Использовано: %s
+free = Свободно: %s
+
+[no free space]
+title = Ошибка
+text = На диске недостаточно места.
+
+[unsupported sd]
+title = SD-карта не поддерживается
+text = Данная SD-карта (%s) не подходит для запуска официальных DS-программ. Скопируйте программу во внутреннюю память Acekard.
+
+[sd card error]
+title = Ошибка SD-карты
+text = Нет доступа к SD-карте. Проверьте её.
+
+[no sd for save]
+title = Ошибка SD-карты
+text = Нет доступа к SD. Сохранение предыдущей запущенной программы будет записано в "%s".
+
+[no gba card]
+title = Уведомление
+text = Устройство в SLOT-2 отсутствует
+
+[filelist type]
+text = Показывать файлы
+item0 = *.nds
+item1 = *.nds + *.sav
+item2 = все файлы
+
+[nds bootstrap]
+text = Версия nds-bootstrap
+release = Release
+nightly = Nightly
+firsttimetitle = Инициализация nds-bootstrap
+firsttime = Нажмите ОК для первой настройки nds-bootstrap. Это займёт около минуты.
+dsmode = Режим DS-Only
+boostcpu = Частота TWL CPU
+ignorecrc16 = Игнор. ошибки CRC16
+inimissingtitle = Ошибка INI
+inimissing = файл "ndsbs.ini" отсутствует в папке "_nds/akmenunext" или поврежден. Восстановите файл или переустановите akmenu-next.
+phatCol = Цвета DS Phat
+loader = Game Loader
+carddma = Card Read DMA
+
+
+[language]
+text = Язык
+ja = 日本語
+en = English
+fr = Français
+de = Deutsch
+it = Italiano
+es = Español
+cn = 简体中文
+zh = 繁體中文
+ru = Русский
+
+[ui style]
+text = Скин
+
+[help window]
+title = Справка
+item0 = %c  Навигация
+item1 = %c  Старт / ОК / Да
+item2 = %c  Назад / Отмена / Нет
+item3 = %c  О файле / Тип сохранения
+item4 = %c  Избранное
+item5 = %c  Вернуться в родительскую папку
+item6 = %c  Изменение яркости (только DS)
+item7 = [%s]  Меню "START"
+item8 = [%s]  Сменить стиль списка файлов
+
+[exp window]
+button = 3in1
+title = Настройки 3in1 Expansion Pack
+ram = RAM
+sram = sRAM
+off = Выкл.
+low = Слабая
+mid = Средняя
+high = Высокая
+strength = Сила вибрации
+flash to nor = в NOR
+copy to psram = в RAM
+
+[abort save]
+title = Прервать сохранение
+text = Прервать обработку сохранения?
+
+[gba warn]
+title = Предупреждение
+text = GBA ROM больше 32M не поддерживаются!
+
+[patches]
+download play = Single Card Play
+cheating system = Читы (AR)
+reset in game = Софт-ресет
+dma = Режим DMA
+protection = Обход защиты
+linkage = Линк с GBA
+sd save = Сохранение прямо на SD
+homebrew reset = Софт-ресет в Homebrew
+carddma = Card read DMA
+hbstrap = Homebrew Loader
+default = AKMenu-Next
+ndshb = nds-bootstrap
+
+[switches]
+Enable = Вкл.
+Disable = Выкл.
+Global = Общие (%s)
+Auto = Авто
+
+[ram allocation]
+title = Ошибка
+memory allocation error = Ошибка выделения памяти
+
+[scrolling]
+fast = Быстро
+medium = Средне
+slow = Медленно
+
+[file settings]
+title = Настройки файлов [3/5]
+show hidden files = Показ. скрытые файлы
+save extension = Расширение сохранения
+use saves folder = Использ. папку "saves"
+
+[interface settings]
+title = Настройки интерфейса [2/5]
+scrolling speed = Скорость прокрутки
+filelist style = Стиль списка файлов
+oldschool = Без иконок
+small = Мал. иконки
+modern = Бол. иконки
+internal = Назв. игр
+animation = Анимация
+12 hour = 12-часовой формат
+custom icons = Свои значки
+
+[gba settings]
+title = Прочие настройки [5/5]
+sleephack = Универсальный сон
+autosave = Бэкап сохранения при запуске
+mode = Режим Slot-2
+modegba = gba
+modends = nds
+modeask = Спросить
+modetext = Запускать Slot-2 в режиме NDS?
+
+[sd save]
+title = Предупреждение
+text = Игра не запускается из внутренней памяти Acekard. Скопируйте её на SD-карту.
+
+[icon]
+icon = Показывать иконку
+transparent = Прозрачной
+as is = Как есть
+firmware = Официально
+
+[cheats]
+title = Читы
+info = Ещё...
+deselect = Снять всё
+
+[saveslot]
+title = Копировать слот сохранения
+confirm = Скопировать слот сохранения?
+target slot = Целевой слот сохранения
+
+[mainlist]
+flash memory = Flash-память
+microsd card = microSD
+slot2 card = Slot-2
+slot1 card = Slot-1
+favorites = Избранное
+recent = Недавно запущенные
+
+[loader]
+text = Использовать загрузчик ROM krolik
+not found = Загрузчик не найден
+error = Ошибка
+info = Сведения
+
+[loading]
+load text = Подождите...
+
+[resethotkey]
+text = Горячая клавиша меню
+0 = l-↓-select
+1 = l-r-start
+2 = l-r-select
+3 = l-r-a-b-↓
+4 = l-r-b-y-↓
+5 = l-r-a-b-x-y
+6 = Своя
+
+[override]
+text = Язык игры
+0 = Системный
+1 = 日本語
+2 = English
+3 = Français
+4 = Deutsch
+5 = Italiano
+6 = Español
+7 = 中文
+8 = Korean
+
+[end]
