@@ -22,6 +22,7 @@ DSRomInfo& DSRomInfo::operator=(const DSRomInfo& src) {
     memcpy(&_saveInfo, &src._saveInfo, sizeof(_saveInfo));
     _isDSRom = src._isDSRom;
     _isHomebrew = src._isHomebrew;
+    _isDSiWare = src._isDSiWare;
     _isModernHomebrew = src._isModernHomebrew;
     _isGbaRom = src._isGbaRom;
     _fileName = src._fileName;
