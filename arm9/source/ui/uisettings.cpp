@@ -3,6 +3,7 @@
     Copyright (C) 2007 Acekard, www.acekard.com
     Copyright (C) 2007-2009 somebody
     Copyright (C) 2009 yellow wood goblin
+    Copyright (C) 2016 coderkei
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -13,6 +14,10 @@
 
 cUISettings::cUISettings() {
     showCalendar = true;
+    coverX = -32768;
+    coverY = -32768;
+    coverDarken = 0;
+    coverFade = 0;
     formFrameColor = RGB15(23, 25, 4);
     formBodyColor = RGB15(30, 29, 22);
     formTextColor = RGB15(17, 12, 0);
@@ -39,6 +44,14 @@ void cUISettings::loadSettings() {
     CIniFile ini(SFN_UI_SETTINGS);
 
     showCalendar = ini.GetInt("global settings", "showCalendar", showCalendar);
+    coverX = ini.GetInt("cover", "x", coverX);
+    coverY = ini.GetInt("cover", "y", coverY);
+    coverDarken = ini.GetInt("cover", "darken", coverDarken);
+    coverFade = ini.GetInt("cover", "fade", coverFade);
+    if (coverDarken < 0) coverDarken = 0;
+    if (coverDarken > 100) coverDarken = 100;
+    if (coverFade < 0) coverFade = 0;
+    if (coverFade > 100) coverFade = 100;
     formFrameColor = ini.GetInt("global settings", "formFrameColor", formFrameColor);
     formBodyColor = ini.GetInt("global settings", "formBodyColor", formBodyColor);
     formTextColor = ini.GetInt("global settings", "formTextColor", formTextColor);

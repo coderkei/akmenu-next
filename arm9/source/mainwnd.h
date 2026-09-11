@@ -52,6 +52,8 @@ class cMainWnd : public akui::cForm {
 
     void listSelChange(u32 i);
 
+    void refreshCover();
+
     void startMenuItemClicked(s16 i);
 
     void startButtonClicked();

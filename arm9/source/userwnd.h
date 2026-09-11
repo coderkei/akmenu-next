@@ -43,6 +43,12 @@ class cUserWindow : public akui::cWindow {
     int _uy;
     u16 _userNameColor;
     bool _showUserName;
+    int _dateX;
+    int _dateY;
+    u16 _dateColor;
+    bool _showDate;
+    bool _showDateTime;
+    std::string _dateFormat;
     bool _showCustomText;
     bool _showCustomPic;
 };

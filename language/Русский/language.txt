@@ -271,6 +271,7 @@ internal = Назв. игр
 animation = Анимация
 12 hour = 12-часовой формат
 custom icons = Свои значки
+covers = Обложки
 
 [gba settings]
 title = Прочие настройки [5/5]

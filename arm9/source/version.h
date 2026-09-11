@@ -7,5 +7,5 @@
     SPDX-License-Identifier: GPL-3.0-or-later
 */
 
-#define AKMENU_VERSION_MAIN "2"
-#define AKMENU_VERSION_SUB "3.1"
+#define AKMENU_VERSION_MAIN "3"
+#define AKMENU_VERSION_SUB "0.0 Beta"

@@ -1,6 +1,7 @@
 /*
     romlauncher.cpp
     Copyright (C) 2010 yellow wood goblin
+    Copyright (C) 2026 coderkei
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */
@@ -199,8 +200,7 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
                                     : aRomInfo.saveInfo().getSlot();
         saveName = cSaveManager::generateSaveName(savesFolderPath, saveSlot);
 
-        // Pico Loader creates the DSiWare .pub/.prv/.bnr files itself.  Do not
-        // create a regular DS .sav file (including the big-save special cases).
+        // If DSiWare, don't make a .sav. Well, you could but it's not gonna get used.
         if (!isDsiWare && isBigSave) {
             isBigSave = cSaveManager::initializeSaveFile(useSavesPath, saveSlot,
                                                          bigSaveSize);

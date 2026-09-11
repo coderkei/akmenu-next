@@ -259,6 +259,7 @@ small = Icone piccole
 animation = Animazione
 12 hour = Orologio 12-ore
 custom icons = Icone personalizzate
+covers = Copertine
 
 [gba settings]
 title = Altre impostazioni

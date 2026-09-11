@@ -25,6 +25,11 @@ class cUISettings {
   public:
     bool showCalendar;
 
+    int coverX;
+    int coverY;
+    int coverDarken;
+    int coverFade;
+
     COLOR formFrameColor;
     COLOR formBodyColor;
     COLOR formTextColor;

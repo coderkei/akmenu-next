@@ -25,6 +25,8 @@ class cIRQ {
 
     void vblankStop();
 
+    static void redrawTopScreen();
+
     static void cardMC();
 
     static void vBlank();

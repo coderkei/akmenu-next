@@ -13,7 +13,7 @@
 
 ## AKMenu-Next
 
-Frontend for [nds-bootstrap](https://github.com/DS-Homebrew/nds-bootstrap/) and [Pico-Loader](https://github.com/LNH-team/pico-loader) based upon [lifehansolhacker's akmenu4 port](https://github.com/lifehackerhansol/akmenu4).
+Frontend for [nds-bootstrap](https://github.com/DS-Homebrew/nds-bootstrap/) and [Pico-Loader](https://github.com/LNH-team/pico-loader) based upon [lifehansolhacker's akmenu4 port](https://github.com/akmenu4/akmenu4).
 
 ## Installing
 
@@ -31,7 +31,7 @@ Build the repository with `make`, then run `package.cmd/sh` depending on your OS
 * The system directory is `_nds/akmenunext` where the akmenu system files should be placed, along with a copy the nds-bootstrap files in the `_nds` folder.
 * The binary of akmenu-next additionally needs to be in the `_nds/akmenunext` folder as `launcher.nds` for theme & language reboots, this is automatically added if using the package script.
 * Cheats should be placed as `usrcheat.dat` into the `_nds/akmenunext/cheats` folder.
-* Themes go into `_nds/akmenunext/ui`. Acekard & Wood R4 themes are supported.
+* Theme installation and customization is documented in [Themes.md](Themes.md).
 * For flashcart related builds, files for the corresponding flashcart for Pico-Loader should go into the `_pico` folder.
 * Plugins go into `_nds/akmenunext/plugins`.
 
@@ -51,6 +51,8 @@ The specified extension will be recognised as a valid file and will launch via a
 The icon for the file will be read from `_nds/akmenunext/plugins/icons/{extension}.bin` as a banner file. If it is not found it will fall back to the default icon.
 
 If the `.gba` extension is used for a plugin and an EZ Flash 3 in 1 is inserted, the 3 in 1 will take priority over the plugin for loading `.gba` files.
+
+Please see the [AKMenu-Next Plugin Documentation](https://coderkei.github.io/akmenu-next-docs/guides/plugins/) for more information
 
 ## License
 

@@ -274,6 +274,7 @@ small = Petites icônes
 animation = Animation
 12 hour = Horaire sur 12 heures
 custom icons = Icônes perso.
+covers = Jaquettes
 
 [gba settings]
 title = Autres réglages

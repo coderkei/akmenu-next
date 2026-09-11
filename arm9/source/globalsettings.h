@@ -49,7 +49,6 @@ class cGlobalSettings {
     int romLauncher;
     int viewMode;
     int slot2mode;
-    // -1 keeps the per-game save slot setting; 0-3 force a global slot.
     int saveSlotOverride;
     bool showHiddenFiles;
     bool enterLastDirWhenBoot;
@@ -67,6 +66,7 @@ class cGlobalSettings {
     bool dma;
     bool safeMode;
     bool show12hrClock;
+    bool showCovers;
     bool autorunWithLastRom;
     bool homebrewreset;
     bool dsOnly;

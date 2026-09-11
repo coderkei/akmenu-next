@@ -261,6 +261,7 @@ small = Kleine Icons
 animation = Animation
 12 hour = 12-Stunden-Zählung
 custom icons = Benutzerdefinierte Symbole
+covers = Spielcover
 
 [gba settings]
 title = GBA-Einstellungen

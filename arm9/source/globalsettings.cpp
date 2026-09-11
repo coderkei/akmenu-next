@@ -46,6 +46,7 @@ cGlobalSettings::cGlobalSettings() {
     nightly = false;
     safeMode = false;
     show12hrClock = false;
+    showCovers = true;
     autorunWithLastRom = false;
     homebrewreset = false;
     resetHotKey = 0;
@@ -83,6 +84,7 @@ void cGlobalSettings::loadSettings() {
     sdsave = ini.GetInt("system", "sdsave", sdsave);
     safeMode = ini.GetInt("system", "safemode", safeMode);
     show12hrClock = ini.GetInt("system", "Show12hrClock", show12hrClock);
+    showCovers = ini.GetInt("system", "showCovers", showCovers);
     autorunWithLastRom = ini.GetInt("system", "autorunWithLastRom", autorunWithLastRom);
     homebrewreset = ini.GetInt("system", "homebrewreset", homebrewreset);
     resetHotKey = ini.GetInt("system", "resethotkey", resetHotKey);
@@ -141,6 +143,7 @@ void cGlobalSettings::saveSettings() {
     ini.SetInt("system", "savedir", saveDir);
     ini.SetInt("system", "nightly", nightly);
     ini.SetInt("system", "Show12hrClock", show12hrClock);
+    ini.SetInt("system", "showCovers", showCovers);
     ini.SetInt("system", "homebrewreset", homebrewreset);
     ini.SetInt("system", "resethotkey", resetHotKey);
     ini.SetInt("system", "dsonly", dsOnly);

@@ -29,6 +29,8 @@
 #include "rominfownd.h"
 #include "romlauncher.h"
 #include "pluginmngr.h"
+#include "coverwnd.h"
+#include "irqs.h"
 
 #include <dirent.h>
 #include <fat.h>
@@ -201,6 +203,7 @@ void cMainWnd::draw() {
 }
 
 void cMainWnd::listSelChange(u32 i) {
+    refreshCover();
 #ifdef DEBUG
     // dbg_printf( "main list item %d\n", i );
     DSRomInfo info;
@@ -217,9 +220,29 @@ void cMainWnd::listSelChange(u32 i) {
 #endif  // DEBUG
 }
 
+void cMainWnd::refreshCover() {
+    if (!gs().showCovers) return;
+
+    DSRomInfo info;
+    std::string selectedPath = _mainList->getSelectedFullPath();
+
+    bool wasPainting = cIRQ::_vblankStarted;
+    if (wasPainting) irqDisable(IRQ_VBLANK);
+    coverWindow().clear();
+    cIRQ::redrawTopScreen();
+    if (wasPainting) irqEnable(IRQ_VBLANK);
+    if (_mainList->getRomInfo(_mainList->selectedRowId(), info)) {
+        coverWindow().update(selectedPath, info);
+    }
+    if (wasPainting) irqDisable(IRQ_VBLANK);
+    cIRQ::redrawTopScreen();
+    if (wasPainting) irqEnable(IRQ_VBLANK);
+}
+
 void cMainWnd::startMenuItemClicked(s16 i) {
     dbg_printf("start menu item %d\n", i);
     // messageBox( this, "Power Off", "Are you sure you want to turn off ds?", MB_YES | MB_NO );
+    // I wonder where this commented out code was from?
 
     if (START_MENU_ITEM_FAVORITES_ADD == i) {
         bool ret = cFavorites::AddToFavorites(_mainList->getSelectedFullPath());
@@ -584,6 +607,7 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("switches", "Enable"));
     settingWnd.addSettingItem(LANG("interface settings", "animation"), _values, gs().Animation);
     settingWnd.addSettingItem(LANG("interface settings", "12 hour"), _values, gs().show12hrClock);
+    settingWnd.addSettingItem(LANG("interface settings", "covers"), _values, gs().showCovers);
 
     // File system: file visibility, filtering, and save-file handling.
     settingWnd.addSettingTab(LANG("file settings", "title"));
@@ -736,6 +760,7 @@ void cMainWnd::setParam(void) {
     gs().icon = settingWnd.getItemSelection(TAB_INTERFACE, 2);
     gs().Animation = settingWnd.getItemSelection(TAB_INTERFACE, 3);
     gs().show12hrClock = settingWnd.getItemSelection(TAB_INTERFACE, 4);
+    gs().showCovers = settingWnd.getItemSelection(TAB_INTERFACE, 5);
 
     // File system
     gs().fileListType = settingWnd.getItemSelection(TAB_FILES, 0);
@@ -799,10 +824,24 @@ void cMainWnd::setParam(void) {
 void cMainWnd::showSettings(void) {
     if (gs().safeMode) return;
     u8 currentFileListType = gs().fileListType, currentShowHiddenFiles = gs().showHiddenFiles;
+    bool currentShowCovers = gs().showCovers;
     setParam();
-    if (gs().fileListType != currentFileListType ||
-        gs().showHiddenFiles != currentShowHiddenFiles) {
+    bool reloadedList = gs().fileListType != currentFileListType ||
+                        gs().showHiddenFiles != currentShowHiddenFiles;
+    if (reloadedList) {
         _mainList->enterDir(_mainList->getCurrentDir());
+    }
+    if (gs().showCovers != currentShowCovers) {
+        if (gs().showCovers) {
+            // Load the presently selected item immediately when re-enabled.
+            refreshCover();
+        } else {
+            bool wasPainting = cIRQ::_vblankStarted;
+            if (wasPainting) irqDisable(IRQ_VBLANK);
+            coverWindow().clear();
+            cIRQ::redrawTopScreen();
+            if (wasPainting) irqEnable(IRQ_VBLANK);
+        }
     }
 }
 
@@ -836,6 +875,7 @@ void cMainWnd::showFileInfo() {
 
 void cMainWnd::onFolderChanged() {
     resetInputIdle();
+    refreshCover();
     std::string dirShowName = _mainList->getCurrentDir();
     if ("favorites:/" != dirShowName && "recent:/" != dirShowName && "slot2:/" == _mainList->getSelectedFullPath()) {
         u8 chk = 0;

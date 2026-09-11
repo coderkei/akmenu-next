@@ -2,6 +2,7 @@
 set -e
 
 #FLASHCART
+rm -f akmenu-next-flashcart.zip
 mkdir -p flashcart
 cp -r Autoboot flashcart
 cp -r _nds flashcart
@@ -14,6 +15,7 @@ zip -r ../akmenu-next-flashcart.zip *
 cd ..
 
 #PICO
+rm -f akmenu-next-pico.zip
 mkdir -p pico
 cp -r _pico pico
 cp -r _nds pico
@@ -27,6 +29,7 @@ zip -r ../akmenu-next-pico.zip *
 cd ..
 
 #DSI
+rm -f akmenu-next-dsi.zip
 mkdir -p dsi
 cp -r _nds dsi
 cp -r title dsi
@@ -40,6 +43,7 @@ zip -r ../akmenu-next-dsi.zip *
 cd ..
 
 #3DS
+rm -f akmenu-next-3ds.zip
 mkdir -p 3ds
 cp -r _nds 3ds
 cp boot.dsi 3ds/boot.nds

@@ -1,6 +1,7 @@
 @echo off
 
 :FLASHCART
+del /q akmenu-next-flashcart.zip
 mkdir flashcart
 cp -r _pico flashcart
 cp -r Autoboot flashcart
@@ -11,6 +12,7 @@ rm flashcart\_nds\akmenunext\globalsettingspico-init.ini
 "C:\Program Files\7-Zip\7z.exe" -tzip a -r akmenu-next-flashcart.zip ./flashcart/*
 
 :PICO
+del /q akmenu-next-pico.zip
 mkdir pico
 cp -r _pico pico
 cp -r _nds pico
@@ -22,6 +24,7 @@ rm pico\_nds\akmenunext\globalsettingspico-init.ini
 "C:\Program Files\7-Zip\7z.exe" -tzip a -r akmenu-next-pico.zip ./pico/*
 
 :DSI
+del /q akmenu-next-dsi.zip
 mkdir dsi
 cp -r _nds dsi
 cp -r title dsi
@@ -33,6 +36,7 @@ rm dsi\_nds\akmenunext\globalsettingspico-init.ini
 "C:\Program Files\7-Zip\7z.exe" -tzip a -r akmenu-next-dsi.zip ./dsi/*
 
 :3DS
+del /q akmenu-next-3ds.zip
 mkdir 3ds
 cp -r _nds 3ds
 cp boot.dsi 3ds\boot.nds

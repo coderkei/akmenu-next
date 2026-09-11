@@ -259,6 +259,7 @@ small = 小さいアイコン
 animation = アニメ
 12 hour = 12時間制
 custom icons = カスタムアイコン
+covers = ゲームカバー
 
 [gba settings]
 title = その他の設定

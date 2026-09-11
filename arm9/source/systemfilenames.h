@@ -23,6 +23,10 @@
 #define SFN_PLUGINS_DIRECTORY (SFN_SYSTEM_DIR + "plugins/")
 #define SFN_PLUGIN_ICONS_DIRECTORY (SFN_PLUGINS_DIRECTORY + "icons/")
 
+//cover directories
+#define SFN_COVERS_CODE_DIRECTORY fsManager().resolveSystemPath("/_nds/covers_code/")
+#define SFN_COVERS_NAME_DIRECTORY fsManager().resolveSystemPath("/_nds/covers_name/")
+
 #define SFN_UI_DIRECTORY SFN_SYSTEM_DIR + "ui/"
 #define SFN_UI_CURRENT_DIRECTORY SFN_UI_DIRECTORY + gs().uiName + "/"
 #define SFN_USER_CUSTOM SFN_UI_DIRECTORY + gs().uiName + "/custom.ini"

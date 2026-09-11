@@ -67,6 +67,9 @@ class cGdi {
     void bitBlt(const void* src, s16 destX, s16 destY, u16 destW, u16 destH,
                 GRAPHICS_ENGINE engine);
 
+    void blendBlt(const void* src, s16 srcW, s16 destX, s16 destY, u16 destW, u16 destH,
+                  GRAPHICS_ENGINE engine, u8 opacity);
+
     u16 getPenColor(GRAPHICS_ENGINE engine) {
         if (GE_MAIN == engine)
             return _penColor & ~BIT(15);

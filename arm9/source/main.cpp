@@ -44,6 +44,7 @@ void checkInitIni(const std::string& targetPath, const std::string& initPath) {
 #include "bigclock.h"
 #include "calendar.h"
 #include "calendarwnd.h"
+#include "coverwnd.h"
 #include "datetime.h"
 
 #include "inifile.h"
@@ -144,16 +145,12 @@ int main(int argc, char* argv[]) {
     timer().updateFps();
 
     calendarWnd().init();
-    calendarWnd().draw();
     calendar().init();
-    calendar().draw();
     bigClock().init();
-    bigClock().draw();
-
-    userWindow().draw();
+    coverWindow();
 
     gdi().present(GE_MAIN);
-    gdi().present(GE_SUB);
+    cIRQ::redrawTopScreen();
 
     dbg_printf("loop start\n");
 

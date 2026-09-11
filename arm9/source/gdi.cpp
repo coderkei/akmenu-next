@@ -418,6 +418,40 @@ void cGdi::bitBlt(const void* src, s16 destX, s16 destY, u16 destW, u16 destH,
     }
 }
 
+void cGdi::blendBlt(const void* src, s16 srcW, s16 destX, s16 destY, u16 destW, u16 destH,
+                    GRAPHICS_ENGINE engine, u8 opacity) {
+    if (!src || !destW || !destH || !opacity) return;
+
+    u16* pSrc = (u16*)src;
+    u16* pDest = (GE_MAIN == engine) ? (_bufferMain2 + (destY << 8) + destX + _layerPitch)
+                                     : (_bufferSub2 + (destY << 8) + destX);
+    u16 srcInc = srcW - destW;
+    u16 destInc = 256 - destW;
+    u32 inverseOpacity = 100 - opacity;
+
+    for (u16 y = 0; y < destH; ++y) {
+        for (u16 x = 0; x < destW; ++x) {
+            u16 source = *pSrc++;
+            if (source & BIT(15)) {
+                u16 destination = *pDest;
+                u32 red = ((source & 0x001f) * opacity + (destination & 0x001f) * inverseOpacity +
+                           50) /
+                          100;
+                u32 green = (((source >> 5) & 0x001f) * opacity +
+                             ((destination >> 5) & 0x001f) * inverseOpacity + 50) /
+                            100;
+                u32 blue = (((source >> 10) & 0x001f) * opacity +
+                            ((destination >> 10) & 0x001f) * inverseOpacity + 50) /
+                           100;
+                *pDest = RGB15(red, green, blue) | BIT(15);
+            }
+            ++pDest;
+        }
+        pSrc += srcInc;
+        pDest += destInc;
+    }
+}
+
 // maskBlt 要destW是偶数，速度可以快一倍
 // 不是偶数也可以，但要求在内存中 src 的 pitch 凑成偶数
 void cGdi::maskBlt(const void* src, s16 destX, s16 destY, u16 destW, u16 destH,

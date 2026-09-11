@@ -1,6 +1,6 @@
 /*
     Copyright (C) 2024 lifehackerhansol
-    Additional modifications Copyright (C) 2025 coderkei
+    Additional modifications Copyright (C) 2026 coderkei
 
     SPDX-License-Identifier: GPL-3.0-or-later
 */

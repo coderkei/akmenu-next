@@ -277,6 +277,7 @@ internal = 游戏标题
 animation = 动画
 12 hour = 12小时制
 custom icons = 自定义图标
+covers = 游戏封面
 
 [gba settings]
 title = 其他设置
