@@ -291,8 +291,8 @@ bool cCoverWnd::loadCover(const std::string& selectedPath, DSRomInfo& romInfo) {
 }
 
 void cCoverWnd::update(const std::string& selectedPath, DSRomInfo& romInfo) {
-    //fix slow scrolling when covers are disabled
-    if (!gs().showCovers) {
+    // Fix slow scrolling when covers are disabled or unsupported by the theme.
+    if (!gs().showCovers || !uiSettings().supportsCovers) {
         clear();
         return;
     }
@@ -305,7 +305,9 @@ void cCoverWnd::update(const std::string& selectedPath, DSRomInfo& romInfo) {
 }
 
 void cCoverWnd::drawBackdrop() const {
-    if (!gs().showCovers || _pixels.empty() || !_width || !_height) return;
+    if (!gs().showCovers || !uiSettings().supportsCovers || _pixels.empty() || !_width ||
+        !_height)
+        return;
 
     int darken = uiSettings().coverDarken;
     if (!darken) return;
@@ -313,7 +315,9 @@ void cCoverWnd::drawBackdrop() const {
 }
 
 void cCoverWnd::draw() const {
-    if (!gs().showCovers || _pixels.empty() || !_width || !_height) return;
+    if (!gs().showCovers || !uiSettings().supportsCovers || _pixels.empty() || !_width ||
+        !_height)
+        return;
 
     int destinationX = uiSettings().coverX;
     int destinationY = uiSettings().coverY;

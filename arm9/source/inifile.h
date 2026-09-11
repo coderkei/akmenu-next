@@ -23,6 +23,7 @@ class CIniFile {
     bool LoadIniFile(const std::string& FileName);
     bool SaveIniFile(const std::string& FileName);
     bool SaveIniFileModified(const std::string& FileName);
+    bool HasSection(const std::string& Section) const;
 
     std::string GetString(const std::string& Section, const std::string& Item,
                           const std::string& DefaultValue);

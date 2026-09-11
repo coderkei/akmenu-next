@@ -24,6 +24,7 @@ class cUISettings {
 
   public:
     bool showCalendar;
+    bool supportsCovers;
 
     int coverX;
     int coverY;

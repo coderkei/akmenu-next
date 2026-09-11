@@ -179,6 +179,18 @@ bool CIniFile::LoadIniFile(const std::string& FileName) {
     return true;
 }
 
+bool CIniFile::HasSection(const std::string& Section) const {
+    for (cStringArray::const_iterator line = m_FileContainer.begin();
+         line != m_FileContainer.end(); ++line) {
+        if (line->empty() || (*line)[0] != '[') continue;
+        size_t rightBracket = line->find(']');
+        if (rightBracket > 0 && rightBracket != std::string::npos &&
+            line->substr(1, rightBracket - 1) == Section)
+            return true;
+    }
+    return false;
+}
+
 bool CIniFile::SaveIniFileModified(const std::string& FileName) {
     if (m_bModified == true) {
         return SaveIniFile(FileName);

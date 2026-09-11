@@ -63,7 +63,7 @@ Set the relevant `show` values to `0` when a theme removes the calendar or needs
 
 AKMenu-Next displays a BMP cover on the top screen for `.nds`, `.dsi`, `.srl`, and `.ids` ROMs. Put `.bmp` covers at the filesystem root in `_nds/covers_code/` or `_nds/covers_name/`. It first looks for the four-character game code, then for the actual ROM filename without its final extension.
 
-BMPs with four or more entirely black or transparent columns at the end is clipped off, (the covers from Pico-Cover seem to have this). Theme `uisettings.ini` files may use a `[cover]` section:
+BMPs with four or more entirely black or transparent columns at the end is clipped off, (the covers from Pico-Cover seem to have this). A theme must include a `[cover]` section in `uisettings.ini` to opt in to cover display:
 
 ```ini
 [cover]
@@ -73,4 +73,4 @@ darken = 0
 fade = 0
 ```
 
-`x` and `y` position the image; omitting either axis centres the cover on that axis. `darken` dims the complete top screen behind a loaded cover (`0` normal, `100` black), and `fade` makes the cover transparent (`0` opaque, `100` invisible). Both effects default to `0`. The **Interface settings → Game covers** option overrides whether covers are displayed or not regardless of the theme etc.
+`x` and `y` position the image; omitting either axis centres the cover on that axis. `darken` dims the complete top screen behind a loaded cover (`0` normal, `100` black), and `fade` makes the cover transparent (`0` opaque, `100` invisible). Both effects default to `0`. Themes without a `[cover]` section never display covers. The **Interface settings → Game covers** option overrides whether covers are displayed or not for themes that support them.

@@ -14,6 +14,7 @@
 
 cUISettings::cUISettings() {
     showCalendar = true;
+    supportsCovers = false;
     coverX = -32768;
     coverY = -32768;
     coverDarken = 0;
@@ -44,6 +45,7 @@ void cUISettings::loadSettings() {
     CIniFile ini(SFN_UI_SETTINGS);
 
     showCalendar = ini.GetInt("global settings", "showCalendar", showCalendar);
+    supportsCovers = ini.HasSection("cover");
     coverX = ini.GetInt("cover", "x", coverX);
     coverY = ini.GetInt("cover", "y", coverY);
     coverDarken = ini.GetInt("cover", "darken", coverDarken);
