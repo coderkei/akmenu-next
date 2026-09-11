@@ -258,13 +258,18 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
 
     } else {
         if (!aMenu) saveManager().saveLastInfo(aFullPath, favorite);
-        if (gs().hbStrap == 1)
-        {
-            hb = true;
-            launcher = new NdsBootstrapLauncher();
-        }
-        else{
-            launcher = new HomebrewLauncher();
+        switch (gs().hbStrap) {
+            case 1:
+                hb = true;
+                launcher = new NdsBootstrapLauncher();
+                break;
+            case 2:
+                hb = true;
+                launcher = new DSpicoLauncher();
+                break;
+            default:
+                launcher = new HomebrewLauncher();
+                break;
         }
     }
     if (!aRomInfo.isHomebrew()) {

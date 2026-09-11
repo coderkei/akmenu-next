@@ -23,6 +23,7 @@
 #include "../flags.h"
 #include "../mainlist.h"
 #include "../systemfilenames.h"
+#include "../fsmngr.h"
 #include "../language.h"
 #include "../ui/msgbox.h"
 #include "../ui/progresswnd.h"
@@ -86,8 +87,10 @@ bool DSpicoLauncher::prepareCheats(void) {
 
 bool DSpicoLauncher::launchRom(std::string romPath, std::string savePath, u32 flags,
                                      u32 cheatOffset, u32 cheatSize, bool hb) {
-    const char picoLoader7Path[] = "fat:/_pico/picoLoader7.bin";
-    const char picoLoader9Path[] = "fat:/_pico/picoLoader9.bin";
+    const std::string picoLoader7Path =
+            fsManager().resolveSystemPath("/_pico/picoLoader7.bin");
+    const std::string picoLoader9Path =
+            fsManager().resolveSystemPath("/_pico/picoLoader9.bin");
 
     mRomPath = romPath;
     mSavePath = savePath;
@@ -97,26 +100,26 @@ bool DSpicoLauncher::launchRom(std::string romPath, std::string savePath, u32 fl
     progressWnd().show();
     progressWnd().setPercent(0);
 
-    if(access(picoLoader7Path, F_OK) != 0) {
+    if(access(picoLoader7Path.c_str(), F_OK) != 0) {
         progressWnd().hide();
         printLoaderNotFound(picoLoader7Path);
         return false;
     }
 
-    if(access(picoLoader9Path, F_OK) != 0) {
+    if(access(picoLoader9Path.c_str(), F_OK) != 0) {
         progressWnd().hide();
         printLoaderNotFound(picoLoader9Path);
         return false;
     }
 
-    auto* loader9 = fopen(picoLoader9Path, "rb");
+    auto* loader9 = fopen(picoLoader9Path.c_str(), "rb");
 
     if(!loader9){
         progressWnd().hide();
         printLoaderNotFound(picoLoader9Path);
         return false;
     }
-    auto* loader7 = fopen(picoLoader7Path, "rb");
+    auto* loader7 = fopen(picoLoader7Path.c_str(), "rb");
 
     if(!loader7){
         fclose(loader9);
@@ -175,11 +178,20 @@ bool DSpicoLauncher::launchRom(std::string romPath, std::string savePath, u32 fl
         TIMER_DATA(i) = 0;
     }
 
-    ((pload_header7_t*)0x06840000)->bootDrive = PLOAD_BOOT_DRIVE_DLDI;
-    ((pload_header7_t*)0x06840000)->dldiDriver = (void*)io_dldi_data;
+    pload_header7_t* header7 = (pload_header7_t*)0x06840000;
+    header7->bootDrive = fsManager().isFlashcart() ? PLOAD_BOOT_DRIVE_DLDI
+                                                    : PLOAD_BOOT_DRIVE_DSI_SD;
+    header7->dldiDriver = fsManager().isFlashcart() ? (void*)io_dldi_data : nullptr;
     tonccpy(&((pload_header7_t*)0x06840000)->loadParams, &sLoadParams, sizeof(pload_params_t));
-    if(mFlags & PATCH_CHEATS){
-        ((pload_header7_t*)0x06840000)->v3.cheats = mCheats;
+    if (hb && header7->apiVersion >= 2) {
+        const std::string launcherPath =
+                fsManager().resolveSystemPath("/_nds/akmenunext/launcher.nds");
+        strncpy(header7->v2.launcherPath, launcherPath.c_str(),
+                sizeof(header7->v2.launcherPath) - 1);
+        header7->v2.launcherPath[sizeof(header7->v2.launcherPath) - 1] = '\0';
+    }
+    if ((mFlags & PATCH_CHEATS) && header7->apiVersion >= 3) {
+        header7->v3.cheats = mCheats;
     }
 
     DC_FlushAll();

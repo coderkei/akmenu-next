@@ -91,6 +91,7 @@ void cGlobalSettings::loadSettings() {
     phatCol = ini.GetInt("system", "phatCol", phatCol);
     languageOverride = ini.GetInt("system", "languageOverride", languageOverride);
     hbStrap = ini.GetInt("system", "hbstrap", hbStrap);
+    if (hbStrap < 0 || hbStrap > 2) hbStrap = 0;
     pico = ini.GetInt("system", "pico", pico);
     icon = ini.GetInt("system", "icon", icon);
     cardReadDma = ini.GetInt("system", "cardReadDma", cardReadDma);

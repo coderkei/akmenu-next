@@ -693,13 +693,12 @@ void cMainWnd::setParam(void) {
         settingWnd.addSettingItem(LANG("nds bootstrap", "phatCol"), _values, gs().phatCol);
     }
 
-    if (isDSiMode()) {
-        _values.clear();
-        _values.push_back(LANG("patches", "default"));
-        _values.push_back(LANG("patches", "ndshb"));
-        ndsHomebrewLoaderItem = ndsItem++;
-        settingWnd.addSettingItem(LANG("patches", "hbstrap"), _values, gs().hbStrap);
-    }
+    _values.clear();
+    _values.push_back(LANG("patches", "default"));
+    _values.push_back(LANG("patches", "ndshb"));
+    _values.push_back("Pico-Loader");
+    ndsHomebrewLoaderItem = ndsItem++;
+    settingWnd.addSettingItem(LANG("patches", "hbstrap"), _values, gs().hbStrap);
 
     // Other: game compatibility, cheats, Slot-2 behaviour, and launch convenience settings.
     settingWnd.addSettingTab(LANG("gba settings", "title"));
@@ -768,7 +767,7 @@ void cMainWnd::setParam(void) {
     gs().saveExt = settingWnd.getItemSelection(TAB_FILES, 2);
     gs().saveDir = settingWnd.getItemSelection(TAB_FILES, 3);
 
-    // nds-bootstrap
+    // Loader settings
     gs().nightly = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsVersionItem);
     gs().dsOnly = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsDsModeItem);
     gs().boostCpu = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsBoostCpuItem);
@@ -781,8 +780,8 @@ void cMainWnd::setParam(void) {
     }
     if (isDSiMode()) {
         gs().phatCol = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsPhatColorItem);
-        gs().hbStrap = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsHomebrewLoaderItem);
     }
+    gs().hbStrap = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsHomebrewLoaderItem);
 
     // Other
     gs().ignoreCrc16 = settingWnd.getItemSelection(TAB_OTHER, otherIgnoreCrcItem);

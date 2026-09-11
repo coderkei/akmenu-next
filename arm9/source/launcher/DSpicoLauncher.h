@@ -22,5 +22,5 @@ class DSpicoLauncher : public ILauncher {
     std::string mRomPath;
     std::string mSavePath;
     u32 mFlags;
-    pload_cheats_t* mCheats;
+    pload_cheats_t* mCheats = nullptr;
 };

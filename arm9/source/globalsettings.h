@@ -73,7 +73,8 @@ class cGlobalSettings {
     bool boostCpu;
     bool ignoreCrc16;
     bool phatCol;
-    bool hbStrap;
+    // Homebrew loader: 0 = AKMenu-Next, 1 = nds-bootstrap-hb, 2 = Pico-Loader.
+    int hbStrap;
     bool pico;
     bool icon;
     int cardReadDma;
