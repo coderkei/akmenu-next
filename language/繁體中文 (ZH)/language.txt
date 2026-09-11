@@ -191,6 +191,10 @@ ru = Русский
 [ui style]
 text = 面版
 
+[theme error]
+title = 主題錯誤
+text = 選取的主題遺失或已損壞。AKMenu-Next 已還原為另一個有效主題。
+
 [about window]
 title = 關於
 app version = AKMenu-Next %s

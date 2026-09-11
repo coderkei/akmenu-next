@@ -43,10 +43,12 @@ cWindow& cDiskIcon::loadAppearance(const std::string& aFileName) {
 
     cBMP15 icon = createBMP15FromFile(aFileName);
 
-    u32 pitch = icon.pitch() >> 1;
-    for (u8 i = 0; i < icon.height(); ++i) {
-        for (u8 j = 0; j < icon.width(); ++j) {
-            ((u16*)_icon.buffer())[i * 32 + j] = ((u16*)icon.buffer())[i * pitch + j];
+    if (icon.valid()) {
+        u32 pitch = icon.pitch() >> 1;
+        for (u8 i = 0; i < icon.height(); ++i) {
+            for (u8 j = 0; j < icon.width(); ++j) {
+                ((u16*)_icon.buffer())[i * 32 + j] = ((u16*)icon.buffer())[i * pitch + j];
+            }
         }
     }
     dbg_printf("cDiskIcon::loadAppearance ok %d\n", icon.valid());

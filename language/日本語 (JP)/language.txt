@@ -171,6 +171,10 @@ ru = Русский
 [ui style]
 text = ユーザー設定 スタイル
 
+[theme error]
+title = テーマエラー
+text = 選択したテーマが見つからないか破損しています。AKMenu-Next は別の有効なテーマに戻しました。
+
 [about window]
 title = 概要
 app version = AKMenu-Next %s

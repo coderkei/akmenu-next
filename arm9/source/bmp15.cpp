@@ -65,45 +65,89 @@ cBMP15 createBMP15FromFile(const std::string& filename) {
         return cBMP15();
     }
 
-    // 读取文件长度
     fseek(f, 0, SEEK_END);
-    int fileSize = ftell(f);
+    long fileSize = ftell(f);
 
-    if (-1 == fileSize) {
+    if (fileSize < 54) {
         fclose(f);
         return cBMP15();
     }
 
     u16 bmMark = 0;
     fseek(f, 0, SEEK_SET);
-    fread(&bmMark, 1, 2, f);
-    if (bmMark != 0x4d42) {  // 'B' 'M' header
+    if (fread(&bmMark, 1, 2, f) != 2 || bmMark != 0x4d42) {  // 'B' 'M' header
         dbg_printf("not a bmp file\n");
         fclose(f);
         return cBMP15();
     }
 
-    // 找出bmp高和宽
     u32 width = 0;
     u32 height = 0;
+    u16 planes = 0;
+    u16 bitsPerPixel = 0;
+    u32 compression = 0;
+    u32 bmpDataOffset = 0;
     fseek(f, 0x12, SEEK_SET);
-    fread(&width, 1, 4, f);
+    if (fread(&width, 1, 4, f) != 4) {
+        fclose(f);
+        return cBMP15();
+    }
     fseek(f, 0x16, SEEK_SET);
-    fread(&height, 1, 4, f);
-    // dbg_printf( "w:%d h:%d\n", width, height );
+    if (fread(&height, 1, 4, f) != 4) {
+        fclose(f);
+        return cBMP15();
+    }
+    fseek(f, 0x1a, SEEK_SET);
+    if (fread(&planes, 1, 2, f) != 2 || planes != 1) {
+        fclose(f);
+        return cBMP15();
+    }
+    fseek(f, 0x1c, SEEK_SET);
+    if (fread(&bitsPerPixel, 1, 2, f) != 2 || bitsPerPixel != 16) {
+        fclose(f);
+        return cBMP15();
+    }
+    fseek(f, 0x1e, SEEK_SET);
+    if (fread(&compression, 1, 4, f) != 4 || (compression != 0 && compression != 3)) {
+        fclose(f);
+        return cBMP15();
+    }
+    fseek(f, 0x0a, SEEK_SET);
+    if (fread(&bmpDataOffset, 1, 4, f) != 4) {
+        fclose(f);
+        return cBMP15();
+    }
+
+    if (width == 0 || height == 0 || width > 1024 || height > 1024 || bmpDataOffset < 54 ||
+        bmpDataOffset > (u32)fileSize) {
+        fclose(f);
+        return cBMP15();
+    }
+
+    u32 pitch = (width + (width & 1)) << 1;
+    unsigned long long bitmapSize = (unsigned long long)pitch * height;
+    if (bitmapSize > (unsigned long long)fileSize - bmpDataOffset) {
+        fclose(f);
+        return cBMP15();
+    }
 
     cBMP15 bmp = createBMP15(width, height);
-
-    u32 bmpDataOffset = 0;
-    fseek(f, 0x0a, SEEK_SET);
-    fread(&bmpDataOffset, 1, 4, f);
+    if (!bmp.valid()) {
+        fclose(f);
+        return cBMP15();
+    }
 
     long position = bmpDataOffset;
     fseek(f, position, SEEK_SET);
     u16* pbuffer = ((u16*)bmp.buffer()) + (bmp.pitch() >> 1) * height - (bmp.pitch() >> 1);
 
     for (u32 i = 0; i < height; ++i) {
-        fread(pbuffer, 1, bmp.pitch(), f);
+        if (fread(pbuffer, 1, bmp.pitch(), f) != bmp.pitch()) {
+            delete[] bmp._buffer;
+            bmp._buffer = NULL;
+            fclose(f);
+            return cBMP15();
+        }
         position += bmp.pitch();
         pbuffer -= bmp.pitch() >> 1;
         fseek(f, position, SEEK_SET);

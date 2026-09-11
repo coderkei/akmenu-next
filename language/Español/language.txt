@@ -178,6 +178,10 @@ ru = Русский
 [ui style]
 text = Interfaz gráfica
 
+[theme error]
+title = Error del tema
+text = El tema seleccionado falta o está dañado. AKMenu-Next ha cambiado a otro tema válido.
+
 [about window]
 title = Acerca de
 app version = AKMenu-Next %s

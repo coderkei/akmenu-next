@@ -35,7 +35,7 @@ class cGdi {
   public:
     void init();
 
-    void initBg(const std::string& aFileName);
+    bool initBg(const std::string& aFileName);
 
     void drawPixel(u8 x, u8 y, GRAPHICS_ENGINE engine) {
         if (GE_MAIN == engine)

@@ -185,6 +185,10 @@ ru = Русский
 [ui style]
 text = Скин
 
+[theme error]
+title = Ошибка темы
+text = Выбранная тема отсутствует или повреждена. AKMenu-Next переключился на другую рабочую тему.
+
 [about window]
 title = О программе
 app version = AKMenu-Next %s

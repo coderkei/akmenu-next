@@ -18,8 +18,30 @@
 
 #include <sys/stat.h>
 #include "dbgtool.h"
+#include "fsmngr.h"
 
 namespace {
+bool directoryExists(const std::string& path) {
+    struct stat st;
+    return stat(path.c_str(), &st) == 0 && S_ISDIR(st.st_mode);
+}
+
+bool requiredSystemFilesExist() {
+    return directoryExists(fsManager().resolveSystemPath("/_nds")) &&
+           directoryExists(fsManager().resolveSystemPath("/_nds/akmenunext")) &&
+           directoryExists(fsManager().resolveSystemPath("/_nds/akmenunext/ui"));
+}
+
+void showMissingSystemFilesMessage() {
+    consoleDemoInit();
+    consoleClear();
+    iprintf("AKMenu-Next system files are missing or corrupted.\n\n");
+    iprintf("Please reinstall AKMenu-Next and ensure your SD/MicroSD card is working\n");
+    iprintf("correctly. This is a common symptom of counterfeit or failing SD cards.\n");
+
+    while (true) swiWaitForVBlank();
+}
+
 void checkInitIni(const std::string& targetPath, const std::string& initPath) {
     struct stat stInit;
     if (stat(initPath.c_str(), &stInit) == 0) {
@@ -58,8 +80,8 @@ void checkInitIni(const std::string& targetPath, const std::string& initPath) {
 #include "exptools.h"
 #include "romlauncher.h"
 #include "sram.h"
+#include "theme.h"
 #include "userwnd.h"
-#include "fsmngr.h"
 #include "pluginmngr.h"
 
 using namespace akui;
@@ -89,16 +111,18 @@ int main(int argc, char* argv[]) {
     // turn led on
     ledBlink(PM_LED_ON);
 
+    // wait_press_b();
+    //  init fat
+    fsManager().init(argc, argv);
+
+    if (!requiredSystemFilesExist()) showMissingSystemFilesMessage();
+
     // init graphics
     gdi().init();
 #ifdef DEBUG
     gdi().switchSubEngineMode();
 #endif  // DEBUG
     dbg_printf("gdi ok\n");
-
-    // wait_press_b();
-    //  init fat
-    fsManager().init(argc, argv);
     
     // Check and migrate -init.ini files
     std::string sysDir = SFN_SYSTEM_DIR;
@@ -121,6 +145,10 @@ int main(int argc, char* argv[]) {
     lang();  // load language file
     gs().language = lang().GetInt("font", "language", gs().language);
     fontFactory().makeFont();  // load font file
+
+    const eThemeSelectionResult themeResult = ensureValidTheme();
+    if (themeResult == THEME_SELECTION_FAILED) showMissingSystemFilesMessage();
+
     uiSettings().loadSettings();
 
     bool saveListOK = saveManager().importSaveList(SFN_CUSTOM_SAVELIST, SFN_OFFICIAL_SAVELIST);
@@ -131,7 +159,7 @@ int main(int argc, char* argv[]) {
         dbg_printf("WARNING: savelist.bin missed\n");
     }
 
-    gdi().initBg(SFN_LOWER_SCREEN_BG);
+    if (!gdi().initBg(SFN_LOWER_SCREEN_BG)) showMissingSystemFilesMessage();
 
     cMainWnd* wnd = new cMainWnd(0, 0, 256, 192, NULL, "main window");
     wnd->init();
@@ -148,6 +176,14 @@ int main(int argc, char* argv[]) {
     calendar().init();
     bigClock().init();
     coverWindow();
+
+    if (themeResult == THEME_SELECTION_REPLACED) {
+        static bool themeErrorShown = false;
+        if (!themeErrorShown) {
+            themeErrorShown = true;
+            messageBox(NULL, LANG("theme error", "title"), LANG("theme error", "text"), MB_OK);
+        }
+    }
 
     gdi().present(GE_MAIN);
     cIRQ::redrawTopScreen();

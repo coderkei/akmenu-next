@@ -173,6 +173,10 @@ ru = Русский
 [ui style]
 text = Benutzerinterface-Style
 
+[theme error]
+title = Theme-Fehler
+text = Das ausgewählte Theme fehlt oder ist beschädigt. AKMenu-Next hat auf ein anderes gültiges Theme zurückgesetzt.
+
 [about window]
 title = Über
 app version = AKMenu-Next %s
