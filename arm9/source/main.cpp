@@ -35,9 +35,9 @@ bool requiredSystemFilesExist() {
 void showMissingSystemFilesMessage() {
     consoleDemoInit();
     consoleClear();
-    iprintf("AKMenu-Next system files are\n\n");
+    iprintf("AKMenu-Next system files are\n");
     iprintf("missing or corrupted.\n\n");
-    iprintf("Please reinstall AKMenu-Next and\n");
+    iprintf("Please reinstall AKMenu-Next and");
     iprintf("ensure your SD/MicroSD card is\n");
     iprintf("working correctly.\n\n");
     iprintf("This is a common symptom of\n");

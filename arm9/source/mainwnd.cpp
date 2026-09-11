@@ -31,6 +31,7 @@
 #include "pluginmngr.h"
 #include "coverwnd.h"
 #include "irqs.h"
+#include "uisettings.h"
 
 #include <dirent.h>
 #include <fat.h>
@@ -221,7 +222,7 @@ void cMainWnd::listSelChange(u32 i) {
 }
 
 void cMainWnd::refreshCover() {
-    if (!gs().showCovers) return;
+    if (!gs().showCovers || !uiSettings().supportsCovers) return;
 
     DSRomInfo info;
     std::string selectedPath = _mainList->getSelectedFullPath();

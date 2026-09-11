@@ -19,6 +19,7 @@
 #include "timer.h"
 #include "userinput.h"
 #include "userwnd.h"
+#include "uisettings.h"
 #include "windowmanager.h"
 
 using namespace akui;
@@ -49,7 +50,7 @@ void cIRQ::redrawTopScreen() {
     calendar().draw();
     bigClock().draw();
     userWindow().draw();
-    if (gs().showCovers) {
+    if (gs().showCovers && uiSettings().supportsCovers) {
         coverWindow().drawBackdrop();
         coverWindow().draw();
     }
