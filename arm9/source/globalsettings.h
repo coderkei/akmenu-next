@@ -68,6 +68,7 @@ class cGlobalSettings {
     bool safeMode;
     bool show12hrClock;
     bool showCovers;
+    bool playThemeMusic;
     bool autorunWithLastRom;
     bool homebrewreset;
     bool dsOnly;

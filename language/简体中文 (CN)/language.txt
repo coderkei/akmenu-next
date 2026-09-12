@@ -295,6 +295,7 @@ animation = 动画
 12 hour = 12小时制
 custom icons = 自定义图标
 covers = 游戏封面
+theme music = 主题音乐
 
 [gba settings]
 title = 其他设置

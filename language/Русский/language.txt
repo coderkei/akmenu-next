@@ -289,6 +289,7 @@ animation = Анимация
 12 hour = 12-часовой формат
 custom icons = Свои значки
 covers = Обложки
+theme music = Фоновая музыка
 
 [gba settings]
 title = Прочие настройки [5/5]

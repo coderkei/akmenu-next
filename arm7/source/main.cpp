@@ -7,6 +7,7 @@
 */
 
 #include <nds.h>
+#include <maxmod7.h>
 #include <string.h>
 #include "../../share/fifotool.h"
 #include "../../share/memtool.h"
@@ -46,6 +47,8 @@ static u32 getSystem(void) {
 typedef void (*pico_loader_7_func_t)(void);
 
 volatile bool reset_pico = false;
+static volatile bool maxmodInstalled = false;
+static volatile bool maxmodInstallRequested = false;
 
 static void resetDSPico() {
     zeroMemory((void*)0x40000B0, 0x30);
@@ -178,6 +181,13 @@ static void menuValue32Handler(u32 value, void* data) {
             break;
         case MENU_MSG_IS_3DS:
             fifoSendValue32(FIFO_USER_01, check3DS());
+            break;
+        case MENU_MSG_MAXMOD_INSTALL:
+            if (maxmodInstalled)
+                fifoSendValue32(FIFO_USER_01, 1);
+            else
+                maxmodInstallRequested = true;
+            break;
         default:
             break;
     }
@@ -206,12 +216,20 @@ int main() {
 
     irqEnable(IRQ_VBLANK | IRQ_NETWORK);
 
-	if (isDSiMode() && REG_SNDEXTCNT != 0) {
+    if (isDSiMode() && REG_SNDEXTCNT != 0) {
 		i2cWriteRegister(0x4A, 0x12, 0x00);	// Press power-button for auto-reset
 		i2cWriteRegister(0x4A, 0x70, 0x01);	// Bootflag = Warmboot/SkipHealthSafety
 	}
        
     while (true) {
+        if (maxmodInstallRequested) {
+            maxmodInstallRequested = false;
+            if (!maxmodInstalled) {
+                mmInstall(FIFO_MAXMOD);
+                maxmodInstalled = true;
+            }
+            fifoSendValue32(FIFO_USER_01, 1);
+        }
         if (*(u32*)(0x2FFFD0C) == 0x454D4D43) {
             sdmmc_get_cid(true, (u32*)0x2FFD7BC);    // Get eMMC CID
             *(u32*)(0x2FFFD0C) = 0;

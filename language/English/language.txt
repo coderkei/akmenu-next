@@ -289,6 +289,7 @@ theme icons = Theme Icons
 global icons = Global Icons
 built in icons = Built-in icons
 covers = Game covers
+theme music = Theme music
 
 [gba settings]
 title = Other Settings

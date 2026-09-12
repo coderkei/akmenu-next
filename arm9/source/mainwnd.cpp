@@ -33,6 +33,7 @@
 #include "coverwnd.h"
 #include "irqs.h"
 #include "uisettings.h"
+#include "thememusic.h"
 
 #include <dirent.h>
 #include <fat.h>
@@ -66,7 +67,10 @@ bool launchPluginFile(const cPluginManager::PluginAssociation& plugin, const std
 
     if (plugin.useNdsBootstrapHb && canUsePluginHbBootstrap()) {
         std::string argPath = plugin.useArgv ? selectedPath : "";
-        return NdsBootstrapLauncher().launchRom(plugin.launcherPath, argPath, 0, 0, 0, true);
+        themeMusic().stop();
+        bool launched = NdsBootstrapLauncher().launchRom(plugin.launcherPath, argPath, 0, 0, 0, true);
+        if (!launched) themeMusic().start();
+        return launched;
     }
 
     std::vector<const char*> argv;
@@ -75,7 +79,9 @@ bool launchPluginFile(const cPluginManager::PluginAssociation& plugin, const std
         argv.push_back(selectedPath.c_str());
     }
 
+    themeMusic().stop();
     eRunNdsRetCode rc = runNdsFile(argv[0], argv.size(), &argv[0]);
+    if (rc != RUN_NDS_OK) themeMusic().start();
     return rc == RUN_NDS_OK;
 }
 }  // namespace
@@ -627,6 +633,8 @@ void cMainWnd::setParam(void) {
     settingWnd.addSettingItem(LANG("interface settings", "animation"), _values, gs().Animation);
     settingWnd.addSettingItem(LANG("interface settings", "12 hour"), _values, gs().show12hrClock);
     settingWnd.addSettingItem(LANG("interface settings", "covers"), _values, gs().showCovers);
+    settingWnd.addSettingItem(lang().GetString("interface settings", "theme music", "Theme music"),
+                              _values, gs().playThemeMusic);
 
     // File system: file visibility, filtering, and save-file handling.
     settingWnd.addSettingTab(LANG("file settings", "title"));
@@ -789,6 +797,7 @@ void cMainWnd::setParam(void) {
     gs().Animation = settingWnd.getItemSelection(TAB_INTERFACE, 3);
     gs().show12hrClock = settingWnd.getItemSelection(TAB_INTERFACE, 4);
     gs().showCovers = settingWnd.getItemSelection(TAB_INTERFACE, 5);
+    gs().playThemeMusic = settingWnd.getItemSelection(TAB_INTERFACE, 6);
 
     // File system
     gs().fileListType = settingWnd.getItemSelection(TAB_FILES, 0);
@@ -829,7 +838,8 @@ void cMainWnd::setParam(void) {
             gs().saveSettings();
 
             std::string launcherPath = fsManager().resolveSystemPath("/_nds/akmenunext/launcher.nds");
-            HomebrewLauncher().launchRom(launcherPath, "", 0, 0, 0, 0);
+            themeMusic().stop();
+            if (!HomebrewLauncher().launchRom(launcherPath, "", 0, 0, 0, 0)) themeMusic().start();
         }
     }
 
@@ -841,7 +851,8 @@ void cMainWnd::setParam(void) {
             gs().saveSettings();
 
             std::string launcherPath = fsManager().resolveSystemPath("/_nds/akmenunext/launcher.nds");
-            HomebrewLauncher().launchRom(launcherPath, "", 0, 0, 0, 0);
+            themeMusic().stop();
+            if (!HomebrewLauncher().launchRom(launcherPath, "", 0, 0, 0, 0)) themeMusic().start();
         }
     }
 
@@ -854,7 +865,15 @@ void cMainWnd::showSettings(void) {
     u8 currentFileListType = gs().fileListType, currentShowHiddenFiles = gs().showHiddenFiles;
     int currentIconSource = gs().iconSource;
     bool currentShowCovers = gs().showCovers;
+    bool currentThemeMusic = gs().playThemeMusic;
     setParam();
+    if (gs().playThemeMusic != currentThemeMusic) {
+        if (gs().playThemeMusic) {
+            themeMusic().start();
+        } else {
+            themeMusic().stop();
+        }
+    }
     bool reloadedList = gs().fileListType != currentFileListType ||
                         gs().showHiddenFiles != currentShowHiddenFiles ||
                         gs().iconSource != currentIconSource;
@@ -933,13 +952,17 @@ void cMainWnd::onFolderChanged() {
             }
         }
         if (mode == cGlobalSettings::ESlot2Nds) {
-            PassMeLauncher().launchRom("slot2:/", "", 0, 0, 0, 0);
+            themeMusic().stop();
+            if (!PassMeLauncher().launchRom("slot2:/", "", 0, 0, 0, 0)) themeMusic().start();
         } else {
+            themeMusic().stop();
             CGbaLoader::StartGBA();
+            themeMusic().start();
         }
     }
     if ("favorites:/" != dirShowName && "recent:/" != dirShowName && "slot1:/" == _mainList->getSelectedFullPath()) {
-        Slot1Launcher().launchRom("slot1:/", "", 0, 0, 0, 0);
+        themeMusic().stop();
+        if (!Slot1Launcher().launchRom("slot1:/", "", 0, 0, 0, 0)) themeMusic().start();
     }
 
     dbg_printf("%s\n", _mainList->getSelectedFullPath().c_str());

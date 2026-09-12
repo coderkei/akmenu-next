@@ -13,6 +13,7 @@
 #include "flags.h"
 #include "language.h"
 #include "recent.h"
+#include "thememusic.h"
 
 #include "launcher/HomebrewLauncher.h"
 #include "launcher/ILauncher.h"
@@ -275,7 +276,10 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
     if (!aRomInfo.isHomebrew()) {
         cRecent::AddToRecent(aFullPath);
     }
-    launcher->launchRom(aFullPath, saveName, flags, cheatOffset, cheatSize, hb);
+    themeMusic().stop();
+    if (!launcher->launchRom(aFullPath, saveName, flags, cheatOffset, cheatSize, hb)) {
+        themeMusic().start();
+    }
     return ELaunchRomOk;
 }
 

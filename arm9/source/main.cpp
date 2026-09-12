@@ -110,6 +110,7 @@ void checkInitIni(const std::string& targetPath, const std::string& initPath) {
 #include "theme.h"
 #include "userwnd.h"
 #include "pluginmngr.h"
+#include "thememusic.h"
 
 using namespace akui;
 
@@ -296,8 +297,11 @@ int main(int argc, char* argv[]) {
         if (!(inputs.keysHeld & KEY_B)) autoLaunchRom(lastFile, favorite);
     }
 
+    themeMusic().start();
+
     while (true) {
         timer().updateFps();
+        themeMusic().update();
 
         INPUT& inputs = updateInput();
 

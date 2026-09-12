@@ -277,6 +277,7 @@ animation = アニメ
 12 hour = 12時間制
 custom icons = カスタムアイコン
 covers = ゲームカバー
+theme music = テーマ音楽
 
 [gba settings]
 title = その他の設定

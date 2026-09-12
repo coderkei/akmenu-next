@@ -74,3 +74,9 @@ fade = 0
 ```
 
 `x` and `y` position the image; omitting either axis centres the cover on that axis. `darken` dims the complete top screen behind a loaded cover (`0` normal, `100` black), and `fade` makes the cover transparent (`0` opaque, `100` invisible). Both effects default to `0`. Themes without a `[cover]` section never display covers. The **Interface settings → Game covers** option overrides whether covers are displayed or not for themes that support them.
+
+## Theme music (`bgm.wav`)
+
+Place a `bgm.wav` in the theme directory, alongside its theme images (for example, `_nds/akmenunext/ui/blue skies/bgm.wav`). The music will play in the menu on a loop. **Interface settings → Theme music** can enable or disable playback.
+
+The supported format is uncompressed RIFF/WAVE PCM, 16-bit little-endian, mono or stereo, at a maximum sample rate of 32,768 Hz. It's best to use **22,050 Hz, 16-bit mono** because anything higher can potentially cause clipping or lag if its a complex song.

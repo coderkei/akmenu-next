@@ -277,6 +277,7 @@ animation = Animazione
 12 hour = Orologio 12-ore
 custom icons = Icone personalizzate
 covers = Copertine
+theme music = Musica di sottofondo
 
 [gba settings]
 title = Altre impostazioni
