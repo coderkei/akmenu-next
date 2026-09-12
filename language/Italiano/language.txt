@@ -12,6 +12,7 @@ Info = Info file
 About = Informazioni
 Help = Aiuto
 Tools = Strumenti
+Themes = Temi
 START = START
 
 [message box]
@@ -72,6 +73,14 @@ text = La lingua è stata cambiata, riavviare per applicare le impostazioni? Sce
 [ui style changed]
 title = Domanda
 text = L'interfaccia è stata cambiata, riavviare per applicare le impostazioni? Scegli "No" per riavviare dopo.
+
+[theme selector]
+Themes = Temi
+Current theme: = Tema attuale:
+Standard Themes = Temi standard
+Game Cover Themes = Temi con copertine
+restart prompt = Riavviare per applicare '%s'? Scegli No per mantenere il tema attuale.
+Theme changed = Domanda
 
 [setting window]
 ok = OK

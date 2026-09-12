@@ -16,6 +16,7 @@ Info = 檔案資訊
 About = 關於
 Help = 說明
 Tools = 工具
+Themes = 主題
 START = START
 
 [message box]
@@ -76,6 +77,14 @@ text = 改變了系統語言，要現在重啟更換新的語言嗎？選「否�
 [ui style changed]
 title = 問題
 text = 改變了使用者設定，必須重啟系統才能生效，要現在重啟更換新的設定嗎？選「否」保持當前的設定
+
+[theme selector]
+Themes = 主題
+Current theme: = 目前主題：
+Standard Themes = 標準主題
+Game Cover Themes = 遊戲封面主題
+restart prompt = 立即重新啟動以套用主題「%s」嗎？選「否」保留目前主題。
+Theme changed = 問題
 
 [setting window]
 ok = 確定

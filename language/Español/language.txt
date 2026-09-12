@@ -19,6 +19,7 @@ Info = Información
 About = Acerca de
 Help = Ayuda
 Tools = Herramientas
+Themes = Temas
 START = Inicio
 
 [message box]
@@ -79,6 +80,14 @@ text = Se cambió el idioma del sistema. Debes reiniciar el firmware para aplica
 [ui style changed]
 title = Aviso
 text = Se cambió la interfaz gráfica de usuario. Debes reiniciar el firmware para aplicar los cambios. ¿Deseas hacerlo ahora? Cancela para mantener el tema actual.
+
+[theme selector]
+Themes = Temas
+Current theme: = Tema actual:
+Standard Themes = Temas estándar
+Game Cover Themes = Temas con carátulas
+restart prompt = ¿Reiniciar para aplicar '%s'? Elige No para mantener el tema actual.
+Theme changed = Pregunta
 
 [setting window]
 ok = OK

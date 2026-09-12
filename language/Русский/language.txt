@@ -15,6 +15,7 @@ Info = О файле
 About = О программе
 Help = Справка
 Tools = Настройки "3in1"
+Themes = Темы
 START = START
 
 [message box]
@@ -75,6 +76,14 @@ text = Язык изменён. "Да" - Применить и перезапу�
 [ui style changed]
 title = Вопрос
 text = Скин изменён. "Да" - Применить и перезапустить сейчас? "Нет" - Оставить текущий Скин.
+
+[theme selector]
+Themes = Темы
+Current theme: = Текущая тема:
+Standard Themes = Стандартные темы
+Game Cover Themes = Темы с обложками игр
+restart prompt = Перезапустить, чтобы применить тему «%s»? Выберите «Нет», чтобы оставить текущую тему.
+Theme changed = Вопрос
 
 [setting window]
 ok = ОК

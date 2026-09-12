@@ -63,7 +63,7 @@ bool isSafeThemeName(const std::string& theme) {
            theme.find('/') == std::string::npos && theme.find('\\') == std::string::npos;
 }
 
-bool isValidTheme(const std::string& theme) {
+bool isInstalledTheme(const std::string& theme, bool* hasCoverTag = NULL) {
     if (!isSafeThemeName(theme)) return false;
 
     const std::string themeDirectory = SFN_UI_DIRECTORY + theme + "/";
@@ -74,6 +74,20 @@ bool isValidTheme(const std::string& theme) {
         !settings.HasSection("global settings"))
         return false;
 
+    if (hasCoverTag) *hasCoverTag = settings.HasSection("cover");
+    return true;
+}
+
+bool isValidTheme(const std::string& theme) {
+    if (!isSafeThemeName(theme)) return false;
+
+    const std::string themeDirectory = SFN_UI_DIRECTORY + theme + "/";
+    if (!isDirectory(themeDirectory)) return false;
+
+    CIniFile settings;
+    if (!settings.LoadIniFile(themeDirectory + "uisettings.ini") ||
+        !settings.HasSection("global settings"))
+        return false;
     for (size_t i = 0; i < sizeof(kRequiredThemeAssets) / sizeof(kRequiredThemeAssets[0]); ++i) {
         const sThemeAsset& asset = kRequiredThemeAssets[i];
         cBMP15 bitmap = createBMP15FromFile(themeDirectory + asset.filename);
@@ -112,6 +126,29 @@ std::string findReplacementTheme(const std::string& currentTheme) {
     return themes.empty() ? std::string() : themes[0];
 }
 }  // namespace
+
+std::vector<std::string> installedThemes(bool coverThemes) {
+    static bool loaded = false;
+    static std::vector<std::string> standardThemes;
+    static std::vector<std::string> gameCoverThemes;
+    if (!loaded) {
+        DIR* dir = opendir((SFN_UI_DIRECTORY).c_str());
+        if (!dir) return std::vector<std::string>();
+
+        struct dirent* entry;
+        while ((entry = readdir(dir)) != NULL) {
+            const std::string theme(entry->d_name);
+            bool hasCoverTag = false;
+            if (!isInstalledTheme(theme, &hasCoverTag)) continue;
+            (hasCoverTag ? gameCoverThemes : standardThemes).push_back(theme);
+        }
+        closedir(dir);
+        std::sort(standardThemes.begin(), standardThemes.end());
+        std::sort(gameCoverThemes.begin(), gameCoverThemes.end());
+        loaded = true;
+    }
+    return coverThemes ? gameCoverThemes : standardThemes;
+}
 
 eThemeSelectionResult ensureValidTheme() {
     if (isValidTheme(gs().uiName)) return THEME_SELECTION_VALID;

@@ -12,6 +12,7 @@ Info = ファイル詳細
 About = 概要
 Help = ヘルプ
 Tools = ツール
+Themes = テーマ
 START = START
 
 [message box]
@@ -72,6 +73,14 @@ text = 言語設定の変更を反映する為に今すぐ再起動しますか?
 [ui style changed]
 title = 確認内容
 text = UI設定変更を反映する為に今すぐ再起動しますか?
+
+[theme selector]
+Themes = テーマ
+Current theme: = 現在のテーマ:
+Standard Themes = 標準テーマ
+Game Cover Themes = ゲームカバー用テーマ
+restart prompt = テーマ「%s」を適用するために再起動しますか？「いいえ」を選ぶと現在のテーマを維持します。
+Theme changed = 確認内容
 
 [setting window]
 ok = OK

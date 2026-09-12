@@ -7,6 +7,9 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 enum eThemeSelectionResult {
     THEME_SELECTION_VALID,
     THEME_SELECTION_REPLACED,
@@ -14,3 +17,4 @@ enum eThemeSelectionResult {
 };
 
 eThemeSelectionResult ensureValidTheme();
+std::vector<std::string> installedThemes(bool coverThemes);

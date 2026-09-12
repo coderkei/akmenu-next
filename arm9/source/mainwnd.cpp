@@ -35,6 +35,7 @@
 #include "uisettings.h"
 #include "thememusic.h"
 #include "fsmngr.h"
+#include "themewnd.h"
 
 #include <dirent.h>
 #include <fat.h>
@@ -269,6 +270,10 @@ void cMainWnd::startMenuItemClicked(s16 i) {
 
     else if (START_MENU_ITEM_SETTING == i) {
         showSettings();
+    }
+
+    else if (START_MENU_ITEM_THEMES == i) {
+        showThemes();
     }
 
     else if (START_MENU_ITEM_INFO == i) {
@@ -537,35 +542,14 @@ void cMainWnd::setParam(void) {
     };
 
     // System: settings that affect the menu itself or require a restart.
-    std::string currentUIStyle = gs().uiName;
     std::vector<std::string> _values;
-    u32 uiIndex = 0, langIndex = 0;
-    // user interface style
-    _values.clear();
-    std::vector<std::string> uiNames;
-    DIR* dir = opendir((SFN_UI_DIRECTORY).c_str());
-    struct dirent* entry;
-    if (NULL != dir) {
-        while ((entry = readdir(dir)) != NULL) {
-            std::string lfn(entry->d_name);
-            if (lfn != ".." && lfn != ".") _values.push_back(lfn);
-        }
-        closedir(dir);
-        dir = NULL;
-    } else {
-        _values.push_back(gs().uiName);
-    }
-    std::sort(_values.begin(), _values.end());
-    for (size_t ii = 0; ii < _values.size(); ++ii) {
-        if (0 == strcasecmp(_values[ii].c_str(), gs().uiName.c_str())) uiIndex = ii;
-    }
-    uiNames = _values;
-    settingWnd.addSettingItem(LANG("ui style", "text"), _values, uiIndex);
+    u32 langIndex = 0;
 
     // language
     _values.clear();
     std::vector<std::string> langNames;
-    dir = opendir((SFN_LANGUAGE_DIRECTORY).c_str());
+    DIR* dir = opendir((SFN_LANGUAGE_DIRECTORY).c_str());
+    struct dirent* entry;
     if (NULL != dir) {
         while ((entry = readdir(dir)) != NULL) {
             std::string lfn(entry->d_name);
@@ -593,6 +577,13 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("resethotkey", "5"));
     _values.push_back(LANG("resethotkey", "6"));
     settingWnd.addSettingItem(LANG("resethotkey", "text"), _values, gs().resetHotKey);
+
+    _values.clear();
+    _values.push_back(LANG("gba settings", "modeask"));
+    _values.push_back(LANG("gba settings", "modegba"));
+    _values.push_back(LANG("gba settings", "modends"));
+    const size_t systemSlot2Item = 2;
+    settingWnd.addSettingItem(LANG("gba settings", "mode"), _values, gs().slot2mode);
 
     // Interface: the appearance and behaviour of the file browser.
     settingWnd.addSettingTab(LANG("interface settings", "title"));
@@ -730,7 +721,7 @@ void cMainWnd::setParam(void) {
     ndsHomebrewLoaderItem = ndsItem++;
     settingWnd.addSettingItem(LANG("patches", "hbstrap"), _values, gs().hbStrap);
 
-    // Other: game compatibility, cheats, Slot-2 behaviour, and launch convenience settings.
+    // Other: game compatibility, cheats, and launch convenience settings.
     settingWnd.addSettingTab(LANG("gba settings", "title"));
     size_t otherItem = 0;
     size_t otherIgnoreCrcItem = otherItem++;
@@ -744,12 +735,6 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("switches", "Enable"));
     size_t otherCheatsItem = otherItem++;
     settingWnd.addSettingItem(LANG("patches", "cheating system"), _values, gs().cheats);
-    _values.clear();
-    _values.push_back(LANG("gba settings", "modeask"));
-    _values.push_back(LANG("gba settings", "modegba"));
-    _values.push_back(LANG("gba settings", "modends"));
-    size_t otherSlot2Item = otherItem++;
-    settingWnd.addSettingItem(LANG("gba settings", "mode"), _values, gs().slot2mode);
     _values.clear();
     _values.push_back(LANG("switches", "Disable"));
     _values.push_back("0");
@@ -769,9 +754,9 @@ void cMainWnd::setParam(void) {
     if (ID_CANCEL == ret) return;
 
     // System
-    u32 uiIndexAfter = settingWnd.getItemSelection(TAB_SYSTEM, 0);
-    u32 langIndexAfter = settingWnd.getItemSelection(TAB_SYSTEM, 1);
-    gs().resetHotKey = settingWnd.getItemSelection(TAB_SYSTEM, 2);
+    u32 langIndexAfter = settingWnd.getItemSelection(TAB_SYSTEM, 0);
+    gs().resetHotKey = settingWnd.getItemSelection(TAB_SYSTEM, 1);
+    gs().slot2mode = settingWnd.getItemSelection(TAB_SYSTEM, systemSlot2Item);
 
     // Interface
     switch (settingWnd.getItemSelection(TAB_INTERFACE, 1)) {
@@ -827,24 +812,9 @@ void cMainWnd::setParam(void) {
     // Other
     gs().ignoreCrc16 = settingWnd.getItemSelection(TAB_OTHER, otherIgnoreCrcItem);
     gs().cheats = settingWnd.getItemSelection(TAB_OTHER, otherCheatsItem);
-    gs().slot2mode = settingWnd.getItemSelection(TAB_OTHER, otherSlot2Item);
     gs().saveSlotOverride = settingWnd.getItemSelection(TAB_OTHER, otherSaveSlotItem) - 1;
     gs().autorunWithLastRom = settingWnd.getItemSelection(TAB_OTHER, otherAutorunItem);
 
-
-    if (uiIndex != uiIndexAfter) {
-        u32 ret = messageBox(this, LANG("ui style changed", "title"),
-                             LANG("ui style changed", "text"), MB_YES | MB_NO);
-        if (ID_YES == ret) {
-            gs().uiName = uiNames[uiIndexAfter];
-            gs().langDirectory = langNames[langIndexAfter];
-            gs().saveSettings();
-
-            std::string launcherPath = fsManager().resolveSystemPath("/_nds/akmenunext/launcher.nds");
-            themeMusic().stop();
-            if (!HomebrewLauncher().launchRom(launcherPath, "", 0, 0, 0, 0)) themeMusic().start();
-        }
-    }
 
     if (langIndex != langIndexAfter) {
         u32 ret = messageBox(this, LANG("language changed", "title"),
@@ -894,6 +864,35 @@ void cMainWnd::showSettings(void) {
             cIRQ::redrawTopScreen();
             if (wasPainting) irqEnable(IRQ_VBLANK);
         }
+    }
+}
+
+void cMainWnd::showThemes(void) {
+    if (gs().safeMode) return;
+
+    const u32 w = 256;
+    const u32 h = 179;
+    cThemeWnd themeWnd((256 - w) / 2, (192 - h) / 2, w, h, NULL,
+                       LANG("theme selector", "Themes"));
+    if (themeWnd.doModal() != ID_OK) return;
+
+    const std::string selectedTheme = themeWnd.selectedTheme();
+    if (selectedTheme.empty() || strcasecmp(selectedTheme.c_str(), gs().uiName.c_str()) == 0)
+        return;
+
+    const std::string restartPrompt =
+            formatString(LANG("theme selector", "Restart now to apply theme '%s'? Choose No to keep the current theme.").c_str(),
+                         selectedTheme.c_str());
+    const u32 result = messageBox(this, LANG("theme selector", "Theme changed"), restartPrompt,
+                                  MB_YES | MB_NO);
+    if (result == ID_YES) {
+        gs().uiName = selectedTheme;
+        gs().saveSettings();
+
+        const std::string launcherPath =
+                fsManager().resolveSystemPath("/_nds/akmenunext/launcher.nds");
+        themeMusic().stop();
+        if (!HomebrewLauncher().launchRom(launcherPath, "", 0, 0, 0, 0)) themeMusic().start();
     }
 }
 

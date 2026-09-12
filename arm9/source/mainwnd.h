@@ -68,6 +68,8 @@ class cMainWnd : public akui::cForm {
 
     void showSettings(void);
 
+    void showThemes(void);
+
     void onFolderChanged();
 
     void onAnimation(bool& anAllow);

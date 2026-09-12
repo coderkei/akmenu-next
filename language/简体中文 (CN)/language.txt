@@ -16,6 +16,7 @@ Info = 文件信息
 About = 关于
 Help = 帮助
 Tools = 工具
+Themes = 主题
 START = 菜单
 
 [message box]
@@ -76,6 +77,14 @@ text = 系统语言改变，要现在重启更换新的语言吗？选“否”�
 [ui style changed]
 title = 用户界面改变
 text = 改变了用户界面风格，必须重启系统才能生效，要现在重启更换新的风格吗？选“否”保持当前的界面风格
+
+[theme selector]
+Themes = 主题
+Current theme: = 当前主题：
+Standard Themes = 标准主题
+Game Cover Themes = 游戏封面主题
+restart prompt = 现在重新启动以应用主题“%s”吗？选择“否”以保留当前主题。
+Theme changed = 提示
 
 [setting window]
 ok = 确定

@@ -12,6 +12,7 @@ Info = Dateiinfo
 About = Über
 Help = Hilfe
 Tools = Tools
+Themes = Designs
 START = START
 
 
@@ -74,6 +75,14 @@ text = Die Systemsprache wurde geändert, Neustart um Änderungen anzunehmen? W�
 [ui style changed]
 title = Frage
 text = Benutzerinterface wurde geändert, Neustart um Änderungen anzunehmen? Wähle "Nein" um aktuellen Style beizubehalten.
+
+[theme selector]
+Themes = Designs
+Current theme: = Aktuelles Design:
+Standard Themes = Standarddesigns
+Game Cover Themes = Spiele-Cover-Designs
+restart prompt = Jetzt neu starten, um „%s“ anzuwenden? Nein behält das aktuelle Design.
+Theme changed = Frage
 
 [setting window]
 ok = OK

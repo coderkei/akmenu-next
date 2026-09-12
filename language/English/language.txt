@@ -6,12 +6,13 @@ language = 1
 
 [start menu]
 Setting = Settings
-Set favorite = Set favorite
-Unset favorite = Remove favorite
+Set favorite = Set favourite
+Unset favorite = Remove favourite
 Info = File Info
 About = About
 Help = Help
 Tools = Tools
+Themes = Themes
 START = START
 
 [message box]
@@ -72,6 +73,14 @@ text = System language setting changed, restart now to apply new lanaguage setti
 [ui style changed]
 title = Question
 text = User interface style changed, restart now to apply new style? Choose "No" will keep current style.
+
+[theme selector]
+Themes = Themes
+Current theme: = Current theme:
+Standard Themes = Standard Themes
+Game Cover Themes = Game Cover Themes
+restart prompt = Restart now to apply '%s'? Choose No to keep the current theme.
+Theme changed = Question
 
 [setting window]
 ok = OK

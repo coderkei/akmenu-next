@@ -12,6 +12,7 @@ Info = Info du fichier
 About = À propos
 Help = Aide
 Tools = Outils
+Themes = Thèmes
 START = START
 
 [message box]
@@ -72,6 +73,14 @@ text = La config. système a été mise à jour, redémarrer pour appliquer les 
 [ui style changed]
 title = Question
 text = L'interface utilisateur a été mise à jour, redémarrer pour appliquer les changements ? Choisissez "Non" pour annuler les modif.
+
+[theme selector]
+Themes = Thèmes
+Current theme: = Thème actuel :
+Standard Themes = Thèmes standard
+Game Cover Themes = Thèmes avec jaquettes
+restart prompt = Redémarrer pour appliquer « %s » ? Choisissez Non pour garder le thème actuel.
+Theme changed = Question
 
 [setting window]
 ok = OK
