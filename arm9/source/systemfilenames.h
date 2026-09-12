@@ -26,6 +26,7 @@
 //cover directories
 #define SFN_COVERS_CODE_DIRECTORY fsManager().resolveSystemPath("/_nds/covers_code/")
 #define SFN_COVERS_NAME_DIRECTORY fsManager().resolveSystemPath("/_nds/covers_name/")
+#define SFN_PICO_COVERS_NDS_DIRECTORY fsManager().resolveSystemPath("/_pico/covers/nds/")
 
 #define SFN_UI_DIRECTORY SFN_SYSTEM_DIR + "ui/"
 #define SFN_UI_CURRENT_DIRECTORY SFN_UI_DIRECTORY + gs().uiName + "/"

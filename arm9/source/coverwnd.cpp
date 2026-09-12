@@ -284,10 +284,17 @@ bool cCoverWnd::loadCover(const std::string& selectedPath, DSRomInfo& romInfo) {
     size_t slash = selectedPath.find_last_of("/\\");
     std::string basename = selectedPath.substr(slash == std::string::npos ? 0 : slash + 1);
     size_t dot = basename.find_last_of('.');
-    if (dot == std::string::npos) return false;
-    basename.erase(dot);  // The checked ROM extension is the only removed suffix.
-    std::string nameBase = SFN_COVERS_NAME_DIRECTORY + basename;
-    return tryLoad(nameBase + ".bmp");
+    if (dot != std::string::npos) {
+        basename.erase(dot);  // The checked ROM extension is the only removed suffix.
+        std::string nameBase = SFN_COVERS_NAME_DIRECTORY + basename;
+        if (tryLoad(nameBase + ".bmp")) return true;
+    }
+
+    if (validCode) {
+        std::string picoCover = SFN_PICO_COVERS_NDS_DIRECTORY + std::string(code) + ".bmp";
+        if (tryLoad(picoCover)) return true;
+    }
+    return false;
 }
 
 void cCoverWnd::update(const std::string& selectedPath, DSRomInfo& romInfo) {
