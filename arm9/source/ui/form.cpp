@@ -10,6 +10,7 @@
 #include "form.h"
 #include "timer.h"
 #include "ui.h"
+#include "thememusic.h"
 //#include "dbgtool.h"
 //#include "windowmanager.h"
 
@@ -169,6 +170,7 @@ u32 cForm::doModal() {
 
     do {  // manually update system loop
         timer().updateFps();
+        themeMusic().update();
         INPUT& inputs = updateInput();
         processInput(inputs);
         windowManager().update();

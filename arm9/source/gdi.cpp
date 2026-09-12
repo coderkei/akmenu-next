@@ -519,32 +519,39 @@ void cGdi::maskBlt(const void* src, s16 srcW, s16 srcH, s16 destX, s16 destY, u1
     u16 srcInc = srcW - destW;
     u16 destInc = 256 - destW;
     u16 destHalfWidth = destW >> 1;
-    u16 pitch = (destW + (destW & 1));
     u16 remain = destW & 1;
 
     if (destAligned) {
         for (u32 i = 0; i < destH; ++i) {
-            for (u32 j = 0; j < destHalfWidth; ++j) {
-                if (((*(u32*)pSrc) & 0x80008000) == 0x80008000) {
-                    *(u32*)pDest = *(u32*)pSrc;
-                    pSrc += 2;
-                    pDest += 2;
-                } else {
-                    if (*pSrc & 0x8000) *pDest = *pSrc;
-                    pSrc++;
-                    pDest++;
+            if (((u32)pSrc & 3) == 0) {
+                for (u32 j = 0; j < destHalfWidth; ++j) {
+                    if (((*(u32*)pSrc) & 0x80008000) == 0x80008000) {
+                        *(u32*)pDest = *(u32*)pSrc;
+                        pSrc += 2;
+                        pDest += 2;
+                    } else {
+                        if (*pSrc & 0x8000) *pDest = *pSrc;
+                        pSrc++;
+                        pDest++;
+                        if (*pSrc & 0x8000) *pDest = *pSrc;
+                        pSrc++;
+                        pDest++;
+                    }
+                }
+                if (remain) *pDest++ = *pSrc++;
+            } else {
+                for (u16 j = 0; j < destW; ++j) {
                     if (*pSrc & 0x8000) *pDest = *pSrc;
                     pSrc++;
                     pDest++;
                 }
             }
-            if (remain) *pDest++ = *pSrc++;
             pDest += destInc;
             pSrc += srcInc;
         }
     } else
         for (u16 i = 0; i < destH; ++i) {
-            for (u16 j = 0; j < pitch; ++j) {
+            for (u16 j = 0; j < destW; ++j) {
                 if (*pSrc & 0x8000) *pDest = *pSrc;
                 pDest++;
                 pSrc++;
