@@ -44,10 +44,11 @@ Plugin format is `{extension}.ini` (e.g. `gba.ini`) and follows the below format
 [plugin]
 path=path/to/nds/here.nds
 argv=1 //If the emulator supports argv
-bootstrap=0 //If using a DSI SD card and the emulator requires nds-bootstrap-hb
+bootstrap=0 //Use the Homebrew Loader setting
 ```
 
 The specified extension will be recognised as a valid file and will launch via argv (if set to `1`) to the specified `.nds` file.
+Set `bootstrap=1` to use nds-bootstrap-hb for the plugin on DSi when no flashcart is detected. Otherwise, the selected Homebrew Loader setting is used.
 The icon for the file will be read from `_nds/akmenunext/plugins/icons/{extension}.bin` as a banner file. If it is not found it will fall back to the default icon.
 
 If the `.gba` extension is used for a plugin and an EZ Flash 3 in 1 is inserted, the 3 in 1 will take priority over the plugin for loading `.gba` files.

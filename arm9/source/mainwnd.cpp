@@ -34,6 +34,7 @@
 #include "irqs.h"
 #include "uisettings.h"
 #include "thememusic.h"
+#include "fsmngr.h"
 
 #include <dirent.h>
 #include <fat.h>
@@ -41,6 +42,7 @@
 #include <sys/iosupport.h>
 
 #include "launcher/HomebrewLauncher.h"
+#include "launcher/DSpicoLauncher.h"
 #include "launcher/NdsBootstrapLauncher.h"
 #include "launcher/PassMeLauncher.h"
 #include "launcher/Slot1Launcher.h"
@@ -50,13 +52,8 @@
 using namespace akui;
 
 namespace {
-bool isDSPicoFlashcart() {
-    return access("fat:/_pico/picoLoader7.bin", F_OK) == 0 &&
-           access("fat:/_pico/picoLoader9.bin", F_OK) == 0;
-}
-
 bool canUsePluginHbBootstrap() {
-    return isDSiMode() && !isDSPicoFlashcart();
+    return isDSiMode() && !fsManager().isFlashcart();
 }
 
 bool launchPluginFile(const cPluginManager::PluginAssociation& plugin, const std::string& selectedPath) {
@@ -65,24 +62,30 @@ bool launchPluginFile(const cPluginManager::PluginAssociation& plugin, const std
         return false;
     }
 
-    if (plugin.useNdsBootstrapHb && canUsePluginHbBootstrap()) {
-        std::string argPath = plugin.useArgv ? selectedPath : "";
-        themeMusic().stop();
-        bool launched = NdsBootstrapLauncher().launchRom(plugin.launcherPath, argPath, 0, 0, 0, true);
-        if (!launched) themeMusic().start();
-        return launched;
-    }
-
-    std::vector<const char*> argv;
-    argv.push_back(plugin.launcherPath.c_str());
-    if (plugin.useArgv) {
-        argv.push_back(selectedPath.c_str());
-    }
-
+    const std::string argPath = plugin.useArgv ? selectedPath : "";
+    const int homebrewLoader =
+            (plugin.useNdsBootstrapHb && canUsePluginHbBootstrap()) ? 1 : gs().hbStrap;
+    bool launched = false;
     themeMusic().stop();
-    eRunNdsRetCode rc = runNdsFile(argv[0], argv.size(), &argv[0]);
-    if (rc != RUN_NDS_OK) themeMusic().start();
-    return rc == RUN_NDS_OK;
+    switch (homebrewLoader) {
+        case 1:
+            launched = NdsBootstrapLauncher().launchRom(plugin.launcherPath, argPath, 0, 0, 0, true);
+            break;
+        case 2:
+            launched = DSpicoLauncher().launchPlugin(plugin.launcherPath, argPath);
+            break;
+        default: {
+            std::vector<const char*> argv;
+            argv.push_back(plugin.launcherPath.c_str());
+            if (plugin.useArgv) {
+                argv.push_back(selectedPath.c_str());
+            }
+            launched = runNdsFile(argv[0], argv.size(), &argv[0]) == RUN_NDS_OK;
+            break;
+        }
+    }
+    if (!launched) themeMusic().start();
+    return launched;
 }
 }  // namespace
 

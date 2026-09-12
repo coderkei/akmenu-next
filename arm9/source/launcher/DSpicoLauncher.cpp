@@ -87,6 +87,16 @@ bool DSpicoLauncher::prepareCheats(void) {
 
 bool DSpicoLauncher::launchRom(std::string romPath, std::string savePath, u32 flags,
                                      u32 cheatOffset, u32 cheatSize, bool hb) {
+    return launchRomInternal(romPath, savePath, flags, cheatOffset, cheatSize, hb, "");
+}
+
+bool DSpicoLauncher::launchPlugin(std::string romPath, const std::string& argument) {
+    return launchRomInternal(romPath, "", 0, 0, 0, true, argument);
+}
+
+bool DSpicoLauncher::launchRomInternal(std::string romPath, std::string savePath, u32 flags,
+                                       u32 cheatOffset, u32 cheatSize, bool hb,
+                                       const std::string& arguments) {
     const std::string picoLoader7Path =
             fsManager().resolveSystemPath("/_pico/picoLoader7.bin");
     const std::string picoLoader9Path =
@@ -95,6 +105,19 @@ bool DSpicoLauncher::launchRom(std::string romPath, std::string savePath, u32 fl
     mRomPath = romPath;
     mSavePath = savePath;
     mFlags = flags;
+
+    pload_params_t sLoadParams{};
+    strcpy(sLoadParams.romPath, mRomPath.c_str());
+    strcpy(sLoadParams.savePath, mSavePath.c_str());
+    if (!arguments.empty()) {
+        const size_t argumentsLength = arguments.length() + 1;
+        if (argumentsLength > sizeof(sLoadParams.arguments)) {
+            printError("The plugin argument is too long for Pico-Loader.");
+            return false;
+        }
+        memcpy(sLoadParams.arguments, arguments.c_str(), argumentsLength);
+        sLoadParams.argumentsLength = argumentsLength;
+    }
 
     progressWnd().setTipText("Initializing pico-loader...");
     progressWnd().show();
@@ -127,10 +150,6 @@ bool DSpicoLauncher::launchRom(std::string romPath, std::string savePath, u32 fl
         printLoaderNotFound(picoLoader7Path);
         return false;
     }
-
-    pload_params_t sLoadParams{};
-    strcpy(sLoadParams.romPath, mRomPath.c_str());
-    strcpy(sLoadParams.savePath, mSavePath.c_str());
 
     if(mFlags & PATCH_CHEATS){
         prepareCheats();
