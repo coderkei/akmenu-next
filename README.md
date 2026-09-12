@@ -61,6 +61,6 @@ Please check [the license section](https://github.com/coderkei/akmenu-next/tree/
 
 ## Contributing
 
-Contributions are welcome, any issues regarding game compatibility should submitted on the [nds-bootstrap](https://github.com/DS-Homebrew/nds-bootstrap) repository.
+Contributions are welcome, any issues regarding game compatibility should submitted on the [nds-bootstrap](https://github.com/DS-Homebrew/nds-bootstrap) repository or [Pico-Loader](https://github.com/LNH-team/pico-loader) repository.
 
 ![image](https://www.gnu.org/graphics/gplv3-127x51.png)
