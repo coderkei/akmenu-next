@@ -26,10 +26,15 @@ bool directoryExists(const std::string& path) {
     return stat(path.c_str(), &st) == 0 && S_ISDIR(st.st_mode);
 }
 
+bool fileExists(const std::string& path) {
+    struct stat st;
+    return stat(path.c_str(), &st) == 0 && S_ISREG(st.st_mode);
+}
+
 bool requiredSystemFilesExist() {
     return directoryExists(fsManager().resolveSystemPath("/_nds")) &&
            directoryExists(fsManager().resolveSystemPath("/_nds/akmenunext")) &&
-           directoryExists(fsManager().resolveSystemPath("/_nds/akmenunext/ui"));
+           fileExists(fsManager().resolveSystemPath("/_nds/akmenunext/launcher.nds"));
 }
 
 void showMissingSystemFilesMessage() {
@@ -41,6 +46,24 @@ void showMissingSystemFilesMessage() {
     iprintf("ensure your SD/MicroSD card is\n");
     iprintf("working correctly.\n\n");
     iprintf("This is a common symptom of\n");
+    iprintf("counterfeit or failing SD cards.");
+
+    while (true) swiWaitForVBlank();
+}
+
+void showNoValidThemesMessage() {
+    consoleDemoInit();
+    consoleClear();
+    iprintf("AKMenu-Next cannot launch:\n");
+    iprintf("no valid themes are installed.\n\n");
+    iprintf("Add a valid theme to:\n");
+    iprintf("_nds/akmenunext/ui\n\n");
+    iprintf("Then restart AKMenu-Next.\n\n");
+    iprintf("If valid themes are installed,\n");
+    iprintf("the files may be corrupted.\n\n");
+    iprintf("Ensure your SD/MicroSD card is\n");
+    iprintf("working correctly.\n\n");
+    iprintf("This is a common symptom with\n");
     iprintf("counterfeit or failing SD cards.");
 
     while (true) swiWaitForVBlank();
@@ -151,7 +174,7 @@ int main(int argc, char* argv[]) {
     fontFactory().makeFont();  // load font file
 
     const eThemeSelectionResult themeResult = ensureValidTheme();
-    if (themeResult == THEME_SELECTION_FAILED) showMissingSystemFilesMessage();
+    if (themeResult == THEME_SELECTION_FAILED) showNoValidThemesMessage();
 
     uiSettings().loadSettings();
 
