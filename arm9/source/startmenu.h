@@ -15,8 +15,9 @@
 #define START_MENU_ITEM_FAVORITES_DELETE 1
 #define START_MENU_ITEM_SETTING 2
 #define START_MENU_ITEM_INFO 3
-#define START_MENU_ITEM_HELP 4
-#define START_MENU_ITEM_TOOLS 5
+#define START_MENU_ITEM_ABOUT 4
+#define START_MENU_ITEM_HELP 5
+#define START_MENU_ITEM_TOOLS 6
 
 class cStartMenu : public akui::cPopMenu {
   public:

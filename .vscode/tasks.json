@@ -1,0 +1,70 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build and package (devKitPro MSYS2)",
+            "type": "process",
+            "command": "C:\\devKitPro\\msys2\\usr\\bin\\bash.exe",
+            "args": [
+                "-lc",
+                "cd /s/ndsdev/akmenu-next && make -j2 && cd package && ./package.sh"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Stage flashcart for melonDS",
+            "type": "process",
+            "command": "powershell.exe",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}\\tools\\stage-melonds.ps1"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Open staged game in melonDS",
+            "type": "process",
+            "command": "powershell.exe",
+            "args": [
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "${workspaceFolder}\\tools\\run-melonds.ps1"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build, package, stage, and run in melonDS",
+            "dependsOn": [
+                "Build and package (devKitPro MSYS2)",
+                "Stage flashcart for melonDS",
+                "Open staged game in melonDS"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": []
+        }
+    ]
+}

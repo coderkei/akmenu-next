@@ -10,12 +10,11 @@
 #pragma once
 
 #include <string>
-#include "dsrom.h"
+
+#include "button.h"
 #include "form.h"
 #include "formdesc.h"
 #include "message.h"
-#include "spinbox.h"
-#include "statictext.h"
 
 class cHelpWnd : public akui::cForm {
   public:
@@ -23,7 +22,6 @@ class cHelpWnd : public akui::cForm {
 
     ~cHelpWnd();
 
-  public:
     void draw();
 
     bool process(const akui::cMessage& msg);

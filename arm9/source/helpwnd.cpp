@@ -8,25 +8,16 @@
 */
 
 #include "helpwnd.h"
-#include "fsmngr.h"
+
 #include "fontfactory.h"
-#include "launcher/DSpico/picoLoader7.h"
 #include "language.h"
 #include "msgbox.h"
 #include "uisettings.h"
-#include "version.h"
 #include "windowmanager.h"
-
-#include <cstddef>
-#include <cstdio>
-#include <string>
-#include <unistd.h>
 
 using namespace akui;
 
 namespace {
-const char kHelpUrl[] = "https://coderkei.github.io/akmenu-next-docs/";
-const char kSourceUrl[] = "https://github.com/coderkei/akmenu-next";
 const u16 kTextRightMargin = 28;
 
 void drawScrollChevron(s16 x, s16 y, bool up, u16 color, GRAPHICS_ENGINE engine) {
@@ -40,62 +31,14 @@ void drawScrollChevron(s16 x, s16 y, bool up, u16 color, GRAPHICS_ENGINE engine)
     }
 }
 
-bool fileExists(const std::string& path) {
-    return access(path.c_str(), F_OK) == 0;
-}
-
-bool isDSPicoFlashcart() {
-    return fileExists(fsManager().resolveSystemPath("/_pico/picoLoader7.bin")) &&
-           fileExists(fsManager().resolveSystemPath("/_pico/picoLoader9.bin"));
-}
-
-std::string readVersionFile(const std::string& path) {
-    FILE* file = fopen(path.c_str(), "r");
-    if (!file) return "";
-
-    char buffer[64] = {};
-    if (!fgets(buffer, sizeof(buffer), file)) {
-        fclose(file);
-        return "";
-    }
-    fclose(file);
-
-    std::string version(buffer);
-    while (!version.empty() &&
-           (version[version.size() - 1] == '\r' || version[version.size() - 1] == '\n' ||
-            version[version.size() - 1] == ' ' || version[version.size() - 1] == '\t')) {
-        version.erase(version.size() - 1);
-    }
-    return version;
-}
-
-std::string readPicoLoaderApiVersion(const std::string& path) {
-    FILE* file = fopen(path.c_str(), "rb");
-    if (!file) return "";
-
-    if (fseek(file, offsetof(pload_header7_t, apiVersion), SEEK_SET) != 0) {
-        fclose(file);
-        return "";
-    }
-
-    u16 apiVersion = 0;
-    if (fread(&apiVersion, sizeof(apiVersion), 1, file) != 1) {
-        fclose(file);
-        return "";
-    }
-    fclose(file);
-
-    return formatString("API %u", static_cast<unsigned>(apiVersion));
-}
-
 std::string wrapText(const std::string& text, u32 maxLineWidth) {
     std::string wrapped;
     size_t lineStart = 0;
 
     while (lineStart <= text.size()) {
         size_t lineEnd = text.find('\n', lineStart);
-        size_t lineLength = (lineEnd == std::string::npos) ? text.size() - lineStart
-                                                             : lineEnd - lineStart;
+        size_t lineLength = lineEnd == std::string::npos ? text.size() - lineStart
+                                                         : lineEnd - lineStart;
         if (lineLength == 0) {
             wrapped += "\n";
         } else {
@@ -132,11 +75,7 @@ std::string getLines(const std::string& text, size_t firstLine, size_t lineCount
     size_t end = start;
     for (size_t line = 0; line < lineCount && end < text.size(); ++line) {
         size_t newline = text.find('\n', end);
-        if (newline == std::string::npos) {
-            end = text.size();
-        } else {
-            end = newline + 1;
-        }
+        end = newline == std::string::npos ? text.size() : newline + 1;
     }
     return text.substr(start, end - start);
 }
@@ -157,75 +96,19 @@ cHelpWnd::cHelpWnd(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::strin
     _buttonOK.clicked.connect(this, &cHelpWnd::onOK);
     addChildWindow(&_buttonOK);
 
-    s16 nextButtonX = size().x;
-
-    s16 buttonPitch = _buttonOK.size().x + 8;
-    buttonPitch = _buttonOK.size().x + 8;
-    nextButtonX -= buttonPitch;
+    s16 nextButtonX = size().x - _buttonOK.size().x - 8;
     _buttonOK.setRelativePosition(cPoint(nextButtonX, buttonY));
 
     loadAppearance("");
     arrangeChildren();
 
-    const std::string notAvailable = LANG("about window", "not available");
-    const std::string yes = LANG("message box", "yes");
-    const std::string no = LANG("message box", "no");
-
-    const std::string ndsBootstrapReleasePath =
-            fsManager().resolveSystemPath("/_nds/nds-bootstrap-release.nds");
-    const std::string ndsBootstrapNightlyPath =
-            fsManager().resolveSystemPath("/_nds/nds-bootstrap-nightly.nds");
-    const std::string ndsBootstrapHbPath =
-            fsManager().resolveSystemPath("/_nds/nds-bootstrap-hb-release.nds");
-    std::string ndsBootstrapVersion =
-            readVersionFile(fsManager().resolveSystemPath("/_nds/release-bootstrap.ver"));
-    if (ndsBootstrapVersion.empty()) {
-        ndsBootstrapVersion =
-                readVersionFile(fsManager().resolveSystemPath("/_nds/nightly-bootstrap.ver"));
+    std::string helpText;
+    for (size_t i = 0; i < 9; ++i) {
+        const std::string textIndex = formatString("item%d", static_cast<int>(i));
+        helpText += LANG("help window", textIndex);
+        helpText += "\n";
     }
-    const bool ndsBootstrapInstalled =
-            fileExists(ndsBootstrapReleasePath) || fileExists(ndsBootstrapNightlyPath) ||
-            fileExists(ndsBootstrapHbPath) || !ndsBootstrapVersion.empty();
-    if (ndsBootstrapVersion.empty()) ndsBootstrapVersion = notAvailable;
-
-    const std::string picoLoader7Path = fsManager().resolveSystemPath("/_pico/picoLoader7.bin");
-    const std::string picoLoader9Path = fsManager().resolveSystemPath("/_pico/picoLoader9.bin");
-    const bool picoLoaderInstalled = fileExists(picoLoader7Path) && fileExists(picoLoader9Path);
-    std::string picoLoaderVersion =
-            picoLoaderInstalled ? readPicoLoaderApiVersion(picoLoader7Path) : "";
-    if (picoLoaderVersion.empty()) picoLoaderVersion = notAvailable;
-
-    const std::string mode = LANG("about window", isDSiMode() ? "dsi mode" : "ds mode");
-    const std::string storage =
-            isDSPicoFlashcart() ? LANG("about window", "dspico")
-                                : (fsManager().isFlashcart() ? LANG("about window", "flashcart")
-                                                             : LANG("about window", "sd card"));
-    const std::string akmenuVersion =
-            std::string(AKMENU_VERSION_MAIN) + "." + AKMENU_VERSION_SUB;
-
-    _helpText += formatString(LANG("about window", "app version").c_str(), akmenuVersion.c_str());
-    _helpText += "\n";
-    _helpText += formatString(LANG("about window", "mode").c_str(), mode.c_str(), storage.c_str());
-    _helpText += "\n\n";
-    _helpText += LANG("about window", "installed loaders");
-    _helpText += "\n";
-    _helpText += formatString(LANG("about window", "nds-bootstrap").c_str(),
-                              ndsBootstrapInstalled ? yes.c_str() : no.c_str(),
-                              ndsBootstrapVersion.c_str());
-    _helpText += "\n";
-    _helpText += formatString(LANG("about window", "pico-loader").c_str(),
-                              picoLoaderInstalled ? yes.c_str() : no.c_str(),
-                              picoLoaderVersion.c_str());
-    _helpText += "\n\n";
-    _helpText += formatString(LANG("about window", "help").c_str(), kHelpUrl);
-    _helpText += "\n";
-    _helpText += formatString(LANG("about window", "source").c_str(), kSourceUrl);
-    _helpText += "\n";
-    _helpText += LANG("about window", "license");
-    _helpText += "\n";
-    _helpText += LANG("about window", "license details");
-    _helpText += "\n\n";
-    _helpText += LANG("about window", "credits");
+    _helpText = formatString(helpText.c_str(), 7, 1, 2, 4, 3, 5, 6, "START", "SELECT");
 
     const u16 textWidth = size().x > kTextRightMargin ? size().x - kTextRightMargin : 1;
     _helpText = wrapText(_helpText, textWidth);
@@ -267,41 +150,32 @@ void cHelpWnd::draw() {
 }
 
 bool cHelpWnd::process(const akui::cMessage& msg) {
-    bool ret = false;
+    bool ret = cForm::process(msg);
 
-    ret = cForm::process(msg);
-
-    if (!ret) {
-        if (msg.id() > cMessage::keyMessageStart && msg.id() < cMessage::keyMessageEnd) {
-            ret = processKeyMessage((cKeyMessage&)msg);
-        }
+    if (!ret && msg.id() > cMessage::keyMessageStart && msg.id() < cMessage::keyMessageEnd) {
+        ret = processKeyMessage((cKeyMessage&)msg);
     }
     return ret;
 }
 
 bool cHelpWnd::processKeyMessage(const cKeyMessage& msg) {
-    bool ret = false;
-    if (msg.id() == cMessage::keyDown) {
-        switch (msg.keyCode()) {
-            case cKeyMessage::UI_KEY_A:
-            case cKeyMessage::UI_KEY_B:
-                onOK();
-                ret = true;
-                break;
-            case cKeyMessage::UI_KEY_UP:
-                if (_firstVisibleLine > 0) --_firstVisibleLine;
-                ret = true;
-                break;
-            case cKeyMessage::UI_KEY_DOWN:
-                if (_visibleLineCount == 0) _visibleLineCount = 1;
-                if (_firstVisibleLine + _visibleLineCount < _lineCount) ++_firstVisibleLine;
-                ret = true;
-                break;
-            default: {
-            }
-        };
+    if (msg.id() != cMessage::keyDown) return false;
+
+    switch (msg.keyCode()) {
+        case cKeyMessage::UI_KEY_A:
+        case cKeyMessage::UI_KEY_B:
+            onOK();
+            return true;
+        case cKeyMessage::UI_KEY_UP:
+            if (_firstVisibleLine > 0) --_firstVisibleLine;
+            return true;
+        case cKeyMessage::UI_KEY_DOWN:
+            if (_visibleLineCount == 0) _visibleLineCount = 1;
+            if (_firstVisibleLine + _visibleLineCount < _lineCount) ++_firstVisibleLine;
+            return true;
+        default:
+            return false;
     }
-    return ret;
 }
 
 cWindow& cHelpWnd::loadAppearance(const std::string& aFileName) {

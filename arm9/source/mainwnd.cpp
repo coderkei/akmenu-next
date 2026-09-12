@@ -22,6 +22,7 @@
 #include "exptools.h"
 #include "favorites.h"
 #include "gbaloader.h"
+#include "aboutwnd.h"
 #include "helpwnd.h"
 #include "inifile.h"
 #include "language.h"
@@ -265,7 +266,7 @@ void cMainWnd::startMenuItemClicked(s16 i) {
         showFileInfo();
     }
 
-    else if (START_MENU_ITEM_HELP == i) {
+    else if (START_MENU_ITEM_ABOUT == i) {
         CIniFile ini(SFN_UI_SETTINGS);  //(256-)/2,(192-128)/2, 220, 128
         u32 w = 250;
         u32 h = 188;
@@ -273,8 +274,18 @@ void cMainWnd::startMenuItemClicked(s16 i) {
         h = ini.GetInt("help window", "h", h);
         if (w < 250) w = 250;
         if (h < 188) h = 188;
+        cAboutWnd* aboutWnd = new cAboutWnd((256 - w) / 2, (192 - h) / 2, w, h, this,
+                                            LANG("about window", "title"));
+        aboutWnd->doModal();
+        delete aboutWnd;
+    } else if (START_MENU_ITEM_HELP == i) {
+        CIniFile ini(SFN_UI_SETTINGS);
+        u32 w = 200;
+        u32 h = 160;
+        w = ini.GetInt("help window", "w", w);
+        h = ini.GetInt("help window", "h", h);
         cHelpWnd* helpWnd = new cHelpWnd((256 - w) / 2, (192 - h) / 2, w, h, this,
-                                         LANG("about window", "title"));
+                                         LANG("help window", "title"));
         helpWnd->doModal();
         delete helpWnd;
     } else if (START_MENU_ITEM_TOOLS == i) {
@@ -600,9 +611,16 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("scrolling", "slow"));
     settingWnd.addSettingItem(LANG("interface settings", "scrolling speed"), _values, scrollSpeed);
     _values.clear();
-    _values.push_back(LANG("switches", "Disable"));
-    _values.push_back(LANG("switches", "Enable"));
-    settingWnd.addSettingItem(LANG("interface settings", "custom icons"), _values, gs().icon);
+    _values.push_back(lang().GetString("interface settings", "theme icons", "Theme Icons"));
+    _values.push_back(lang().GetString("interface settings", "global icons", "Global Icons"));
+    _values.push_back(lang().GetString("interface settings", "built in icons", "Built-in icons"));
+    size_t iconSourceSelection =
+            (gs().iconSource == cGlobalSettings::EIconTheme) ? 0
+            : (gs().iconSource == cGlobalSettings::EIconGlobal) ? 1
+                                                               : 2;
+    settingWnd.addSettingItem(
+            lang().GetString("interface settings", "icon source", "Icon source"),
+            _values, iconSourceSelection);
     _values.clear();
     _values.push_back(LANG("switches", "Disable"));
     _values.push_back(LANG("switches", "Enable"));
@@ -757,7 +775,17 @@ void cMainWnd::setParam(void) {
             break;
     }
     gs().viewMode = settingWnd.getItemSelection(TAB_INTERFACE, 0);
-    gs().icon = settingWnd.getItemSelection(TAB_INTERFACE, 2);
+    switch (settingWnd.getItemSelection(TAB_INTERFACE, 2)) {
+        case 0:
+            gs().iconSource = cGlobalSettings::EIconTheme;
+            break;
+        case 1:
+            gs().iconSource = cGlobalSettings::EIconGlobal;
+            break;
+        default:
+            gs().iconSource = cGlobalSettings::EIconBuiltIn;
+            break;
+    }
     gs().Animation = settingWnd.getItemSelection(TAB_INTERFACE, 3);
     gs().show12hrClock = settingWnd.getItemSelection(TAB_INTERFACE, 4);
     gs().showCovers = settingWnd.getItemSelection(TAB_INTERFACE, 5);
@@ -824,10 +852,12 @@ void cMainWnd::setParam(void) {
 void cMainWnd::showSettings(void) {
     if (gs().safeMode) return;
     u8 currentFileListType = gs().fileListType, currentShowHiddenFiles = gs().showHiddenFiles;
+    int currentIconSource = gs().iconSource;
     bool currentShowCovers = gs().showCovers;
     setParam();
     bool reloadedList = gs().fileListType != currentFileListType ||
-                        gs().showHiddenFiles != currentShowHiddenFiles;
+                        gs().showHiddenFiles != currentShowHiddenFiles ||
+                        gs().iconSource != currentIconSource;
     if (reloadedList) {
         _mainList->enterDir(_mainList->getCurrentDir());
     }

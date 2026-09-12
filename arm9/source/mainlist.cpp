@@ -14,14 +14,17 @@
 #include <sys/dir.h>
 #include "../../share/memtool.h"
 #include "dbgtool.h"
+#include "favourites_banner_bin.h"
 #include "folder_banner_bin.h"
 #include "gba_banner_bin.h"
 #include "inifile.h"
+#include "iconassets.h"
 #include "language.h"
 #include "microsd_banner_bin.h"
 #include "nand_banner_bin.h"
 #include "nds_save_banner_bin.h"
 #include "progresswnd.h"
+#include "recents_banner_bin.h"
 #include "startmenu.h"
 #include "systemfilenames.h"
 #include "timetool.h"
@@ -155,14 +158,6 @@ static bool extnameFilter(const std::vector<std::string>& extNames, std::string 
 }
 
 bool cMainList::enterDir(const std::string& dirName) {
-
-    std::string base = fsManager().resolveSystemPath("/_nds/akmenunext/icons/");
-
-    std::string microsd = base + "microsd_banner.bin";
-    std::string nand = base + "nand_banner.bin";
-    std::string gba = base + "gba_banner.bin";
-    std::string folder = base + "folder_banner.bin";
-
     _saves.clear();
     if (memcmp(dirName.c_str(), "...", 3) == 0 || dirName.empty())  // select RPG or SD card
     {
@@ -176,50 +171,32 @@ bool cMainList::enterDir(const std::string& dirName) {
                 a_row.push_back(LANG("mainlist", "microsd card"));
                 a_row.push_back("");
                 a_row.push_back("fat:/");
-                if(gs().icon)
-                    rominfo.setBannerFromFile("folder", microsd);
-                else
-                    rominfo.setBanner("folder", microsd_banner_bin);
+                rominfo.setBannerFromIcon("microsd_banner.bin", "folder", microsd_banner_bin);
             } else if (_topuDSiSD == i) {
                 a_row.push_back("DSi SD");
                 a_row.push_back("");
                 a_row.push_back("sd:/");
-                if(gs().icon)
-                    rominfo.setBannerFromFile("folder", microsd);
-                else
-                    rominfo.setBanner("folder", microsd_banner_bin);
+                rominfo.setBannerFromIcon("microsd_banner.bin", "folder", microsd_banner_bin);
             } else if (_topSlot1 == i) {
                 a_row.push_back(LANG("mainlist", "slot1 card"));
                 a_row.push_back("");
                 a_row.push_back("slot1:/");
-                if(gs().icon)
-                    rominfo.setBannerFromFile("folder", nand);
-                else
-                    rominfo.setBanner("folder", nand_banner_bin);
+                rominfo.setBannerFromIcon("nand_banner.bin", "folder", nand_banner_bin);
             } else if (_topSlot2 == i) {
                 a_row.push_back(LANG("mainlist", "slot2 card"));
                 a_row.push_back("");
                 a_row.push_back("slot2:/");
-                if(gs().icon)
-                    rominfo.setBannerFromFile("folder", gba);
-                else
-                    rominfo.setBanner("folder", gba_banner_bin);
+                rominfo.setBannerFromIcon("gba_banner.bin", "folder", gba_banner_bin);
             } else if (_topFavorites == i) {
                 a_row.push_back(LANG("mainlist", "favorites"));
                 a_row.push_back("");
                 a_row.push_back("favorites:/");
-                if(gs().icon)
-                    rominfo.setBannerFromFile("folder", folder);
-                else
-                    rominfo.setBanner("folder", folder_banner_bin);
+                rominfo.setBannerFromIcon("favourites_banner.bin", "", favourites_banner_bin);
             } else if (_topRecent == i) {
                 a_row.push_back(LANG("mainlist", "recent"));
                 a_row.push_back("");
                 a_row.push_back("recent:/");
-                if(gs().icon)
-                    rominfo.setBannerFromFile("folder", folder);
-                else
-                    rominfo.setBanner("folder", folder_banner_bin);
+                rominfo.setBannerFromIcon("recents_banner.bin", "", recents_banner_bin);
             }
             insertRow(i, a_row);
             _romInfoList.push_back(rominfo);
@@ -373,13 +350,9 @@ bool cMainList::enterDir(const std::string& dirName) {
 
         // Pre-cache folder banner to avoid repeated SD reads
         tNDSBanner cachedFolderBanner;
-        bool folderBannerCached = false;
-        if (gs().icon) {
-            FILE* f = fopen(folder.c_str(), "rb");
-            if (f) {
-                folderBannerCached = (fread(&cachedFolderBanner, 1, sizeof(tNDSBanner), f) == sizeof(tNDSBanner));
-                fclose(f);
-            }
+        if (!loadIconAsset("folder_banner.bin", &cachedFolderBanner,
+                           sizeof(cachedFolderBanner))) {
+            memcpy(&cachedFolderBanner, folder_banner_bin, sizeof(cachedFolderBanner));
         }
 
         for (size_t ii = 0; ii < entries.size(); ++ii) {
@@ -396,12 +369,7 @@ bool cMainList::enterDir(const std::string& dirName) {
             const std::string& filename = de.realName;
 
             if (de.isDir) {
-                if (folderBannerCached) {
-                    rominfo.setExtIcon("folder");
-                    memcpy(&rominfo.banner(), &cachedFolderBanner, sizeof(tNDSBanner));
-                } else {
-                    rominfo.setBanner("folder", folder_banner_bin);
-                }
+                rominfo.setBanner("folder", (const u8*)&cachedFolderBanner);
             } else {
                 size_t lastDotPos = filename.find_last_of('.');
                 extName = (filename.npos != lastDotPos) ? filename.substr(lastDotPos) : "";
@@ -409,7 +377,7 @@ bool cMainList::enterDir(const std::string& dirName) {
 
                 bool allowExt = true, allowUnknown = false;
                 if (".sav" == extName) {
-                    memcpy(&rominfo.banner(), nds_save_banner_bin, sizeof(tNDSBanner));
+                    rominfo.setBannerFromIcon("nds_save_banner.bin", "", nds_save_banner_bin);
                 } else if (".gba" == extName) {
                     rominfo.MayBeGbaRom(filename);
                 } else if (".nds" != extName && ".dsi" != extName && ".srl" != extName && ".ids" !=extName) {
@@ -417,7 +385,7 @@ bool cMainList::enterDir(const std::string& dirName) {
                     if (plugin && loadBannerFromBin(rominfo, plugin->iconPath)) {
                         allowExt = false;
                     } else {
-                        memcpy(&rominfo.banner(), unknown_banner_bin, sizeof(tNDSBanner));
+                        rominfo.setBannerFromIcon("unknown_banner.bin", "", unknown_banner_bin);
                         allowUnknown = true;
                     }
                 } else {

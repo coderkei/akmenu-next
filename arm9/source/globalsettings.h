@@ -20,6 +20,7 @@ class cGlobalSettings {
     enum TViewMode { EViewList = 0, EViewIcon = 1, EViewInternal = 2, EViewSmall = 3 };
     enum TSlot2Mode { ESlot2Ask = 0, ESlot2Gba = 1, ESlot2Nds = 2 };
     enum TROMLauncher { EKernelLauncher = 0, ENdsBootstrapLauncher = 1 };
+    enum TIconSource { EIconBuiltIn = 0, EIconGlobal = 1, EIconTheme = 2 };
 
   public:
     cGlobalSettings();
@@ -76,7 +77,7 @@ class cGlobalSettings {
     // Homebrew loader: 0 = AKMenu-Next, 1 = nds-bootstrap-hb, 2 = Pico-Loader.
     int hbStrap;
     bool pico;
-    bool icon;
+    int iconSource;
     int cardReadDma;
 };
 

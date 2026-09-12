@@ -10,6 +10,7 @@ Set favorite = Ajouter aux fav.
 Unset favorite = Retirer des fav.
 Info = Info du fichier
 About = À propos
+Help = Aide
 Tools = Outils
 START = START
 
@@ -208,6 +209,18 @@ license = AKMenu-Next est distribué sous licence GNU General Public License v3.
 license details = Veuillez consulter license.txt pour plus de détails.
 credits = ~Ce projet vous est proposé par coderkei~
 not available = Indisponible
+
+[help window]
+title = Aide
+item0 = %c  Sélectionner un logiciel
+item1 = %c  Lancer/OK/Oui
+item2 = %c  Retour/Annuler/Non
+item3 = %c  Propriétés/Type sauvegarde
+item4 = %c  Basculer SD/FLASH
+item5 = %c  Précédent répertoire
+item6 = %c  Ajuster la luminosité
+item7 = %s  Menu de démarrage
+item8 = %s  Style nouveau/classique
 
 [exp window]
 button = 3in1

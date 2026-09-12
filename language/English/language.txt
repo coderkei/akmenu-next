@@ -10,6 +10,7 @@ Set favorite = Set favorite
 Unset favorite = Remove favorite
 Info = File Info
 About = About
+Help = Help
 Tools = Tools
 START = START
 
@@ -205,6 +206,18 @@ license details = Please see license.txt for details.
 credits = ~This project is brought to you by coderkei~
 not available = N/A
 
+[help window]
+title = Help information
+item0 = %c  Select Programs
+item1 = %c  Start/OK/YES
+item2 = %c  Back/Cancel/NO
+item3 = %c  View file info/Select Save Type
+item4 = %c  Favourites
+item5 = %c  Back to parent directory
+item6 = %c  Adjust Brightness (DS-Only)
+item7 = %s  Start Menu
+item8 = %s  Menu style new/classical
+
 [exp window]
 button = 3in1
 title = 3in1 expansion pack settings
@@ -271,7 +284,10 @@ modern = Modern
 internal = Internal
 animation = Animation
 12 hour = 12-hour clock
-custom icons = Custom Icons
+icon source = Icon source
+theme icons = Theme Icons
+global icons = Global Icons
+built in icons = Built-in icons
 covers = Game covers
 
 [gba settings]

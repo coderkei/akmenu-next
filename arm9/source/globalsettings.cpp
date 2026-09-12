@@ -54,7 +54,9 @@ cGlobalSettings::cGlobalSettings() {
     languageOverride = 0;
     hbStrap = 0;
     pico = 0;
-    icon = 1;
+    // Keep legacy icon=1 configurations on the current global icon behavior.
+    // Fresh configurations default to theme icons and fall back per asset.
+    iconSource = EIconTheme;
     cardReadDma = 0;
 }
 
@@ -93,7 +95,8 @@ void cGlobalSettings::loadSettings() {
     hbStrap = ini.GetInt("system", "hbstrap", hbStrap);
     if (hbStrap < 0 || hbStrap > 2) hbStrap = 0;
     pico = ini.GetInt("system", "pico", pico);
-    icon = ini.GetInt("system", "icon", icon);
+    iconSource = ini.GetInt("system", "icon", iconSource);
+    if (iconSource < EIconBuiltIn || iconSource > EIconTheme) iconSource = EIconTheme;
     cardReadDma = ini.GetInt("system", "cardReadDma", cardReadDma);
     
     temp = ini.GetString("system", "saveext", ".sav");
@@ -153,7 +156,7 @@ void cGlobalSettings::saveSettings() {
     ini.SetInt("system", "languageOverride", languageOverride);
     ini.SetInt("system", "hbstrap", hbStrap);
     ini.SetInt("system", "pico", pico);
-    ini.SetInt("system", "icon", icon);
+    ini.SetInt("system", "icon", iconSource);
     ini.SetInt("system", "cardReadDma", cardReadDma);
     ini.SetInt("system", "phatCol", phatCol);
     ini.SetInt("system", "autorunWithLastRom", autorunWithLastRom);

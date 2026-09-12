@@ -13,6 +13,7 @@ Set favorite = Избранное [+]
 Unset favorite = Избранное [-]
 Info = О файле
 About = О программе
+Help = Справка
 Tools = Настройки "3in1"
 START = START
 
@@ -207,6 +208,18 @@ license = AKMenu-Next распространяется по лицензии GNU
 license details = Подробнее см. в файле license.txt.
 credits = ~Проект создан при поддержке coderkei~
 not available = Недоступно
+
+[help window]
+title = Справка
+item0 = %c  Выбор игр
+item1 = %c  Запуск/OK/Да
+item2 = %c  Назад/Отмена/Нет
+item3 = %c  Информация о файле/тип сохранения
+item4 = %c  Избранное
+item5 = %c  В родительскую папку
+item6 = %c  Яркость (только DS)
+item7 = %s  Меню START
+item8 = %s  Переключение вида списка
 
 [exp window]
 button = 3in1

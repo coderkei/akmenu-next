@@ -12,10 +12,34 @@
 #include "fileicons.h"
 #include "gamecode.h"
 #include "gbarom_banner_bin.h"
+#include "globalsettings.h"
+#include "iconassets.h"
 #include "icon_bg_bin.h"
 #include "icons.h"
 #include "nds_banner_bin.h"
 #include "unknown_nds_banner_bin.h"
+
+namespace {
+const u16* iconBackground() {
+    static u16 background[32 * 32];
+    static int cachedSource = -1;
+    static std::string cachedTheme;
+
+    if (cachedSource != gs().iconSource || cachedTheme != gs().uiName) {
+        if (!loadIconAsset("icon_bg.bin", background, sizeof(background)))
+            memcpy(background, icon_bg_bin, sizeof(background));
+        cachedSource = gs().iconSource;
+        cachedTheme = gs().uiName;
+    }
+    return background;
+}
+
+void loadBannerIcon(tNDSBanner& banner, const std::string& filename,
+                    const u8* builtInBanner) {
+    if (!loadIconAsset(filename, &banner, sizeof(banner)))
+        memcpy(&banner, builtInBanner, sizeof(banner));
+}
+}  // namespace
 
 DSRomInfo& DSRomInfo::operator=(const DSRomInfo& src) {
     memcpy(&_banner, &src._banner, sizeof(_banner));
@@ -39,6 +63,7 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
     FILE* f = fopen(filename.c_str(), "rb");
     if (NULL == f)  // 锟斤拷锟侥硷拷失锟斤拷
     {
+        loadBannerIcon(_banner, "unknown_nds_banner.bin", unknown_nds_banner_bin);
         return false;
     }
 
@@ -46,7 +71,7 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
     if (512 != fread(&header, 1, 512, f))  // 锟斤拷锟侥硷拷头失锟斤拷
     {
         dbg_printf("read rom header fail\n");
-        memcpy(&_banner, unknown_nds_banner_bin, sizeof(_banner));
+        loadBannerIcon(_banner, "unknown_nds_banner.bin", unknown_nds_banner_bin);
         fclose(f);
         return false;
     }
@@ -60,7 +85,7 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
     if (crc != header.headerCRC16)  // 锟侥硷拷头 CRC 锟斤拷锟襟，诧拷锟斤拷nds锟斤拷戏
     {
         dbg_printf("%s rom header crc error\n", filename.c_str());
-        memcpy(&_banner, unknown_nds_banner_bin, sizeof(_banner));
+        loadBannerIcon(_banner, "unknown_nds_banner.bin", unknown_nds_banner_bin);
         fclose(f);
         return true;
     } else {
@@ -150,7 +175,7 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
         tNDSBanner banner;
         u32 readed = fread(&banner, 1, 0x840, f);
         if (sizeof(tNDSBanner) != readed) {
-            memcpy(&_banner, nds_banner_bin, sizeof(_banner));
+            loadBannerIcon(_banner, "nds_banner.bin", nds_banner_bin);
         } else {
             crc = swiCRC16(0xffff, banner.icon, 0x840 - 32);
 
@@ -160,7 +185,7 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
                     memcpy(&_banner, &banner, sizeof(_banner));
                 } else {
                     dbg_printf("banner crc error, %04x/%04x\n", banner.crc, crc);
-                    memcpy(&_banner, nds_banner_bin, sizeof(_banner));
+                    loadBannerIcon(_banner, "nds_banner.bin", nds_banner_bin);
                 }
             } else {
                 memcpy(&_banner, &banner, sizeof(_banner));
@@ -168,7 +193,7 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
         }
     } else {
         // dbg_printf( "%s has no banner\n", filename );
-        memcpy(&_banner, nds_banner_bin, sizeof(_banner));
+        loadBannerIcon(_banner, "nds_banner.bin", nds_banner_bin);
     }
 
     fclose(f);
@@ -190,9 +215,9 @@ void DSRomInfo::drawDSRomIcon(u8 x, u8 y, GRAPHICS_ENGINE engine, bool small) {
             break;
         case SAVE_INFO_EX_ICON_FIRMWARE:
             if (small) {
-                gdi().maskBlt(icon_bg_bin, x, y, 16, 16, engine);
+                gdi().maskBlt(iconBackground(), x, y, 16, 16, engine);
             } else {
-                gdi().maskBlt(icon_bg_bin, x, y, 32, 32, engine);
+                gdi().maskBlt(iconBackground(), x, y, 32, 32, engine);
             }
             break;
     }
@@ -240,7 +265,7 @@ void DSRomInfo::drawDSRomIconMem(void* mem) {
             skiptransparent = true;
             break;
         case SAVE_INFO_EX_ICON_FIRMWARE:
-            cIcons::maskBlt((const u16*)icon_bg_bin, pmem);
+            cIcons::maskBlt(iconBackground(), pmem);
             break;
     }
     for (int tile = 0; tile < 16; ++tile) {
@@ -280,7 +305,7 @@ bool DSRomInfo::loadGbaRomInfo(const std::string& filename) {
             _isGbaRom = ETrue;
             memcpy(_saveInfo.gameCode, header.gamecode, 4);
             _romVersion = header.version;
-            memcpy(&_banner, gbarom_banner_bin, sizeof(tNDSBanner));
+            loadBannerIcon(_banner, "gbarom_banner.bin", gbarom_banner_bin);
             return true;
         }
     }
@@ -350,4 +375,11 @@ bool DSRomInfo::setBannerFromFile(const std::string& anExtIcon,
     size_t read = fread(&banner(), 1, sizeof(tNDSBanner), f);
     fclose(f);
     return read == sizeof(tNDSBanner);
+}
+
+void DSRomInfo::setBannerFromIcon(const std::string& filename,
+                                  const std::string& anExtIcon,
+                                  const u8* builtInBanner) {
+    setExtIcon(anExtIcon);
+    loadBannerIcon(_banner, filename, builtInBanner);
 }

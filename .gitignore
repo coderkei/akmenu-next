@@ -2,7 +2,8 @@ themes
 data/load.bin
 build
 staging
-.vscode
+.vscode/*
+!.vscode/tasks.json
 *.elf
 *.nds
 *.dsi
