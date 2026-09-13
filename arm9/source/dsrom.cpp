@@ -20,6 +20,10 @@
 #include "unknown_nds_banner_bin.h"
 
 namespace {
+constexpr long ndzBannerOffset = 0x10;
+constexpr long ndzGameCodeOffset = 0x2410;
+constexpr long ndzHeaderCrcOffset = 0x2418;
+
 const u16* iconBackground() {
     static u16 background[32 * 32];
     static int cachedSource = -1;
@@ -49,6 +53,7 @@ DSRomInfo& DSRomInfo::operator=(const DSRomInfo& src) {
     _isDSiWare = src._isDSiWare;
     _isModernHomebrew = src._isModernHomebrew;
     _isGbaRom = src._isGbaRom;
+    _isNdz = src._isNdz;
     _fileName = src._fileName;
     _romVersion = src._romVersion;
     _extIcon = src._extIcon;
@@ -60,6 +65,7 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
     _isHomebrew = EFalse;
     _isDSiWare = EFalse;
     _isModernHomebrew = EFalse;
+    _isNdz = false;
     FILE* f = fopen(filename.c_str(), "rb");
     if (NULL == f)  // 锟斤拷锟侥硷拷失锟斤拷
     {
@@ -74,6 +80,27 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
         loadBannerIcon(_banner, "unknown_nds_banner.bin", unknown_nds_banner_bin);
         fclose(f);
         return false;
+    }
+
+    if (0 == memcmp(&header, "NDZ1", 4)) {
+        _isNdz = true;
+        _isDSRom = ETrue;
+        fseek(f, ndzGameCodeOffset, SEEK_SET);
+        fread(_saveInfo.gameCode, 1, sizeof(_saveInfo.gameCode), f);
+        fseek(f, ndzHeaderCrcOffset, SEEK_SET);
+        fread(&_saveInfo.gameCRC, 1, sizeof(_saveInfo.gameCRC), f);
+        saveManager().updateSaveInfoByInfo(_saveInfo);
+
+        tNDSBanner banner;
+        fseek(f, ndzBannerOffset, SEEK_SET);
+        if (sizeof(tNDSBanner) == fread(&banner, 1, sizeof(banner), f) &&
+            swiCRC16(0xffff, banner.icon, 0x840 - 32) == banner.crc) {
+            memcpy(&_banner, &banner, sizeof(_banner));
+        } else {
+            loadBannerIcon(_banner, "nds_banner.bin", nds_banner_bin);
+        }
+        fclose(f);
+        return true;
     }
 
     if (header.unitCode == 0x03) {
@@ -355,6 +382,11 @@ bool DSRomInfo::isModernHomebrew(void) {
 bool DSRomInfo::isGbaRom(void) {
     load();
     return (_isGbaRom == ETrue) ? true : false;
+}
+
+bool DSRomInfo::isNdz(void) {
+    load();
+    return _isNdz;
 }
 
 void DSRomInfo::setExtIcon(const std::string& aValue) {
