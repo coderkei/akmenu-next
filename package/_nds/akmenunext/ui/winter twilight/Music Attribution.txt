@@ -1,7 +1,7 @@
 bgm.wav
 
-"Starfield Romance" by Yoiyami
-Source: https://opengameart.org/content/starfield-romance-%E2%80%93-cc0-ambient-emotional-space-theme-yoiyami-blue-series-%E2%80%93-no3
+"First Light Particles" by Yoiyami
+Source: https://opengameart.org/content/first-light-particles-%E2%80%93-cc0-atmospheric-pianoambient-track
 
 Released under CC0 1.0 Universal (Public Domain):
 https://creativecommons.org/publicdomain/zero/1.0/
