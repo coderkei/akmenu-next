@@ -1,0 +1,11 @@
+bgm.wav
+
+"Emotional Deluge" by Joth
+Source: https://opengameart.org/content/emotional-deluge
+
+Released under CC0 1.0 Universal (Public Domain):
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Music by Joth (CC0).
+
+The audio has been converted for use as theme BGM.
