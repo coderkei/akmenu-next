@@ -55,7 +55,8 @@ bool isNativeDSRom(const std::string& filename) {
 
     std::string extName = filename.substr(lastDotPos);
     for (size_t ii = 0; ii < extName.size(); ++ii) extName[ii] = tolower(extName[ii]);
-    return ".nds" == extName || ".dsi" == extName || ".srl" == extName || ".ids" == extName;
+    return ".nds" == extName || ".ndz" == extName || ".dsi" == extName ||
+           ".srl" == extName || ".ids" == extName;
 }
 
 std::string gameTitleFor(const std::string& filename) {
@@ -268,6 +269,7 @@ bool cMainList::enterDir(const std::string& dirName) {
 
     std::vector<std::string> extNames;
     extNames.push_back(".nds");
+    extNames.push_back(".ndz");
     extNames.push_back(".dsi");
     extNames.push_back(".srl");
     extNames.push_back(".ids");
@@ -441,7 +443,8 @@ bool cMainList::enterDir(const std::string& dirName) {
                     rominfo.setBannerFromIcon("nds_save_banner.bin", "", nds_save_banner_bin);
                 } else if (".gba" == extName) {
                     rominfo.MayBeGbaRom(filename);
-                } else if (".nds" != extName && ".dsi" != extName && ".srl" != extName && ".ids" !=extName) {
+                } else if (".nds" != extName && ".ndz" != extName && ".dsi" != extName &&
+                           ".srl" != extName && ".ids" != extName) {
                     const cPluginManager::PluginAssociation* plugin = pluginManager().findPlugin(filename);
                     if (plugin && loadBannerFromBin(rominfo, plugin->iconPath)) {
                         allowExt = false;

@@ -88,7 +88,8 @@ bool hasExtension(const std::string& filename, const char* extension) {
 }
 
 bool isRomExtension(const std::string& filename) {
-    return hasExtension(filename, ".nds") || hasExtension(filename, ".dsi") ||
+    return hasExtension(filename, ".nds") || hasExtension(filename, ".ndz") ||
+           hasExtension(filename, ".dsi") ||
            hasExtension(filename, ".srl") || hasExtension(filename, ".ids");
 }
 
