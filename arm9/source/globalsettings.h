@@ -21,6 +21,12 @@ class cGlobalSettings {
     enum TSlot2Mode { ESlot2Ask = 0, ESlot2Gba = 1, ESlot2Nds = 2 };
     enum TROMLauncher { EKernelLauncher = 0, ENdsBootstrapLauncher = 1 };
     enum TIconSource { EIconBuiltIn = 0, EIconGlobal = 1, EIconTheme = 2 };
+    enum TFileSortMode {
+        ESortName = 0,
+        ESortGameTitle = 1,
+        ESortDateAsc = 2,
+        ESortDateDesc = 3
+    };
 
   public:
     cGlobalSettings();
@@ -80,6 +86,7 @@ class cGlobalSettings {
     bool pico;
     int iconSource;
     int cardReadDma;
+    int fileSortMode;
 };
 
 typedef t_singleton<cGlobalSettings> globalSettings_s;

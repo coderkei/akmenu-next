@@ -288,6 +288,11 @@ title = Paramètres des fichiers
 show hidden files = Afficher les fichiers cachés
 save extension = Extension de la sauvegarde
 use saves folder = Utiliser le dossier 'saves'
+sort by = Trier par
+sort name = Nom
+sort game title = Titre du jeu
+sort date asc = Date croissante
+sort date desc = Date décroissante
 
 [interface settings]
 title = Réglages de l'interface

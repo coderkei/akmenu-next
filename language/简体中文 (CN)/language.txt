@@ -291,6 +291,11 @@ title = 文件系统设置
 show hidden files = 显示隐藏文件
 save extension = 存档格式
 use saves folder = 使用'saves'文件夹
+sort by = 排序方式
+sort name = 名称
+sort game title = 游戏标题
+sort date asc = 日期升序（较旧优先）
+sort date desc = 日期降序（较新优先）
 
 [interface settings]
 title = 文件系统设置

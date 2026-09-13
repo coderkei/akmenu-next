@@ -282,6 +282,11 @@ title = File system settings
 show hidden files = Show hidden files
 save extension = Save extension
 use saves folder = Use 'saves' folder
+sort by = Sort by
+sort name = Name
+sort game title = Game Title
+sort date asc = Date Asc
+sort date desc = Date Desc
 
 [interface settings]
 title = Interface settings

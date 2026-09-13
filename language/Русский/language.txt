@@ -285,6 +285,11 @@ title = Настройки файлов [3/5]
 show hidden files = Показ. скрытые файлы
 save extension = Расширение сохранения
 use saves folder = Использ. папку "saves"
+sort by = Сортировка
+sort name = Имя
+sort game title = Название игры
+sort date asc = Дата по возрастанию
+sort date desc = Дата по убыванию
 
 [interface settings]
 title = Настройки интерфейса [2/5]

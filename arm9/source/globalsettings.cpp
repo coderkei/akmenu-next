@@ -59,6 +59,7 @@ cGlobalSettings::cGlobalSettings() {
     // Fresh configurations default to theme icons and fall back per asset.
     iconSource = EIconTheme;
     cardReadDma = 0;
+    fileSortMode = ESortName;
 }
 
 void cGlobalSettings::loadSettings() {
@@ -100,6 +101,9 @@ void cGlobalSettings::loadSettings() {
     iconSource = ini.GetInt("system", "icon", iconSource);
     if (iconSource < EIconBuiltIn || iconSource > EIconTheme) iconSource = EIconTheme;
     cardReadDma = ini.GetInt("system", "cardReadDma", cardReadDma);
+    fileSortMode = ini.GetInt("system", "fileSortMode", fileSortMode);
+    if (fileSortMode < ESortName || fileSortMode > ESortDateDesc)
+        fileSortMode = ESortName;
     
     temp = ini.GetString("system", "saveext", ".sav");
     saveExt = (temp == ".sav");
@@ -161,6 +165,7 @@ void cGlobalSettings::saveSettings() {
     ini.SetInt("system", "pico", pico);
     ini.SetInt("system", "icon", iconSource);
     ini.SetInt("system", "cardReadDma", cardReadDma);
+    ini.SetInt("system", "fileSortMode", fileSortMode);
     ini.SetInt("system", "phatCol", phatCol);
     ini.SetInt("system", "autorunWithLastRom", autorunWithLastRom);
     ini.SetString(

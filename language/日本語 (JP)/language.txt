@@ -273,6 +273,11 @@ title = ファイルシステムの設定
 show hidden files = 隠しファイルを表示する
 save extension = ファイル拡張子を保存する
 use saves folder = saves フォルダを使用する
+sort by = 並び順
+sort name = 名前
+sort game title = ゲームタイトル
+sort date asc = 日付（古い順）
+sort date desc = 日付（新しい順）
 
 [interface settings]
 title = インターフェイスの設定

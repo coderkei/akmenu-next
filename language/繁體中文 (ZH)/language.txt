@@ -291,6 +291,11 @@ title = 檔案系統設定
 show hidden files = 顯示隱藏檔案
 Save Extension = 存檔副檔名
 use saves folder = 使用 'saves' 資料夾
+sort by = 排序方式
+sort name = 名稱
+sort game title = 遊戲標題
+sort date asc = 日期遞增（較舊優先）
+sort date desc = 日期遞減（較新優先）
 
 [interface settings]
 title = 介面設定

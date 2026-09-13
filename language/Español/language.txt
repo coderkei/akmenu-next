@@ -280,6 +280,11 @@ title = Ajustes del sistema de archivos
 show hidden files = Mostrar archivos ocultos
 save extension = Extensión de saves
 use saves folder = Usar carpeta 'saves'
+sort by = Ordenar por
+sort name = Nombre
+sort game title = Título del juego
+sort date asc = Fecha ascendente
+sort date desc = Fecha descendente
 
 [interface settings]
 title = Ajustes de la interfaz

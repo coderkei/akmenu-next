@@ -12,6 +12,7 @@
 #include "mainlist.h"
 #include <fat.h>
 #include <sys/dir.h>
+#include <time.h>
 #include "../../share/memtool.h"
 #include "dbgtool.h"
 #include "favourites_banner_bin.h"
@@ -46,6 +47,30 @@ bool loadBannerFromBin(DSRomInfo& rominfo, const std::string& path) {
     size_t read = fread(&rominfo.banner(), 1, sizeof(tNDSBanner), f);
     fclose(f);
     return read == sizeof(tNDSBanner);
+}
+
+bool isNativeDSRom(const std::string& filename) {
+    size_t lastDotPos = filename.find_last_of('.');
+    if (filename.npos == lastDotPos) return false;
+
+    std::string extName = filename.substr(lastDotPos);
+    for (size_t ii = 0; ii < extName.size(); ++ii) extName[ii] = tolower(extName[ii]);
+    return ".nds" == extName || ".dsi" == extName || ".srl" == extName || ".ids" == extName;
+}
+
+std::string gameTitleFor(const std::string& filename) {
+    DSRomInfo rominfo;
+    bool hasBanner = false;
+    if (isNativeDSRom(filename)) {
+        rominfo.MayBeDSRom(filename);
+        hasBanner = rominfo.isDSRom();
+    } else {
+        const cPluginManager::PluginAssociation* plugin = pluginManager().findPlugin(filename);
+        if (plugin) hasBanner = loadBannerFromBin(rominfo, plugin->iconPath);
+    }
+
+    if (!hasBanner) return "";
+    return unicode_to_local_string(rominfo.banner().titles[gs().language], 128, NULL);
 }
 }  // namespace
 
@@ -220,6 +245,7 @@ bool cMainList::enterDir(const std::string& dirName) {
 
     bool favorites = ("favorites:/" == dirName);
     bool recent = ("recent:/" == dirName);
+    const int sortMode = recent ? cGlobalSettings::ESortName : gs().fileSortMode;
     DIR* dir = NULL;
     struct dirent* entry;
 
@@ -263,7 +289,9 @@ bool cMainList::enterDir(const std::string& dirName) {
         struct DirEntry {
             std::string showName;
             std::string realName;
+            std::string gameTitle;
             bool isDir;
+            time_t lastModified;
         };
         std::vector<DirEntry> entries;
         entries.reserve(256);
@@ -295,6 +323,10 @@ bool cMainList::enterDir(const std::string& dirName) {
                 de.showName = showname;
                 de.realName = realname;
                 de.isDir = isDir;
+                de.lastModified = (sortMode == cGlobalSettings::ESortDateAsc ||
+                                   sortMode == cGlobalSettings::ESortDateDesc)
+                                          ? st.st_mtime
+                                          : 0;
                 entries.push_back(de);
 
             }
@@ -330,20 +362,49 @@ bool cMainList::enterDir(const std::string& dirName) {
                 de.showName = isDir ? (lfn + "/") : lfn;
                 de.realName = isDir ? (dirName + lfn + "/") : (dirName + lfn);
                 de.isDir = isDir;
+                de.lastModified = 0;
+                if (sortMode == cGlobalSettings::ESortDateAsc ||
+                    sortMode == cGlobalSettings::ESortDateDesc) {
+                    struct stat st;
+                    if (0 == stat(de.realName.c_str(), &st)) de.lastModified = st.st_mtime;
+                }
                 entries.push_back(de);
             }
             closedir(dir);
         }
 
-        std::sort(entries.begin(), entries.end(),
-            [](const DirEntry& a, const DirEntry& b) {
-                if ("../" == a.showName) return true;
-                if ("../" == b.showName) return false;
-                if (a.isDir && b.isDir) return a.showName < b.showName;
-                if (a.isDir) return true;
-                if (b.isDir) return false;
-                return a.showName < b.showName;
+        if (!recent && sortMode == cGlobalSettings::ESortGameTitle) {
+            for (size_t ii = 0; ii < entries.size(); ++ii) {
+                if (!entries[ii].isDir) entries[ii].gameTitle = gameTitleFor(entries[ii].realName);
+            }
+        }
+
+        if (!recent) {
+            std::sort(entries.begin(), entries.end(),
+            [sortMode](const DirEntry& a, const DirEntry& b) {
+                if ("../" == a.showName || "../" == b.showName) {
+                    if ("../" == a.showName && "../" == b.showName) return false;
+                    return "../" == a.showName;
+                }
+                if (a.isDir != b.isDir) return a.isDir;
+
+                if (a.isDir || sortMode == cGlobalSettings::ESortName)
+                    return stringComp(a.showName, b.showName);
+
+                if (sortMode == cGlobalSettings::ESortDateAsc && a.lastModified != b.lastModified)
+                    return a.lastModified < b.lastModified;
+                if (sortMode == cGlobalSettings::ESortDateDesc && a.lastModified != b.lastModified)
+                    return a.lastModified > b.lastModified;
+
+                if (sortMode == cGlobalSettings::ESortGameTitle) {
+                    const std::string& titleA = a.gameTitle.empty() ? a.showName : a.gameTitle;
+                    const std::string& titleB = b.gameTitle.empty() ? b.showName : b.gameTitle;
+                    if (stringComp(titleA, titleB)) return true;
+                    if (stringComp(titleB, titleA)) return false;
+                }
+                return stringComp(a.showName, b.showName);
             });
+        }
 
         // Build rows and rominfos in one pre-allocated pass
         _romInfoList.reserve(entries.size());

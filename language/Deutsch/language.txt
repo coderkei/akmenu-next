@@ -275,6 +275,11 @@ title = File-System-Einstellungen
 show hidden files = Versteckte Dateien anzeigen
 save extension = Spielstand-Dateiendung
 use saves folder = Ordner 'saves' verwenden
+sort by = Sortieren nach
+sort name = Name
+sort game title = Spieltitel
+sort date asc = Datum aufsteigend
+sort date desc = Datum absteigend
 
 [interface settings]
 title = Interface-Einstellungen

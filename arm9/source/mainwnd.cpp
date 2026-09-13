@@ -650,6 +650,12 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("message box", "no"));
     _values.push_back(LANG("message box", "yes"));
     settingWnd.addSettingItem(LANG("file settings", "use saves folder"), _values, gs().saveDir);
+    _values.clear();
+    _values.push_back(LANG("file settings", "sort name"));
+    _values.push_back(LANG("file settings", "sort game title"));
+    _values.push_back(LANG("file settings", "sort date asc"));
+    _values.push_back(LANG("file settings", "sort date desc"));
+    settingWnd.addSettingItem(LANG("file settings", "sort by"), _values, gs().fileSortMode);
 
     // Game loader: keep all loader and compatibility settings together.
     settingWnd.addSettingTab(LANG("setting window", "game loader"));
@@ -792,6 +798,7 @@ void cMainWnd::setParam(void) {
     gs().showHiddenFiles = settingWnd.getItemSelection(TAB_FILES, 1);
     gs().saveExt = settingWnd.getItemSelection(TAB_FILES, 2);
     gs().saveDir = settingWnd.getItemSelection(TAB_FILES, 3);
+    gs().fileSortMode = settingWnd.getItemSelection(TAB_FILES, 4);
 
     // Loader settings
     gs().nightly = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsVersionItem);
@@ -837,6 +844,7 @@ void cMainWnd::showSettings(void) {
     if (gs().safeMode) return;
     u8 currentFileListType = gs().fileListType, currentShowHiddenFiles = gs().showHiddenFiles;
     int currentIconSource = gs().iconSource;
+    int currentFileSortMode = gs().fileSortMode;
     bool currentShowCovers = gs().showCovers;
     bool currentThemeMusic = gs().playThemeMusic;
     setParam();
@@ -849,7 +857,8 @@ void cMainWnd::showSettings(void) {
     }
     bool reloadedList = gs().fileListType != currentFileListType ||
                         gs().showHiddenFiles != currentShowHiddenFiles ||
-                        gs().iconSource != currentIconSource;
+                        gs().iconSource != currentIconSource ||
+                        gs().fileSortMode != currentFileSortMode;
     if (reloadedList) {
         _mainList->enterDir(_mainList->getCurrentDir());
     }
