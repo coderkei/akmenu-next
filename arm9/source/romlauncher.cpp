@@ -250,7 +250,7 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
 
         u8 loader = aRomInfo.saveInfo().getLoader();
         // loader = 0: pico, 1: nds-bootstrap, 2: global
-        if(((gs().pico && loader == 2) || loader == 0) && aFullPath[0] != 's'){ //roms can only be launched from the sd with nds-bootstrap
+        if(aRomInfo.isNdz() || (((gs().pico && loader == 2) || loader == 0) && aFullPath[0] != 's')){ //roms can only be launched from the sd with nds-bootstrap
             launcher = new DSpicoLauncher();
         }
         else {
