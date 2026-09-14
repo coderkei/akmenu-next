@@ -28,6 +28,9 @@ class cUserWindow : public akui::cWindow {
 
   protected:
     void init();
+    void drawBitmapDate();
+    void drawDateField(int& x, u32 value, u8 digits);
+    void drawDateNumber(int x, u8 number);
 
     cBMP15 _userPicture;
     int _px;
@@ -48,7 +51,9 @@ class cUserWindow : public akui::cWindow {
     u16 _dateColor;
     bool _showDate;
     bool _showDateTime;
+    bool _dateFont;
     std::string _dateFormat;
+    cBMP15 _dateNumbers;
     bool _showCustomText;
     bool _showCustomPic;
 };

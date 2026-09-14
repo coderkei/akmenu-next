@@ -138,8 +138,8 @@ void cHelpWnd::draw() {
     if (_lineCount > _visibleLineCount) {
         const s16 indicatorX = position().x + size().x - 16;
         const s16 indicatorY = textY + (textHeight - 12) / 2;
-        const u16 activeColor = uis().spinBoxFocusColor;
-        const u16 inactiveColor = uis().spinBoxFrameColor;
+        const u16 activeColor = uis().spinBoxTextColor;
+        const u16 inactiveColor = uis().spinBoxNormalColor;
         drawScrollChevron(indicatorX, indicatorY, true,
                           _firstVisibleLine > 0 ? activeColor : inactiveColor, _engine);
         drawScrollChevron(indicatorX, indicatorY + 8, false,

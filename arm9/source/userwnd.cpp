@@ -67,6 +67,7 @@ cUserWindow::cUserWindow() : cWindow(NULL, "UserWindow") {
     _showUserName = false;
     _showDate = false;
     _showDateTime = true;
+    _dateFont = false;
     _dateFormat = "DD/MM/YYYY";
     _size = cSize(1, 1);
     _position = cPoint(0, 0);
@@ -106,9 +107,62 @@ void cUserWindow::init() {
     _showDate = ini.GetInt("date", "show", 0);
     _showDateTime = ini.GetInt("date", "showTime", _showDateTime);
     _dateFormat = ini.GetString("date", "format", _dateFormat);
+    _dateFont = ini.GetInt("date", "font", 0) != 0;
+    if (_dateFont) _dateNumbers = createBMP15FromFile(SFN_DATE_NUMBERS);
     _showCustomText = ini.GetInt("custom text", "show", 0);
     _showCustomPic = ini.GetInt("custom picture", "show", 0);
     _userName = unicode_to_local_string((u16*)PersonalData->name, PersonalData->nameLen, NULL);
+}
+
+void cUserWindow::drawDateNumber(int x, u8 number) {
+    const u32 digitWidth = 9;
+    const u32 digitHeight = 14;
+    if (number > 9 || !_dateNumbers.valid() || _dateNumbers.width() != digitWidth ||
+        _dateNumbers.height() < digitHeight * 10)
+        return;
+
+    const u32 pitch = _dateNumbers.pitch() >> 1;
+    const u32* source = _dateNumbers.buffer() + number * pitch * digitHeight / 2;
+    gdi().maskBlt(source, x, _dateY, digitWidth, digitHeight, _engine);
+}
+
+void cUserWindow::drawDateField(int& x, u32 value, u8 digits) {
+    u32 factor = 1;
+    for (u8 i = 1; i < digits; ++i) factor *= 10;
+
+    for (u8 i = 0; i < digits; ++i) {
+        drawDateNumber(x, (value / factor) % 10);
+        x += 9;
+        factor /= 10;
+    }
+}
+
+void cUserWindow::drawBitmapDate() {
+    int x = _dateX;
+    const int fieldGap = 12;
+    if (_dateFormat == "MM/DD/YYYY") {
+        drawDateField(x, datetime().month(), 2);
+        x += fieldGap;
+        drawDateField(x, datetime().day(), 2);
+        x += fieldGap;
+        drawDateField(x, datetime().year(), 4);
+        return;
+    }
+    if (_dateFormat == "YYYY/MM/DD") {
+        drawDateField(x, datetime().year(), 4);
+        x += fieldGap;
+        drawDateField(x, datetime().month(), 2);
+        x += fieldGap;
+        drawDateField(x, datetime().day(), 2);
+        return;
+    }
+
+    // DD/MM/YYYY is the default and fallback for an unknown format.
+    drawDateField(x, datetime().day(), 2);
+    x += fieldGap;
+    drawDateField(x, datetime().month(), 2);
+    x += fieldGap;
+    drawDateField(x, datetime().year(), 4);
 }
 
 void cUserWindow::draw() {
@@ -128,11 +182,15 @@ void cUserWindow::draw() {
     }
 
     if (_showDate) {
-        char dateText[32];
-        formatDate(dateText, sizeof(dateText), _dateFormat);
-        if (_showDateTime) appendTime(dateText, sizeof(dateText));
+        if (_dateFont) {
+            drawBitmapDate();
+        } else {
+            char dateText[32];
+            formatDate(dateText, sizeof(dateText), _dateFormat);
+            if (_showDateTime) appendTime(dateText, sizeof(dateText));
 
-        gdi().setPenColor(_dateColor, _engine);
-        gdi().textOut(_dateX, _dateY, dateText, _engine);
+            gdi().setPenColor(_dateColor, _engine);
+            gdi().textOut(_dateX, _dateY, dateText, _engine);
+        }
     }
 }

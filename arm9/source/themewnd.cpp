@@ -222,8 +222,9 @@ void cThemeWnd::drawScrollIndicator() {
 
     const s16 indicatorX = position().x + size().x - 25;
     const s16 indicatorY = _list.position().y + _list.size().y - 18;
-    const u16 activeColor = uis().spinBoxFocusColor;
-    const u16 inactiveColor = uis().spinBoxFrameColor;
+    const u16 activeColor = uis().spinBoxTextColor;
+    const u16 inactiveColor = uis().spinBoxNormalColor;
+    const u16 frameColor = uis().spinBoxFrameColor;
     drawScrollChevron(indicatorX, indicatorY, true,
                       canScrollUp ? activeColor : inactiveColor, _engine);
     drawScrollChevron(indicatorX, indicatorY + 8, false,
@@ -232,7 +233,7 @@ void cThemeWnd::drawScrollIndicator() {
     const s16 trackX = indicatorX + 12;
     const u16 trackHeight = 12;
     const u16 thumbHeight = 4;
-    gdi().setPenColor(inactiveColor, _engine);
+    gdi().setPenColor(frameColor, _engine);
     gdi().frameRect(trackX, indicatorY, 5, trackHeight, _engine);
     const s16 thumbY = indicatorY +
                        (s16)((firstVisible * (trackHeight - thumbHeight)) / maxFirstVisible);

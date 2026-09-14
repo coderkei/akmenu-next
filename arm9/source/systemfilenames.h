@@ -49,6 +49,7 @@
 #define SFN_CLOCK_COLON SFN_UI_DIRECTORY + gs().uiName + "/calendar/clock_colon.bmp"
 #define SFN_DAY_NUMBERS SFN_UI_DIRECTORY + gs().uiName + "/calendar/day_numbers.bmp"
 #define SFN_YEAR_NUMBERS SFN_UI_DIRECTORY + gs().uiName + "/calendar/year_numbers.bmp"
+#define SFN_DATE_NUMBERS SFN_UI_DIRECTORY + gs().uiName + "/calendar/date_numbers.bmp"
 #define SFN_CARD_ICON_BLUE SFN_UI_DIRECTORY + gs().uiName + "/card_icon_blue.bmp"
 #define SFN_PROGRESS_WND_BG SFN_UI_DIRECTORY + gs().uiName + "/progress_wnd.bmp"
 #define SFN_PROGRESS_BAR_BG SFN_UI_DIRECTORY + gs().uiName + "/progress_bar.bmp"

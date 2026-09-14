@@ -133,8 +133,9 @@ void cSettingWnd::draw(void) {
         // the directions that can currently be used.
         const s16 indicatorX = position().x + size().x / 2 - 8;
         const s16 indicatorY = position().y + SCROLL_INDICATOR_Y;
-        const u16 activeColor = uis().spinBoxFocusColor;
-        const u16 inactiveColor = uis().spinBoxFrameColor;
+        const u16 activeColor = uis().spinBoxTextColor;
+        const u16 inactiveColor = uis().spinBoxNormalColor;
+        const u16 frameColor = uis().spinBoxFrameColor;
 
         drawScrollChevron(indicatorX, indicatorY, true,
                           canScrollUp ? activeColor : inactiveColor, _engine);
@@ -146,7 +147,7 @@ void cSettingWnd::draw(void) {
         const s16 trackX = indicatorX + 12;
         const u16 trackHeight = 12;
         const u16 thumbHeight = 4;
-        gdi().setPenColor(inactiveColor, _engine);
+        gdi().setPenColor(frameColor, _engine);
         gdi().frameRect(trackX, indicatorY, 5, trackHeight, _engine);
         const s16 thumbY = indicatorY +
                            (s16)((firstVisible * (trackHeight - thumbHeight)) /
