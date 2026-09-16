@@ -140,8 +140,10 @@ fade = 0
 
 `x` and `y` position the image; omitting either axis centres the cover on that axis. `darken` dims the complete top screen behind a loaded cover (`0` normal, `100` black), and `fade` makes the cover transparent (`0` opaque, `100` invisible). Both effects default to `0`. Themes without a `[cover]` section never display covers. The **Interface settings → Game covers** option overrides whether covers are displayed or not for themes that support them.
 
-## Theme music (`bgm.wav`)
+## Theme music (`bgm.bcstm` / `bgm.wav`)
 
-Place a `bgm.wav` in the theme directory, alongside its theme images (for example, `_nds/akmenunext/ui/blue skies/bgm.wav`). The music will play in the menu on a loop. **Interface settings → Theme music** can enable or disable playback.
+Place a `bgm.bcstm` or `bgm.wav` in the theme directory, alongside its theme images (for example, `_nds/akmenunext/ui/blue skies/bgm.bcstm`). The music will play in the menu on a loop. **Interface settings → Theme music** can enable or disable playback. If both files exist, `bgm.bcstm` is used; if it cannot be played, `bgm.wav` is used instead.
 
-The supported format is uncompressed RIFF/WAVE PCM, 16-bit Signed at 22,050 Hz mono. You can use tools such as Audacity & FFMPEG to export audio in this format.
+`bgm.bcstm` is a 3DS music file: DSP-ADPCM, mono or stereo, up to 48,000 Hz. Loop points saved in the file are used, so the music can repeat past an intro instead of restarting from the beginning. Wii U `.bfstm` files are not supported. You can create these files with tools such as VGAudio or LoopingAudioConverter. The DS mixes its sound output at 32.768 kHz, so 32,000 Hz keeps the file small without losing quality.
+
+`bgm.wav` must be uncompressed RIFF/WAVE PCM, 16-bit signed, mono or stereo (22,050 Hz mono keeps files small). It always repeats from the beginning. You can use tools such as Audacity & FFMPEG to export audio in this format.
