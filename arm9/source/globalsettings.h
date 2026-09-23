@@ -83,6 +83,7 @@ class cGlobalSettings {
     bool phatCol;
     // Homebrew loader: 0 = AKMenu-Next, 1 = nds-bootstrap-hb, 2 = Pico-Loader.
     int hbStrap;
+    bool overridePluginDefaults;
     bool pico;
     int iconSource;
     int cardReadDma;

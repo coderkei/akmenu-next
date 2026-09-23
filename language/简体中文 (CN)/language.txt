@@ -269,7 +269,7 @@ homebrew reset = 在自制程序中复位
 carddma = 卡带读取DMA
 hbstrap = 自制加载器
 default = AKMenu-Next
-ndshb = ndsbootstrap
+ndshb = nds-bootstrap-hb
 
 [switches]
 Enable = 启用
@@ -320,6 +320,7 @@ modegba = GBA模式
 modends = NDS模式
 modeask = ASK模式
 modetext = 在 slot-2接口启用NDS模式?
+override plugin defaults = 覆盖插件默认设置
 
 [sd save]
 title = 不兼容的tf卡

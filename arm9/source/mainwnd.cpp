@@ -65,12 +65,14 @@ bool launchPluginFile(const cPluginManager::PluginAssociation& plugin, const std
 
     const std::string argPath = plugin.useArgv ? selectedPath : "";
     const int homebrewLoader =
-            (plugin.useNdsBootstrapHb && canUsePluginHbBootstrap()) ? 1 : gs().hbStrap;
+            (!gs().overridePluginDefaults && plugin.useNdsBootstrapHb &&
+             canUsePluginHbBootstrap()) ? 1 : gs().hbStrap;
     bool launched = false;
     themeMusic().stop();
     switch (homebrewLoader) {
         case 1:
-            launched = NdsBootstrapLauncher().launchRom(plugin.launcherPath, argPath, 0, 0, 0, true);
+            launched = NdsBootstrapLauncher().launchPlugin(
+                    plugin.launcherPath, selectedPath, plugin.useArgv, plugin.useHbArgv);
             break;
         case 2:
             launched = DSpicoLauncher().launchPlugin(plugin.launcherPath, argPath);
@@ -755,6 +757,12 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("switches", "Enable"));
     size_t otherAutorunItem = otherItem++;
     settingWnd.addSettingItem(LANG("autorun", "text"), _values, gs().autorunWithLastRom);
+    _values.clear();
+    _values.push_back(LANG("switches", "Disable"));
+    _values.push_back(LANG("switches", "Enable"));
+    size_t otherOverridePluginDefaultsItem = otherItem++;
+    settingWnd.addSettingItem(LANG("gba settings", "override plugin defaults"), _values,
+                              gs().overridePluginDefaults);
 
     u32 ret = settingWnd.doModal();
     if (ID_CANCEL == ret) return;
@@ -821,6 +829,8 @@ void cMainWnd::setParam(void) {
     gs().cheats = settingWnd.getItemSelection(TAB_OTHER, otherCheatsItem);
     gs().saveSlotOverride = settingWnd.getItemSelection(TAB_OTHER, otherSaveSlotItem) - 1;
     gs().autorunWithLastRom = settingWnd.getItemSelection(TAB_OTHER, otherAutorunItem);
+    gs().overridePluginDefaults =
+            settingWnd.getItemSelection(TAB_OTHER, otherOverridePluginDefaultsItem);
 
 
     if (langIndex != langIndexAfter) {

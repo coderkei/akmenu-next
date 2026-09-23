@@ -263,7 +263,7 @@ homebrew reset = Софт-ресет в Homebrew
 carddma = Card read DMA
 hbstrap = Homebrew Loader
 default = AKMenu-Next
-ndshb = nds-bootstrap
+ndshb = nds-bootstrap-hb
 
 [switches]
 Enable = Вкл.
@@ -314,6 +314,7 @@ modegba = gba
 modends = nds
 modeask = Спросить
 modetext = Запускать Slot-2 в режиме NDS?
+override plugin defaults = Переопределять настройки плагинов
 
 [sd save]
 title = Предупреждение

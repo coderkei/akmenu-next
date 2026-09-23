@@ -103,11 +103,14 @@ cheat_failed:
     return false;
 }
 
-bool NdsBootstrapLauncher::prepareIni(bool hb) {
+bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg) {
     CIniFile ini;
     hotkeyCheck = false;
 
     ini.SetString("NDS-BOOTSTRAP", "NDS_PATH", mRomPath);
+    if (!homebrewArg.empty()) {
+        ini.SetString("NDS-BOOTSTRAP", "HOMEBREW_ARG", homebrewArg);
+    }
 
     if(hb == true)
     {
@@ -275,6 +278,19 @@ bool launchHbStrap(const std::string& argPath){
 
 bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, u32 flags,
                                      u32 cheatOffset, u32 cheatSize, bool hb) {
+    return launchRomInternal(romPath, savePath, flags, cheatOffset, cheatSize, hb, "");
+}
+
+bool NdsBootstrapLauncher::launchPlugin(std::string romPath, const std::string& argumentPath,
+                                        bool useArgv, bool useHbArgv) {
+    const std::string argument = useArgv ? argumentPath : "";
+    const std::string homebrewArg = useHbArgv ? argumentPath : "";
+    return launchRomInternal(romPath, argument, 0, 0, 0, true, homebrewArg);
+}
+
+bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string savePath, u32 flags,
+                                             u32 cheatOffset, u32 cheatSize, bool hb,
+                                             const std::string& homebrewArg) {
     std::string ndsBootstrapPath = fsManager().resolveSystemPath("/_nds/nds-bootstrap-release.nds");
     std::string ndsBootstrapPathNightly = fsManager().resolveSystemPath("/_nds/nds-bootstrap-nightly.nds");
     std::string ndsHbBootstrapPath = fsManager().resolveSystemPath("/_nds/nds-bootstrap-hb-release.nds");
@@ -301,7 +317,7 @@ bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, 
         remove("/_nds/nds-bootstrap/nds-bootstrap.ini");
         }
         // Setup nds-bootstrap INI parameters
-        if (!prepareIni(false)) return false;
+        if (!prepareIni(false, homebrewArg)) return false;
         progressWnd().setPercent(25);
         return launchHbStrap(savePath);
     }

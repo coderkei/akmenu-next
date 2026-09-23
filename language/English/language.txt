@@ -260,7 +260,7 @@ homebrew reset = Reset in Homebrew
 carddma = Card read DMA
 hbstrap = Homebrew Loader
 default = AKMenu-Next
-ndshb = nds-bootstrap
+ndshb = nds-bootstrap-hb
 
 [switches]
 Enable = on
@@ -315,6 +315,7 @@ modends = nds
 modeask = ask
 modetext = Launch slot-2 in NDS mode?
 save slot = Save Slot Override
+override plugin defaults = Override plugin defaults
 
 [sd save]
 title = Warning

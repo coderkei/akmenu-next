@@ -12,6 +12,7 @@ class cPluginManager {
         std::string iconPath;
         bool useArgv;
         bool useNdsBootstrapHb = false;
+        bool useHbArgv = false;
     };
 
     void loadPlugins();

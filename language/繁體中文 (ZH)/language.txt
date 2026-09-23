@@ -269,7 +269,7 @@ homebrew reset = 在HomeBrew中暖開機
 carddma = 遊戲卡讀取DMA
 hbstrap = 自製讀取器
 default = AKMenu-Next
-ndshb = ndsbootstrap
+ndshb = nds-bootstrap-hb
 
 [switches]
 Enable = 開啟
@@ -320,6 +320,7 @@ modegba = gba模式
 modends = nds模式
 modeask = ask模式
 modetext = 以NDS模式讀取slot-2嗎?
+override plugin defaults = 覆蓋外掛程式預設值
 
 [sd save]
 title = 提示

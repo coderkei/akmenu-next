@@ -45,10 +45,12 @@ Plugin format is `{extension}.ini` (e.g. `gba.ini`) and follows the below format
 path=path/to/nds/here.nds
 argv=1 //If the emulator supports argv
 bootstrap=0 //Use the Homebrew Loader setting
+hbargv=0 //Pass the plugin argument through nds-bootstrap-hb's HOMEBREW_ARG setting
 ```
 
 The specified extension will be recognised as a valid file and will launch via argv (if set to `1`) to the specified `.nds` file.
-Set `bootstrap=1` to use nds-bootstrap-hb for the plugin on DSi when no flashcart is detected. Otherwise, the selected Homebrew Loader setting is used.
+Set `bootstrap=1` to use nds-bootstrap-hb for the plugin on DSi when no flashcart is detected. Otherwise, the selected Homebrew Loader setting is used. Enable **Override plugin defaults** in Other Settings to always use the selected Homebrew Loader setting, even when a plugin sets `bootstrap=1`. Selecting nds-bootstrap-hb in Homebrew Loader always uses nds-bootstrap-hb.
+Set `hbargv=1` to write the selected file path to `HOMEBREW_ARG` in `nds-bootstrap.ini` when nds-bootstrap-hb is the selected Homebrew Loader. This works independently of `argv`, which controls whether the path is also passed as a normal launch argument.
 The icon for the file will be read from `_nds/akmenunext/plugins/icons/{extension}.bin` as a banner file. If it is not found it will fall back to the default icon.
 
 If the `.gba` extension is used for a plugin and an EZ Flash 3 in 1 is inserted, the 3 in 1 will take priority over the plugin for loading `.gba` files.
@@ -62,6 +64,6 @@ Please check [the license section](https://github.com/coderkei/akmenu-next/tree/
 
 ## Contributing
 
-Contributions are welcome, any issues regarding game compatibility should submitted on the [nds-bootstrap](https://github.com/DS-Homebrew/nds-bootstrap) repository or [Pico-Loader](https://github.com/LNH-team/pico-loader) repository.
+Contributions are welcome, however please ensure you have read [CONTRIBUTING.md](CONTRIBUTING.md) first before opening a pull request. Any issues regarding game compatibility should submitted on the [nds-bootstrap](https://github.com/DS-Homebrew/nds-bootstrap) repository or [Pico-Loader](https://github.com/LNH-team/pico-loader) repository.
 
 ![image](https://www.gnu.org/graphics/gplv3-127x51.png)

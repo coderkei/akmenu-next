@@ -266,7 +266,7 @@ rts = Real Time Save
 carddma = Card read DMA
 hbstrap = Lancer d'Homebrew
 default = AKMenu-Next
-ndshb = NDS-Bootstrap
+ndshb = nds-bootstrap-hb
 
 [switches]
 Enable = ON
@@ -317,6 +317,7 @@ modegba = GBA
 modends = NDS
 modeask = Demander
 modetext = Lancer le SLOT-2 en mode DS ?
+override plugin defaults = Remplacer les paramètres par défaut des plugins
 
 [sd save]
 title = Attention

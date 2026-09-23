@@ -54,6 +54,7 @@ cGlobalSettings::cGlobalSettings() {
     phatCol = false;
     languageOverride = 0;
     hbStrap = 0;
+    overridePluginDefaults = false;
     pico = 0;
     // Keep legacy icon=1 configurations on the current global icon behavior.
     // Fresh configurations default to theme icons and fall back per asset.
@@ -97,6 +98,8 @@ void cGlobalSettings::loadSettings() {
     languageOverride = ini.GetInt("system", "languageOverride", languageOverride);
     hbStrap = ini.GetInt("system", "hbstrap", hbStrap);
     if (hbStrap < 0 || hbStrap > 2) hbStrap = 0;
+    overridePluginDefaults =
+            ini.GetInt("system", "overridePluginDefaults", overridePluginDefaults);
     pico = ini.GetInt("system", "pico", pico);
     iconSource = ini.GetInt("system", "icon", iconSource);
     if (iconSource < EIconBuiltIn || iconSource > EIconTheme) iconSource = EIconTheme;
@@ -162,6 +165,7 @@ void cGlobalSettings::saveSettings() {
     ini.SetInt("system", "ignorecrc16", ignoreCrc16);
     ini.SetInt("system", "languageOverride", languageOverride);
     ini.SetInt("system", "hbstrap", hbStrap);
+    ini.SetInt("system", "overridePluginDefaults", overridePluginDefaults);
     ini.SetInt("system", "pico", pico);
     ini.SetInt("system", "icon", iconSource);
     ini.SetInt("system", "cardReadDma", cardReadDma);

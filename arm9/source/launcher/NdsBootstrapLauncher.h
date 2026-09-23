@@ -15,10 +15,15 @@ class NdsBootstrapLauncher : public ILauncher {
   public:
     bool launchRom(std::string romPath, std::string savePath, u32 flags, u32 cheatOffset,
                    u32 cheatSize, bool hb) override;
+    bool launchPlugin(std::string romPath, const std::string& argumentPath, bool useArgv,
+                      bool useHbArgv);
 
   private:
     bool prepareCheats(void);
-    bool prepareIni(bool hb);
+    bool prepareIni(bool hb, const std::string& homebrewArg = "");
+    bool launchRomInternal(std::string romPath, std::string savePath, u32 flags,
+                           u32 cheatOffset, u32 cheatSize, bool hb,
+                           const std::string& homebrewArg);
     bool is3DS(void);
     bool hotkeyCheck;
     std::string mRomPath;
