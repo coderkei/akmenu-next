@@ -34,7 +34,7 @@ For example:
 
 > This contribution was developed with assistance from Generative AI. It was used to implement this new functionality and assist with debugging it. The resulting changes were reviewed and tested myself before submission.
 
-Using AI is **not grounds for rejecting a contribution by itself**. AI-generated and AI-assisted contributions are welcome provided they meet the same quality, compatibility, and review standards as other contributions. Contributions will be reviewed by the us or other maintainers.
+Using AI is **not grounds for rejecting a contribution by itself**. AI-generated and AI-assisted contributions are welcome provided they meet the same quality, compatibility, and review standards as other contributions. Contributions will be reviewed by us or other maintainers.
 
 The disclosure requirement exists for transparency and to help us and other maintainers understand how submitted code was produced and reviewed.
 
