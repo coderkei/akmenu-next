@@ -26,8 +26,6 @@ Existing code may also contain platform-specific or legacy behaviour that looks 
 
 ## AI-assisted contributions
 
-**AI-assisted contributions are allowed.**
-
 Contributions submitted where changes to the code have been made using Generative AI or LLMs are generally accepted, however, **the use of AI to generate or substantially modify code submitted to this project must be disclosed.**
 
 If AI was used, please state this clearly in the pull request description. A short explanation of what the AI was used for is appreciated, particularly for substantial changes.
