@@ -32,11 +32,11 @@ If AI was used, please state this clearly in the pull request description. A sho
 
 For example:
 
-> This contribution was developed with assistance from OpenAI Codex. Codex was used to implement the new functionality and assist with debugging. The resulting changes were reviewed and tested before submission.
+> This contribution was developed with assistance from Generative AI. It was used to implement this new functionality and assist with debugging it. The resulting changes were reviewed and tested myself before submission.
 
-Using AI is **not grounds for rejecting a contribution by itself**. AI-generated and AI-assisted contributions are welcome provided they meet the same quality, compatibility, and review standards as other contributions.
+Using AI is **not grounds for rejecting a contribution by itself**. AI-generated and AI-assisted contributions are welcome provided they meet the same quality, compatibility, and review standards as other contributions. Contributions will be reviewed by the us or other maintainers.
 
-The disclosure requirement exists for transparency and to helpus and other maintainers understand how submitted code was produced and reviewed.
+The disclosure requirement exists for transparency and to help us and other maintainers understand how submitted code was produced and reviewed.
 
 **Pull requests containing AI-generated or substantially AI-modified code that do not disclose the use of AI may be rejected.**
 
