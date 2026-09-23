@@ -28,9 +28,7 @@ Existing code may also contain platform-specific or legacy behaviour that looks 
 
 **AI-assisted contributions are allowed.**
 
-Contributors may use tools such as ChatGPT, OpenAI Codex, Claude Code, GitHub Copilot, or other generative AI and coding assistants when developing changes for AKMenu-Next.
-
-However, **the use of AI to generate or substantially modify code submitted to this project must be disclosed.**
+Contributions submitted where changes to the code have been made using Generative AI or LLMs are generally accepted, however, **the use of AI to generate or substantially modify code submitted to this project must be disclosed.**
 
 If AI was used, please state this clearly in the pull request description. A short explanation of what the AI was used for is appreciated, particularly for substantial changes.
 
@@ -45,8 +43,6 @@ The disclosure requirement exists for transparency and to helpus and other maint
 **Pull requests containing AI-generated or substantially AI-modified code that do not disclose the use of AI may be rejected.**
 
 Contributors remain fully responsible for the code they submit regardless of whether it was written manually or with AI assistance. Please review AI-generated code carefully rather than assuming that generated code is correct!
-
-This only applies to actual changes to the code or other content in the repository. AI usage outside of that is up to you.
 
 Please note that pull requests containing audio or visual assets generated or modified using generative AI, such as AI generated themes, icons, artwork, or BGM, will be rejected. This restriction applies specifically to AI generated or AI modified audio/visual assets.
 
