@@ -1,4 +1,4 @@
-bgm.wav
+bgm.bcstm
 
 "Starfield Romance" by Yoiyami
 Source: https://opengameart.org/content/starfield-romance-%E2%80%93-cc0-ambient-emotional-space-theme-yoiyami-blue-series-%E2%80%93-no3
