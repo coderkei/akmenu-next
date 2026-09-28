@@ -31,7 +31,7 @@ Build the repository with `make`, then run `package.cmd/sh` depending on your OS
 * The system directory is `_nds/akmenunext` where the akmenu system files should be placed, along with a copy the nds-bootstrap files in the `_nds` folder.
 * The binary of akmenu-next additionally needs to be in the `_nds/akmenunext` folder as `launcher.nds` for theme & language reboots, this is automatically added if using the package script.
 * Cheats should be placed as `usrcheat.dat` into the `_nds/akmenunext/cheats` folder.
-* Theme installation and customization is documented in [Themes.md](Themes.md).
+* Theme installation and customization is documented in [Themes & Covers.md](Themes%20%26%20Covers.md).
 * For flashcart related builds, files for the corresponding flashcart for Pico-Loader should go into the `_pico` folder.
 * Plugins go into `_nds/akmenunext/plugins`.
 
