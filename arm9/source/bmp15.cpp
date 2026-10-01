@@ -118,7 +118,7 @@ cBMP15 createBMP15FromFile(const std::string& filename) {
         return cBMP15();
     }
 
-    if (width == 0 || height == 0 || width > 1024 || height > 1024 || bmpDataOffset < 54 ||
+    if (width == 0 || height == 0 || width > 1024 || height > 0x7fffffff || bmpDataOffset < 54 ||
         bmpDataOffset > (u32)fileSize) {
         fclose(f);
         return cBMP15();
@@ -126,7 +126,9 @@ cBMP15 createBMP15FromFile(const std::string& filename) {
 
     u32 pitch = (width + (width & 1)) << 1;
     unsigned long long bitmapSize = (unsigned long long)pitch * height;
-    if (bitmapSize > (unsigned long long)fileSize - bmpDataOffset) {
+    // Oops allow tall bitmaps being used as its a clever way to use the clock system for animated graphics
+    const unsigned long long maxBitmapSize = 1024ULL * 1024 * 2;
+    if (bitmapSize > maxBitmapSize || bitmapSize > (unsigned long long)fileSize - bmpDataOffset) {
         fclose(f);
         return cBMP15();
     }

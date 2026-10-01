@@ -28,8 +28,7 @@ struct sThemeAsset {
     u16 maxHeight;
 };
 
-// These assets are used by the menu itself or by one of its built-in windows. Optional
-// theme extensions, such as custom pictures and GBA artwork, are intentionally not included.
+// These assets are used by the menu itself or by one of its built-in windows.
 const sThemeAsset kRequiredThemeAssets[] = {
         {"upper_screen.bmp", true, false, SCREEN_WIDTH, SCREEN_HEIGHT},
         {"lower_screen.bmp", true, false, SCREEN_WIDTH, SCREEN_HEIGHT},
@@ -44,10 +43,10 @@ const sThemeAsset kRequiredThemeAssets[] = {
         {"brightness.bmp", false, false, SCREEN_WIDTH, SCREEN_HEIGHT},
         {"folder_up.bmp", false, false, SCREEN_WIDTH, SCREEN_HEIGHT},
         {"menu_bg.bmp", false, false, SCREEN_WIDTH, SCREEN_HEIGHT},
-        {"calendar/clock_numbers.bmp", false, false, SCREEN_WIDTH, 1024},
+        {"calendar/clock_numbers.bmp", false, false, SCREEN_WIDTH, SCREEN_HEIGHT * 10},
         {"calendar/clock_colon.bmp", false, false, SCREEN_WIDTH, SCREEN_HEIGHT},
-        {"calendar/day_numbers.bmp", false, false, SCREEN_WIDTH, SCREEN_HEIGHT},
-        {"calendar/year_numbers.bmp", false, false, SCREEN_WIDTH, 1024},
+        {"calendar/day_numbers.bmp", false, false, SCREEN_WIDTH, SCREEN_HEIGHT * 10},
+        {"calendar/year_numbers.bmp", false, false, SCREEN_WIDTH, SCREEN_HEIGHT * 10},
         {"card_icon_blue.bmp", false, true, 32, 32},
         {"progress_wnd.bmp", false, false, SCREEN_WIDTH, SCREEN_HEIGHT},
         {"progress_bar.bmp", false, false, SCREEN_WIDTH, SCREEN_HEIGHT},
