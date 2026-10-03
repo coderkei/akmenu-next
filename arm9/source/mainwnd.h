@@ -31,6 +31,8 @@ class cMainWnd : public akui::cForm {
 
     void init();
 
+    void showLanguageSelectorOnFirstRun();
+
     void draw();
 
     cWindow* windowBelow(const akui::cPoint& p);
@@ -71,6 +73,8 @@ class cMainWnd : public akui::cForm {
     void showThemes(void);
 
     void showLanguageSelector(void);
+
+    void chooseLanguage(bool skipRestartConfirmation);
 
     void onFolderChanged();
 

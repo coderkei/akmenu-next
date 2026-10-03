@@ -899,6 +899,14 @@ void cMainWnd::showThemes(void) {
 }
 
 void cMainWnd::showLanguageSelector(void) {
+    chooseLanguage(false);
+}
+
+void cMainWnd::showLanguageSelectorOnFirstRun() {
+    chooseLanguage(true);
+}
+
+void cMainWnd::chooseLanguage(bool skipRestartConfirmation) {
     const u32 w = 224;
     const u32 h = 179;
     cLanguageWnd languageWnd((256 - w) / 2, (192 - h) / 2, w, h, NULL,
@@ -906,22 +914,24 @@ void cMainWnd::showLanguageSelector(void) {
     if (languageWnd.doModal() != ID_OK) return;
 
     const std::string selectedLanguage = languageWnd.selectedLanguage();
-    if (selectedLanguage.empty() ||
-        strcasecmp(selectedLanguage.c_str(), gs().langDirectory.c_str()) == 0)
-        return;
+    if (selectedLanguage.empty()) return;
 
-    const u32 result = messageBox(this, LANG("language changed", "title"),
-                                  LANG("language changed", "text"), MB_YES | MB_NO);
-    if (result == ID_YES) {
-        gs().langDirectory = selectedLanguage;
-        gs().saveSettings();
-        if (_languageSettingButton) _languageSettingButton->setText(gs().langDirectory);
+    if (!skipRestartConfirmation) {
+        if (strcasecmp(selectedLanguage.c_str(), gs().langDirectory.c_str()) == 0) return;
 
-        const std::string launcherPath =
-                fsManager().resolveSystemPath("/_nds/akmenunext/launcher.nds");
-        themeMusic().stop();
-        if (!HomebrewLauncher().launchRom(launcherPath, "", 0, 0, 0, 0)) themeMusic().start();
+        const u32 result = messageBox(this, LANG("language changed", "title"),
+                                      LANG("language changed", "text"), MB_YES | MB_NO);
+        if (result != ID_YES) return;
     }
+
+    gs().langDirectory = selectedLanguage;
+    gs().saveSettings();
+    if (_languageSettingButton) _languageSettingButton->setText(gs().langDirectory);
+
+    const std::string launcherPath =
+            fsManager().resolveSystemPath("/_nds/akmenunext/launcher.nds");
+    themeMusic().stop();
+    if (!HomebrewLauncher().launchRom(launcherPath, "", 0, 0, 0, 0)) themeMusic().start();
 }
 
 void cMainWnd::showFileInfo() {

@@ -69,16 +69,17 @@ void showNoValidThemesMessage() {
     while (true) swiWaitForVBlank();
 }
 
-void checkInitIni(const std::string& targetPath, const std::string& initPath) {
+bool checkInitIni(const std::string& targetPath, const std::string& initPath) {
     struct stat stInit;
     if (stat(initPath.c_str(), &stInit) == 0) {
         struct stat stTarget;
         if (stat(targetPath.c_str(), &stTarget) == 0) {
             remove(initPath.c_str());
         } else {
-            rename(initPath.c_str(), targetPath.c_str());
+            return rename(initPath.c_str(), targetPath.c_str()) == 0;
         }
     }
+    return false;
 }
 }  // namespace
 #include "gdi.h"
@@ -154,12 +155,15 @@ int main(int argc, char* argv[]) {
     
     // Check and migrate -init.ini files
     std::string sysDir = SFN_SYSTEM_DIR;
-    checkInitIni(sysDir + "globalsettings.ini", sysDir + "globalsettings-init.ini");
-    checkInitIni(sysDir + "globalsettings.ini", sysDir + "globalsettingspico-init.ini");
-    checkInitIni(sysDir + "favorites.ini", sysDir + "favorites-init.ini");
-    checkInitIni(sysDir + "backlight.ini", sysDir + "backlight-init.ini");
-    checkInitIni(sysDir + "ndsbs.ini", sysDir + "ndsbs-init.ini");
-    checkInitIni(sysDir + "lastsave.ini", sysDir + "lastsave-init.ini");
+    bool firstInstallation = false;
+    firstInstallation |=
+            checkInitIni(sysDir + "globalsettings.ini", sysDir + "globalsettings-init.ini");
+    firstInstallation |=
+            checkInitIni(sysDir + "globalsettings.ini", sysDir + "globalsettingspico-init.ini");
+    firstInstallation |= checkInitIni(sysDir + "favorites.ini", sysDir + "favorites-init.ini");
+    firstInstallation |= checkInitIni(sysDir + "backlight.ini", sysDir + "backlight-init.ini");
+    firstInstallation |= checkInitIni(sysDir + "ndsbs.ini", sysDir + "ndsbs-init.ini");
+    firstInstallation |= checkInitIni(sysDir + "lastsave.ini", sysDir + "lastsave-init.ini");
 
     // setting scripts
     gs().loadSettings();
@@ -291,6 +295,8 @@ int main(int argc, char* argv[]) {
     while (*(u32*)(0xCFFFD0C) != 0) {
         swiDelay(100);
     }
+
+    if (firstInstallation) wnd->showLanguageSelectorOnFirstRun();
 
     if (gs().autorunWithLastRom && "..." != lastFile) {
         INPUT& inputs = updateInput();

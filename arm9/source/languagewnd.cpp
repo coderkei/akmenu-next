@@ -181,6 +181,7 @@ void cLanguageWnd::onSelect(u32 index) {
 }
 
 void cLanguageWnd::onOK() {
+    onSelect();
     cForm::onOK();
 }
 
