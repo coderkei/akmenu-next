@@ -10,6 +10,7 @@
 #pragma once
 
 #include <string>
+#include "button.h"
 #include "form.h"
 #include "formdesc.h"
 #include "message.h"
@@ -28,6 +29,7 @@ class cSettingWnd : public akui::cForm {
     void addSettingTab(const std::string& text);
     void addSettingItem(const std::string& text, const std::vector<std::string>& itemTexts,
                         size_t defaultValue);
+    akui::cButton* addSettingButton(const std::string& text, const std::string& buttonText);
     ssize_t getItemSelection(size_t tabId, size_t itemId);
     void setConfirmMessage(const std::string& text);
     template <class TargetType>
@@ -49,7 +51,9 @@ class cSettingWnd : public akui::cForm {
     struct sSetingItem {
         akui::cStaticText* _label;
         akui::cSpinBox* _item;
-        sSetingItem(akui::cStaticText* label, akui::cSpinBox* item) : _label(label), _item(item){};
+        akui::cButton* _button;
+        sSetingItem(akui::cStaticText* label, akui::cSpinBox* item, akui::cButton* button)
+            : _label(label), _item(item), _button(button){};
     };
     struct sSetingTab {
         std::vector<sSetingItem>* _tab;
@@ -73,6 +77,7 @@ class cSettingWnd : public akui::cForm {
     void onItemChanged(akui::cSpinBox* item);
     ssize_t focusedItemId(void);
     akui::cSpinBox* focusedItem(void);
+    akui::cButton* focusedButton(void);
 
     void HideTab(size_t index);
     void ShowTab(size_t index);

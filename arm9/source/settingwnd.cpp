@@ -12,11 +12,43 @@
 #include "language.h"
 #include "msgbox.h"
 #include "systemfilenames.h"
+#include "gdi.h"
+#include "fontfactory.h"
 #include "uisettings.h"
 #include "windowmanager.h"
 #define TOP_MARGIN 4
 
 using namespace akui;
+
+namespace {
+class cSettingButton : public cButton {
+  public:
+    cSettingButton(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::string& text)
+        : cButton(x, y, w, h, parent, text) {}
+
+    void draw() {
+        const u16 fillColor = isFocused() ? uis().spinBoxFocusColor : uis().spinBoxNormalColor;
+        const u16 textColor = isFocused() ? uis().spinBoxTextHighLightColor
+                                          : uis().spinBoxTextColor;
+        const s16 x = position().x;
+        const s16 y = position().y;
+        const u16 width = size().x;
+        const u16 height = size().y;
+        gdi().setPenColor(fillColor, selectedEngine());
+        gdi().fillRect(fillColor, fillColor, x, y, width, height, selectedEngine());
+        gdi().setPenColor(uis().spinBoxFrameColor, selectedEngine());
+        gdi().frameRect(x, y, width, height, uis().thickness, selectedEngine());
+        gdi().setPenColor(textColor, selectedEngine());
+        const u16 textAreaWidth = width - 6;
+        u32 textWidth = font().getStringScreenWidth(text().c_str(), text().size());
+        if (textWidth > textAreaWidth) textWidth = textAreaWidth;
+        const s16 textX = x + 3 + (textAreaWidth - textWidth) / 2;
+        const s16 textY = y + (height - gs().fontHeight) / 2;
+        gdi().textOutRect(textX, textY, textAreaWidth, gs().fontHeight, text().c_str(),
+                          selectedEngine());
+    }
+};
+}  // namespace
 
 static void drawScrollChevron(s16 x, s16 y, bool up, u16 color, GRAPHICS_ENGINE engine) {
     gdi().setPenColor(color, engine);
@@ -109,6 +141,7 @@ cSettingWnd::~cSettingWnd() {
         for (size_t jj = 0; jj < items(ii).size(); jj++) {
             delete items(ii)[jj]._label;
             delete items(ii)[jj]._item;
+            delete items(ii)[jj]._button;
         }
         delete _tabs[ii]._tab;
     }
@@ -203,7 +236,10 @@ bool cSettingWnd::processKeyMessage(const cKeyMessage& msg) {
                 ret = true;
                 break;
             case cKeyMessage::UI_KEY_A:
-                onOK();
+                if (focusedButton())
+                    focusedButton()->clicked();
+                else
+                    onOK();
                 ret = true;
                 break;
             case cKeyMessage::UI_KEY_B:
@@ -272,10 +308,35 @@ void cSettingWnd::addSettingItem(const std::string& text, const std::vector<std:
     label->hide();
     addChildWindow(label);
 
-    items(lastTab).push_back(sSetingItem(label, item));
+    items(lastTab).push_back(sSetingItem(label, item, NULL));
     updateTabLayout(lastTab, lastTab == _currentTab);
     repositionButtons();
     arrangeChildren();
+}
+
+akui::cButton* cSettingWnd::addSettingButton(const std::string& text,
+                                              const std::string& buttonText) {
+    if (_maxLabelLength < text.length()) _maxLabelLength = text.length();
+    const size_t lastTab = _tabs.size() - 1;
+
+    cSettingButton* button = new cSettingButton(0, 0, _spinBoxWidth, 18, this, buttonText);
+    button->setStyle(cButton::press);
+    button->setTextColor(uis().spinBoxTextColor);
+    button->hide();
+    addChildWindow(button);
+
+    cStaticText* label = new cStaticText(0, 0, _maxLabelLength * 6, gs().fontHeight, this, text);
+    label->setRelativePosition(cPoint(8, 0));
+    label->setTextColor(uis().formTextColor);
+    label->setSize(cSize(_size.x / 2 + 8, 12));
+    label->hide();
+    addChildWindow(label);
+
+    items(lastTab).push_back(sSetingItem(label, NULL, button));
+    updateTabLayout(lastTab, lastTab == _currentTab);
+    repositionButtons();
+    arrangeChildren();
+    return button;
 }
 
 void cSettingWnd::onShow(void) {
@@ -321,6 +382,7 @@ void cSettingWnd::onUIKeyR(void) {
 ssize_t cSettingWnd::getItemSelection(size_t tabId, size_t itemId) {
     if (tabId >= _tabs.size()) return -1;
     if (itemId >= items(tabId).size()) return -1;
+    if (!items(tabId)[itemId]._item) return -1;
     return items(tabId)[itemId]._item->selectedItemId();
 }
 
@@ -331,7 +393,9 @@ ssize_t cSettingWnd::getItemSelection(size_t tabId, size_t itemId) {
 ssize_t cSettingWnd::focusedItemId(void) {
     ssize_t focusItem = -1;
     for (size_t ii = 0; ii < items(_currentTab).size(); ++ii) {
-        if (items(_currentTab)[ii]._item->isActive()) {
+        sSetingItem& item = items(_currentTab)[ii];
+        if ((item._item && item._item->isActive()) ||
+            (item._button && item._button->isFocused())) {
             focusItem = ii;
             break;
         }
@@ -345,11 +409,20 @@ cSpinBox* cSettingWnd::focusedItem(void) {
     return NULL;
 }
 
+akui::cButton* cSettingWnd::focusedButton(void) {
+    for (size_t ii = 0; ii < items(_currentTab).size(); ++ii) {
+        akui::cButton* button = items(_currentTab)[ii]._button;
+        if (button && button->isFocused()) return button;
+    }
+    return NULL;
+}
+
 void cSettingWnd::HideTab(size_t index) {
     if (index >= _tabs.size()) return;
     for (size_t ii = 0; ii < items(index).size(); ++ii) {
         items(index)[ii]._label->hide();
-        items(index)[ii]._item->hide();
+        if (items(index)[ii]._item) items(index)[ii]._item->hide();
+        if (items(index)[ii]._button) items(index)[ii]._button->hide();
     }
 }
 
@@ -358,7 +431,9 @@ void cSettingWnd::ShowTab(size_t index) {
     updateTabLayout(index, true);
     arrangeChildren();
     if (items(index).size()) {
-        windowManager().setFocusedWindow(items(index)[_tabs[index]._firstVisibleItem]._item);
+        sSetingItem& firstItem = items(index)[_tabs[index]._firstVisibleItem];
+        windowManager().setFocusedWindow(firstItem._item ? (cWindow*)firstItem._item
+                                                         : (cWindow*)firstItem._button);
     }
 }
 
@@ -390,15 +465,17 @@ void cSettingWnd::updateTabLayout(size_t index, bool showItems) {
         bool visible = showItems && ii >= first && ii < first + MAX_VISIBLE_ITEMS;
         if (visible) {
             s32 itemY = (ii - first) * ITEM_PITCH + 18 + TOP_MARGIN;
-            s32 labelY = itemY + (tabItems[ii]._item->size().y - tabItems[ii]._label->size().y) / 2;
-            tabItems[ii]._item->setRelativePosition(
-                    cPoint(_size.x - _spinBoxWidth - 4, itemY));
+            cWindow* control = tabItems[ii]._item ? (cWindow*)tabItems[ii]._item
+                                                   : (cWindow*)tabItems[ii]._button;
+            s32 labelY = itemY + (control->size().y - tabItems[ii]._label->size().y) / 2;
+            control->setRelativePosition(cPoint(_size.x - _spinBoxWidth - 4, itemY));
             tabItems[ii]._label->setRelativePosition(cPoint(8, labelY));
             tabItems[ii]._label->show();
-            tabItems[ii]._item->show();
+            control->show();
         } else {
             tabItems[ii]._label->hide();
-            tabItems[ii]._item->hide();
+            if (tabItems[ii]._item) tabItems[ii]._item->hide();
+            if (tabItems[ii]._button) tabItems[ii]._button->hide();
         }
     }
 }
@@ -415,7 +492,8 @@ void cSettingWnd::focusItem(size_t index) {
 
     updateTabLayout(_currentTab, true);
     arrangeChildren();
-    windowManager().setFocusedWindow(items(_currentTab)[index]._item);
+    sSetingItem& item = items(_currentTab)[index];
+    windowManager().setFocusedWindow(item._item ? (cWindow*)item._item : (cWindow*)item._button);
 }
 
 void cSettingWnd::repositionButtons(void) {

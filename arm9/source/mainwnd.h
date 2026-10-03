@@ -70,6 +70,8 @@ class cMainWnd : public akui::cForm {
 
     void showThemes(void);
 
+    void showLanguageSelector(void);
+
     void onFolderChanged();
 
     void onAnimation(bool& anAllow);
@@ -85,6 +87,8 @@ class cMainWnd : public akui::cForm {
     akui::cButton* _brightnessButton;
 
     akui::cButton* _folderUpButton;
+
+    akui::cButton* _languageSettingButton;
 
     akui::cStaticText* _folderText;
 

@@ -36,6 +36,7 @@
 #include "thememusic.h"
 #include "fsmngr.h"
 #include "themewnd.h"
+#include "languagewnd.h"
 
 #include <dirent.h>
 #include <fat.h>
@@ -112,6 +113,7 @@ cMainWnd::cMainWnd(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::strin
       _startButton(NULL),
       _brightnessButton(NULL),
       _folderUpButton(NULL),
+      _languageSettingButton(NULL),
       _folderText(NULL),
       _processL(false) {}
 
@@ -556,29 +558,10 @@ void cMainWnd::setParam(void) {
 
     // System: settings that affect the menu itself or require a restart.
     std::vector<std::string> _values;
-    u32 langIndex = 0;
-
-    // language
-    _values.clear();
-    std::vector<std::string> langNames;
-    DIR* dir = opendir((SFN_LANGUAGE_DIRECTORY).c_str());
-    struct dirent* entry;
-    if (NULL != dir) {
-        while ((entry = readdir(dir)) != NULL) {
-            std::string lfn(entry->d_name);
-            if (lfn != ".." && lfn != ".") _values.push_back(lfn);
-        }
-        closedir(dir);
-        dir = NULL;
-    } else {
-        _values.push_back(gs().langDirectory);
-    }
-    std::sort(_values.begin(), _values.end());
-    for (size_t ii = 0; ii < _values.size(); ++ii) {
-        if (0 == strcasecmp(_values[ii].c_str(), gs().langDirectory.c_str())) langIndex = ii;
-    }
-    langNames = _values;
-    settingWnd.addSettingItem(LANG("language", "text"), _values, langIndex);
+    // Language opens its own list selector; show the currently configured language here.
+    _languageSettingButton =
+            settingWnd.addSettingButton(LANG("language", "text"), gs().langDirectory);
+    _languageSettingButton->clicked.connect(this, &cMainWnd::showLanguageSelector);
 
     // reset hotkey
     _values.clear();
@@ -776,10 +759,12 @@ void cMainWnd::setParam(void) {
                               gs().overridePluginDefaults);
 
     u32 ret = settingWnd.doModal();
-    if (ID_CANCEL == ret) return;
+    if (ID_CANCEL == ret) {
+        _languageSettingButton = NULL;
+        return;
+    }
 
     // System
-    u32 langIndexAfter = settingWnd.getItemSelection(TAB_SYSTEM, 0);
     gs().resetHotKey = settingWnd.getItemSelection(TAB_SYSTEM, 1);
     gs().slot2mode = settingWnd.getItemSelection(TAB_SYSTEM, systemSlot2Item);
 
@@ -843,22 +828,9 @@ void cMainWnd::setParam(void) {
     gs().overridePluginDefaults =
             settingWnd.getItemSelection(TAB_OTHER, otherOverridePluginDefaultsItem);
 
-
-    if (langIndex != langIndexAfter) {
-        u32 ret = messageBox(this, LANG("language changed", "title"),
-                             LANG("language changed", "text"), MB_YES | MB_NO);
-        if (ID_YES == ret) {
-            gs().langDirectory = langNames[langIndexAfter];
-            gs().saveSettings();
-
-            std::string launcherPath = fsManager().resolveSystemPath("/_nds/akmenunext/launcher.nds");
-            themeMusic().stop();
-            if (!HomebrewLauncher().launchRom(launcherPath, "", 0, 0, 0, 0)) themeMusic().start();
-        }
-    }
-
     gs().saveSettings();
     _mainList->setViewMode((cMainList::VIEW_MODE)gs().viewMode);
+    _languageSettingButton = NULL;
 }
 
 void cMainWnd::showSettings(void) {
@@ -918,6 +890,32 @@ void cMainWnd::showThemes(void) {
     if (result == ID_YES) {
         gs().uiName = selectedTheme;
         gs().saveSettings();
+
+        const std::string launcherPath =
+                fsManager().resolveSystemPath("/_nds/akmenunext/launcher.nds");
+        themeMusic().stop();
+        if (!HomebrewLauncher().launchRom(launcherPath, "", 0, 0, 0, 0)) themeMusic().start();
+    }
+}
+
+void cMainWnd::showLanguageSelector(void) {
+    const u32 w = 224;
+    const u32 h = 179;
+    cLanguageWnd languageWnd((256 - w) / 2, (192 - h) / 2, w, h, NULL,
+                             LANG("language", "text"), installedLanguages(), gs().langDirectory);
+    if (languageWnd.doModal() != ID_OK) return;
+
+    const std::string selectedLanguage = languageWnd.selectedLanguage();
+    if (selectedLanguage.empty() ||
+        strcasecmp(selectedLanguage.c_str(), gs().langDirectory.c_str()) == 0)
+        return;
+
+    const u32 result = messageBox(this, LANG("language changed", "title"),
+                                  LANG("language changed", "text"), MB_YES | MB_NO);
+    if (result == ID_YES) {
+        gs().langDirectory = selectedLanguage;
+        gs().saveSettings();
+        if (_languageSettingButton) _languageSettingButton->setText(gs().langDirectory);
 
         const std::string launcherPath =
                 fsManager().resolveSystemPath("/_nds/akmenunext/launcher.nds");
