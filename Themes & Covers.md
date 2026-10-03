@@ -126,7 +126,7 @@ spinBoxFrameColor = 0x4210
 
 ## Covers
 
-AKMenu-Next displays a BMP cover on the top screen for `.nds`, `.dsi`, `.srl`, and `.ids` ROMs. Put `.bmp` covers at the filesystem root in `_nds/covers_code/` or `_nds/covers_name/`. It first looks for the four-character game code, then for the actual ROM filename without its final extension.
+AKMenu-Next displays a BMP cover on the top screen for `.nds`, `.dsi`, `.srl`, `.ids`, and `.gba` ROMs. Put `.bmp` covers at the filesystem root in `_nds/covers_code/`, `_nds/covers_name/`, or `_pico/covers/nds/`. DS ROM lookup order is the four-character game code in `_nds/covers_code/`, the ROM filename without its final extension in `_nds/covers_name/`, then the game code in `_pico/covers/nds/`. GBA ROMs try both the four-character game code and the ROM filename without its final extension in each of the three locations.
 
 BMPs with four or more entirely black or transparent columns at the end is clipped off, (the covers from Pico-Cover seem to have this). A theme must include a `[cover]` section in `uisettings.ini` to opt in to cover display:
 
@@ -142,7 +142,7 @@ fade = 0
 
 ## Theme music (`bgm.bcstm` / `bgm.wav`)
 
-Place a `bgm.bcstm` or `bgm.wav` in the theme directory, alongside its theme images (for example, `_nds/akmenunext/ui/blue skies/bgm.bcstm`). The music will play in the menu on a loop. **Interface settings → Theme music** can enable or disable playback. If both files exist, `bgm.bcstm` is used; if it cannot be played, `bgm.wav` is used instead.
+Place music files in the theme directory, alongside its theme images. The player looks for `bgm.bcstm`, `bgm.wav`, and numbered variants from `bgm1` through `bgm9` with either extension. It selects one available file at random when menu music starts and loops it. Each file counts separately, so a theme can have up to 10 `.bcstm` and 10 `.wav` files, for a total of 20 songs maximum per theme; if a `.bcstm` and `.wav` share a number, either may be selected. Unplayable files are skipped in favor of another available file. **Interface settings → Theme music** can enable or disable playback.
 
 `bgm.bcstm` is a 3DS music file: DSP-ADPCM, mono or stereo, up to 48,000 Hz. Loop points saved in the file are used, so the music can repeat past an intro instead of restarting from the beginning. Wii U `.bfstm` files are not supported. You can create these files with tools such as VGAudio or LoopingAudioConverter. The DS mixes its sound output at 32.768 kHz, so 32,000 Hz keeps the file small without losing quality.
 

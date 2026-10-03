@@ -240,6 +240,7 @@ void cRomInfoWnd::setFileInfo(const std::string& fullName, const std::string& sh
 
 void cRomInfoWnd::setRomInfo(const DSRomInfo& romInfo) {
     _romInfo = romInfo;
+    const bool isGbaRom = _romInfo.isGbaRom();
 
     _romInfoText = unicode_to_local_string(_romInfo.banner().titles[gs().language], 128, NULL);
 
@@ -259,7 +260,7 @@ void cRomInfoWnd::setRomInfo(const DSRomInfo& romInfo) {
         addCode();
         _buttonSaveType.show();
         if (gs().cheatDB) _buttonCheats.show();
-    } else if (_romInfo.isGbaRom()) {
+    } else if (isGbaRom) {
         _buttonFlash.show();
         _buttonSaveType.setText("\x03 " + LANG("exp window", "flash to nor"));
         if (CGbaLoader::CheckPSRAM(_size)) _buttonCopy.show();

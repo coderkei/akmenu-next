@@ -323,12 +323,14 @@ void DSRomInfo::drawDSRomIconMem(void* mem) {
 
 bool DSRomInfo::loadGbaRomInfo(const std::string& filename) {
     _isGbaRom = EFalse;
+    memset(_saveInfo.gameCode, 0, sizeof(_saveInfo.gameCode));
+    _romVersion = 0;
     FILE* gbaFile = fopen(filename.c_str(), "rb");
     if (gbaFile) {
-        sGBAHeader header;
-        fread(&header, 1, sizeof(header), gbaFile);
+        tGBAHeader header;
+        size_t bytesRead = fread(&header, 1, sizeof(header), gbaFile);
         fclose(gbaFile);
-        if (header.is96h == 0x96) {
+        if (bytesRead == sizeof(header) && header.is96h == 0x96) {
             _isGbaRom = ETrue;
             memcpy(_saveInfo.gameCode, header.gamecode, 4);
             _romVersion = header.version;

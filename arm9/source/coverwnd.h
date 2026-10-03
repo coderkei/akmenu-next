@@ -25,7 +25,7 @@ class cCoverWnd {
     void draw() const;
 
   private:
-    bool isSupportedDsRom(const std::string& selectedPath, DSRomInfo& romInfo) const;
+    bool isSupportedRom(const std::string& selectedPath, DSRomInfo& romInfo) const;
     bool loadCover(const std::string& selectedPath, DSRomInfo& romInfo);
     bool tryLoad(const std::string& filename);
 

@@ -11,12 +11,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
+#include <time.h>
 
 #include "bcstmsource.h"
 #include "dbgtool.h"
 #include "globalsettings.h"
 #include "irqs.h"
 #include "systemfilenames.h"
+#include "timer.h"
 #include "fifotool.h"
 #include "wavsource.h"
 
@@ -27,10 +29,26 @@ const u32 kReadChunkBytes = 16 * 1024;
 const u32 kMaxmodBufferFrames = 16384;
 const u32 kMinSampleRate = 1024;
 const u32 kMaxSampleRate = 48000;  // DS mixes output at 32.768 kHz; higher rates gain nothing
+const u32 kMaxThemeMusicFiles = 20;
+
+struct ThemeMusicCandidate {
+    std::string path;
+    bool bcstm;
+};
 
 cThemeMusic gThemeMusic;
 cThemeMusic* volatile gActiveThemeMusic = NULL;
 mm_stream gStream;
+bool gMusicRandomSeeded = false;
+
+void seedMusicRandom() {
+    if (gMusicRandomSeeded) return;
+    u64 ticks = timer().getTick();
+    unsigned int seed = (unsigned int)time(NULL) ^ (unsigned int)ticks ^
+                        (unsigned int)(ticks >> 32);
+    srand(seed);
+    gMusicRandomSeeded = true;
+}
 
 mm_word maxmodStreamCallback(mm_word length, mm_addr destination, mm_stream_formats format) {
     if (gActiveThemeMusic) return gActiveThemeMusic->fillStream(length, destination);
@@ -109,8 +127,38 @@ bool cThemeMusic::start() {
     if (!gs().playThemeMusic || _playing) return _playing;
 
     const std::string directory = SFN_UI_CURRENT_DIRECTORY;
-    _source = openSource(new cBcstmSource(), directory + "bgm.bcstm");
-    if (!_source) _source = openSource(new cWavSource(), directory + "bgm.wav");
+    ThemeMusicCandidate candidates[kMaxThemeMusicFiles];
+    u32 candidateCount = 0;
+    const char* extensions[] = {".bcstm", ".wav"};
+    for (u32 track = 0; track < 10; ++track) {
+        std::string stem = directory + "bgm";
+        if (track > 0) stem += (char)('0' + track);
+        for (u32 extension = 0; extension < 2; ++extension) {
+            std::string path = stem + extensions[extension];
+            FILE* file = fopen(path.c_str(), "rb");
+            if (!file) continue;
+            fclose(file);
+            candidates[candidateCount].path = path;
+            candidates[candidateCount].bcstm = extension == 0;
+            ++candidateCount;
+        }
+    }
+    if (!candidateCount) return false;
+
+    seedMusicRandom();
+    for (u32 i = candidateCount - 1; i > 0; --i) {
+        u32 selected = (u32)rand() % (i + 1);
+        ThemeMusicCandidate candidate = candidates[i];
+        candidates[i] = candidates[selected];
+        candidates[selected] = candidate;
+    }
+
+    for (u32 i = 0; i < candidateCount && !_source; ++i) {
+        if (candidates[i].bcstm)
+            _source = openSource(new cBcstmSource(), candidates[i].path);
+        else
+            _source = openSource(new cWavSource(), candidates[i].path);
+    }
     if (!_source) return false;
 
     _sampleRate = _source->sampleRate();

@@ -87,10 +87,14 @@ bool hasExtension(const std::string& filename, const char* extension) {
     return true;
 }
 
-bool isRomExtension(const std::string& filename) {
+bool isDsRomExtension(const std::string& filename) {
     return hasExtension(filename, ".nds") || hasExtension(filename, ".ndz") ||
            hasExtension(filename, ".dsi") ||
            hasExtension(filename, ".srl") || hasExtension(filename, ".ids");
+}
+
+bool isGbaRomExtension(const std::string& filename) {
+    return hasExtension(filename, ".gba");
 }
 
 //trim off black padding that comes from the covers Pico-Cover outputs
@@ -256,9 +260,10 @@ void cCoverWnd::clear() {
     _height = 0;
 }
 
-bool cCoverWnd::isSupportedDsRom(const std::string& selectedPath, DSRomInfo& romInfo) const {
+bool cCoverWnd::isSupportedRom(const std::string& selectedPath, DSRomInfo& romInfo) const {
     if (selectedPath.empty() || selectedPath[selectedPath.size() - 1] == '/') return false;
-    return isRomExtension(selectedPath) && romInfo.isDSRom();
+    if (isGbaRomExtension(selectedPath)) return romInfo.isGbaRom();
+    return isDsRomExtension(selectedPath) && romInfo.isDSRom();
 }
 
 bool cCoverWnd::tryLoad(const std::string& filename) {
@@ -277,16 +282,33 @@ bool cCoverWnd::loadCover(const std::string& selectedPath, DSRomInfo& romInfo) {
     char code[5] = {};
     memcpy(code, romInfo.saveInfo().gameCode, 4);
     bool validCode = code[0] && code[1] && code[2] && code[3] && !strchr(code, '/') && !strchr(code, '\\');
+
+    size_t slash = selectedPath.find_last_of("/\\");
+    std::string basename = selectedPath.substr(slash == std::string::npos ? 0 : slash + 1);
+    size_t dot = basename.find_last_of('.');
+    if (dot != std::string::npos) basename.erase(dot);
+
+    if (romInfo.isGbaRom()) {
+        const std::string directories[] = {SFN_COVERS_CODE_DIRECTORY, SFN_COVERS_NAME_DIRECTORY,
+                                           SFN_PICO_COVERS_NDS_DIRECTORY};
+        if (validCode) {
+            for (size_t index = 0; index < sizeof(directories) / sizeof(directories[0]); ++index) {
+                if (tryLoad(directories[index] + std::string(code) + ".bmp")) return true;
+            }
+        }
+        for (size_t index = 0; index < sizeof(directories) / sizeof(directories[0]); ++index) {
+            if (tryLoad(directories[index] + basename + ".bmp")) return true;
+        }
+        return false;
+    }
+
     if (validCode) {
         std::string codeBase = SFN_COVERS_CODE_DIRECTORY + std::string(code);
         if (tryLoad(codeBase + ".bmp")) return true;
     }
 
-    size_t slash = selectedPath.find_last_of("/\\");
-    std::string basename = selectedPath.substr(slash == std::string::npos ? 0 : slash + 1);
-    size_t dot = basename.find_last_of('.');
     if (dot != std::string::npos) {
-        basename.erase(dot);  // The checked ROM extension is the only removed suffix.
+        // The checked ROM extension is the only removed suffix.
         std::string nameBase = SFN_COVERS_NAME_DIRECTORY + basename;
         if (tryLoad(nameBase + ".bmp")) return true;
     }
@@ -309,7 +331,7 @@ void cCoverWnd::update(const std::string& selectedPath, DSRomInfo& romInfo) {
     _pixels.clear();
     _width = 0;
     _height = 0;
-    if (isSupportedDsRom(selectedPath, romInfo)) loadCover(selectedPath, romInfo);
+    if (isSupportedRom(selectedPath, romInfo)) loadCover(selectedPath, romInfo);
 }
 
 void cCoverWnd::drawBackdrop() const {
