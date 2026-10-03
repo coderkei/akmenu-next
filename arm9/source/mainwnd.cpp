@@ -241,12 +241,10 @@ void cMainWnd::refreshCover() {
     std::string selectedPath = _mainList->getSelectedFullPath();
 
     bool wasPainting = cIRQ::_vblankStarted;
-    if (wasPainting) irqDisable(IRQ_VBLANK);
-    coverWindow().clear();
-    cIRQ::redrawTopScreen();
-    if (wasPainting) irqEnable(IRQ_VBLANK);
     if (_mainList->getRomInfo(_mainList->selectedRowId(), info)) {
         coverWindow().update(selectedPath, info);
+    } else {
+        coverWindow().clear();
     }
     if (wasPainting) irqDisable(IRQ_VBLANK);
     cIRQ::redrawTopScreen();

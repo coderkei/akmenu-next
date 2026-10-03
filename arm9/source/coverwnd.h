@@ -26,8 +26,10 @@ class cCoverWnd {
 
   private:
     bool isSupportedRom(const std::string& selectedPath, DSRomInfo& romInfo) const;
-    bool loadCover(const std::string& selectedPath, DSRomInfo& romInfo);
-    bool tryLoad(const std::string& filename);
+    bool loadCover(const std::string& selectedPath, DSRomInfo& romInfo,
+                   std::vector<u16>& pixels, u16& width, u16& height) const;
+    bool tryLoad(const std::string& filename, std::vector<u16>& pixels, u16& width,
+                 u16& height) const;
 
     std::string _selectedPath;
     std::vector<u16> _pixels;

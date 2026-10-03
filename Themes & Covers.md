@@ -126,7 +126,7 @@ spinBoxFrameColor = 0x4210
 
 ## Covers
 
-AKMenu-Next displays a BMP cover on the top screen for `.nds`, `.dsi`, `.srl`, `.ids`, and `.gba` ROMs. Put `.bmp` covers at the filesystem root in `_nds/covers_code/`, `_nds/covers_name/`, or `_pico/covers/nds/`. DS ROM lookup order is the four-character game code in `_nds/covers_code/`, the ROM filename without its final extension in `_nds/covers_name/`, then the game code in `_pico/covers/nds/`. GBA ROMs try both the four-character game code and the ROM filename without its final extension in each of the three locations.
+AKMenu-Next displays a BMP cover on the top screen for `.nds`, `.dsi`, `.srl`, `.ids`, and `.gba` ROMs. Put DS `.bmp` covers at the filesystem root in `_nds/covers_code/`, `_nds/covers_name/`, or `_pico/covers/nds/`. DS ROM lookup order is the four-character game code in `_nds/covers_code/`, the ROM filename without its final extension in `_nds/covers_name/`, then the game code in `_pico/covers/nds/`. GBA ROMs use the same two `_nds` locations plus `_pico/covers/gba/`, trying both the four-character game code and the ROM filename without its final extension in each location.
 
 BMPs with four or more entirely black or transparent columns at the end is clipped off, (the covers from Pico-Cover seem to have this). A theme must include a `[cover]` section in `uisettings.ini` to opt in to cover display:
 

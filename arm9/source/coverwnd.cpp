@@ -13,6 +13,7 @@
 
 #include "gdi.h"
 #include "globalsettings.h"
+#include "irqs.h"
 #include "systemfilenames.h"
 #include "uisettings.h"
 
@@ -266,19 +267,21 @@ bool cCoverWnd::isSupportedRom(const std::string& selectedPath, DSRomInfo& romIn
     return isDsRomExtension(selectedPath) && romInfo.isDSRom();
 }
 
-bool cCoverWnd::tryLoad(const std::string& filename) {
-    std::vector<u16> pixels;
-    u16 width = 0, height = 0;
-    if (!decodeBmp15(filename, pixels, width, height)) return false;
+bool cCoverWnd::tryLoad(const std::string& filename, std::vector<u16>& pixels, u16& width,
+                        u16& height) const {
+    std::vector<u16> decodedPixels;
+    u16 decodedWidth = 0, decodedHeight = 0;
+    if (!decodeBmp15(filename, decodedPixels, decodedWidth, decodedHeight)) return false;
 
-    trimTrailingBlankColumns(pixels, width, height);
-    _pixels.swap(pixels);
-    _width = width;
-    _height = height;
+    trimTrailingBlankColumns(decodedPixels, decodedWidth, decodedHeight);
+    pixels.swap(decodedPixels);
+    width = decodedWidth;
+    height = decodedHeight;
     return true;
 }
 
-bool cCoverWnd::loadCover(const std::string& selectedPath, DSRomInfo& romInfo) {
+bool cCoverWnd::loadCover(const std::string& selectedPath, DSRomInfo& romInfo,
+                          std::vector<u16>& pixels, u16& width, u16& height) const {
     char code[5] = {};
     memcpy(code, romInfo.saveInfo().gameCode, 4);
     bool validCode = code[0] && code[1] && code[2] && code[3] && !strchr(code, '/') && !strchr(code, '\\');
@@ -290,32 +293,34 @@ bool cCoverWnd::loadCover(const std::string& selectedPath, DSRomInfo& romInfo) {
 
     if (romInfo.isGbaRom()) {
         const std::string directories[] = {SFN_COVERS_CODE_DIRECTORY, SFN_COVERS_NAME_DIRECTORY,
-                                           SFN_PICO_COVERS_NDS_DIRECTORY};
+                                           SFN_PICO_COVERS_GBA_DIRECTORY};
         if (validCode) {
             for (size_t index = 0; index < sizeof(directories) / sizeof(directories[0]); ++index) {
-                if (tryLoad(directories[index] + std::string(code) + ".bmp")) return true;
+                if (tryLoad(directories[index] + std::string(code) + ".bmp", pixels, width,
+                            height))
+                    return true;
             }
         }
         for (size_t index = 0; index < sizeof(directories) / sizeof(directories[0]); ++index) {
-            if (tryLoad(directories[index] + basename + ".bmp")) return true;
+            if (tryLoad(directories[index] + basename + ".bmp", pixels, width, height)) return true;
         }
         return false;
     }
 
     if (validCode) {
         std::string codeBase = SFN_COVERS_CODE_DIRECTORY + std::string(code);
-        if (tryLoad(codeBase + ".bmp")) return true;
+        if (tryLoad(codeBase + ".bmp", pixels, width, height)) return true;
     }
 
     if (dot != std::string::npos) {
         // The checked ROM extension is the only removed suffix.
         std::string nameBase = SFN_COVERS_NAME_DIRECTORY + basename;
-        if (tryLoad(nameBase + ".bmp")) return true;
+        if (tryLoad(nameBase + ".bmp", pixels, width, height)) return true;
     }
 
     if (validCode) {
         std::string picoCover = SFN_PICO_COVERS_NDS_DIRECTORY + std::string(code) + ".bmp";
-        if (tryLoad(picoCover)) return true;
+        if (tryLoad(picoCover, pixels, width, height)) return true;
     }
     return false;
 }
@@ -328,10 +333,18 @@ void cCoverWnd::update(const std::string& selectedPath, DSRomInfo& romInfo) {
     }
     if (_selectedPath == selectedPath) return;
     _selectedPath = selectedPath;
-    _pixels.clear();
-    _width = 0;
-    _height = 0;
-    if (isSupportedRom(selectedPath, romInfo)) loadCover(selectedPath, romInfo);
+
+    std::vector<u16> nextPixels;
+    u16 nextWidth = 0, nextHeight = 0;
+    if (isSupportedRom(selectedPath, romInfo))
+        loadCover(selectedPath, romInfo, nextPixels, nextWidth, nextHeight);
+
+    bool wasPainting = cIRQ::_vblankStarted;
+    if (wasPainting) irqDisable(IRQ_VBLANK);
+    _pixels.swap(nextPixels);
+    _width = nextWidth;
+    _height = nextHeight;
+    if (wasPainting) irqEnable(IRQ_VBLANK);
 }
 
 void cCoverWnd::drawBackdrop() const {
