@@ -42,14 +42,18 @@ Plugin format is `{extension}.ini` (e.g. `gba.ini`) and follows the below format
 
 ```
 [plugin]
-path=path/to/nds/here.nds
+path=path/to/default.nds // Optional fallback path
+dsipath=path/to/dsi.nds // Optional override when DSi/TWL mode is detected
+ntrpath=path/to/ds.nds // Optional override when DS/NTR mode is detected
 argv=1 //If the emulator supports argv
 bootstrap=0 //Use the Homebrew Loader setting
 hbargv=0 //Pass the plugin argument through nds-bootstrap-hb's HOMEBREW_ARG setting
 ```
 
-The specified extension will be recognised as a valid file and will launch via argv (if set to `1`) to the specified `.nds` file.
+The specified extension will be recognised as a valid file and launched using the selected `.nds` path. Set at least one of `path`, `dsipath`, or `ntrpath`. `dsipath` and `ntrpath` take priority in their corresponding modes. If a mode-specific override is omitted, `path` is used as the fallback; if no path is configured for the current mode, the plugin cannot launch in that mode. `argv`, `bootstrap`, and `hbargv` continue to apply to the selected launcher.
+
 Set `bootstrap=1` to use nds-bootstrap-hb for the plugin on DSi when no flashcart is detected. Otherwise, the selected Homebrew Loader setting is used. Enable **Override plugin defaults** in Other Settings to always use the selected Homebrew Loader setting, even when a plugin sets `bootstrap=1`. Selecting nds-bootstrap-hb in Homebrew Loader always uses nds-bootstrap-hb.
+
 Set `hbargv=1` to write the selected file path to `HOMEBREW_ARG` in `nds-bootstrap.ini` when nds-bootstrap-hb is the selected Homebrew Loader. This works independently of `argv`, which controls whether the path is also passed as a normal launch argument.
 The icon for the file will be read from `_nds/akmenunext/plugins/icons/{extension}.bin` as a banner file. If it is not found it will fall back to the default icon.
 

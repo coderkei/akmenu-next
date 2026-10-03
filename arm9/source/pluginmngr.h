@@ -9,6 +9,8 @@ class cPluginManager {
     struct PluginAssociation {
         std::string extension;
         std::string launcherPath;
+        std::string dsiPath;
+        std::string ntrPath;
         std::string iconPath;
         bool useArgv;
         bool useNdsBootstrapHb = false;

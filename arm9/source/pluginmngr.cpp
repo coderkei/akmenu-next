@@ -67,18 +67,21 @@ void cPluginManager::loadPlugins() {
                 ini.GetString("plugin", "path",
                               ini.GetString("plugin", "launcher",
                                             ini.GetString("plugin", "app", ""))));
+        std::string dsiPath = resolveLauncherPath(ini.GetString("plugin", "dsipath", ""));
+        std::string ntrPath = resolveLauncherPath(ini.GetString("plugin", "ntrpath", ""));
         bool useArgv = ini.GetInt("plugin", "argv", 0) != 0;
         bool useNdsBootstrapHb = ini.GetInt("plugin", "bootstrap", 0) != 0;
         bool useHbArgv = ini.GetInt("plugin", "hbargv", 0) != 0;
 
-        if (extension.empty() || launcherPath.empty()) {
+        if (extension.empty() ||
+            (launcherPath.empty() && dsiPath.empty() && ntrPath.empty())) {
             dbg_printf("skipping invalid plugin ini: %s\n", iniPath.c_str());
             continue;
         }
         std::string iconPath = SFN_PLUGIN_ICONS_DIRECTORY + extension.substr(1) + ".bin";
 
-        PluginAssociation plugin = {extension, launcherPath, iconPath, useArgv,
-                                     useNdsBootstrapHb, useHbArgv};
+        PluginAssociation plugin = {extension, launcherPath, dsiPath, ntrPath, iconPath,
+                                     useArgv, useNdsBootstrapHb, useHbArgv};
         _plugins.push_back(plugin);
         if (std::find(_extensions.begin(), _extensions.end(), extension) == _extensions.end()) {
             _extensions.push_back(extension);

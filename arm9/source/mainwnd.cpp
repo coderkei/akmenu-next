@@ -58,8 +58,21 @@ bool canUsePluginHbBootstrap() {
 }
 
 bool launchPluginFile(const cPluginManager::PluginAssociation& plugin, const std::string& selectedPath) {
-    if (access(plugin.launcherPath.c_str(), F_OK) != 0) {
-        printLoaderNotFound(plugin.launcherPath);
+    const bool dsiMode = isDSiMode();
+    const std::string* launcherPath = &plugin.launcherPath;
+    if (dsiMode && !plugin.dsiPath.empty()) {
+        launcherPath = &plugin.dsiPath;
+    } else if (!dsiMode && !plugin.ntrPath.empty()) {
+        launcherPath = &plugin.ntrPath;
+    }
+
+    if (launcherPath->empty()) {
+        printError(dsiMode ? "Plugin has no path configured for DSi mode."
+                           : "Plugin has no path configured for DS mode.");
+        return false;
+    }
+    if (access(launcherPath->c_str(), F_OK) != 0) {
+        printLoaderNotFound(*launcherPath);
         return false;
     }
 
@@ -72,14 +85,14 @@ bool launchPluginFile(const cPluginManager::PluginAssociation& plugin, const std
     switch (homebrewLoader) {
         case 1:
             launched = NdsBootstrapLauncher().launchPlugin(
-                    plugin.launcherPath, selectedPath, plugin.useArgv, plugin.useHbArgv);
+                    *launcherPath, selectedPath, plugin.useArgv, plugin.useHbArgv);
             break;
         case 2:
-            launched = DSpicoLauncher().launchPlugin(plugin.launcherPath, argPath);
+            launched = DSpicoLauncher().launchPlugin(*launcherPath, argPath);
             break;
         default: {
             std::vector<const char*> argv;
-            argv.push_back(plugin.launcherPath.c_str());
+            argv.push_back(launcherPath->c_str());
             if (plugin.useArgv) {
                 argv.push_back(selectedPath.c_str());
             }
