@@ -19,6 +19,7 @@ extern "C" {
 #endif
 extern void swiSwitchToGBAModeFixed(); // This is broken in libnds since 2008. Not fixed until libnds2 which this project isn't using yet.
 void __libnds_exit(int rc) {}
+void syncRTC(void); // syncRTC isn't defined in a libnds header, but it does exist so this fixes the compiler error
 #ifdef __cplusplus
 }
 #endif
@@ -203,10 +204,12 @@ int main() {
 
     irqInit();
     fifoInit();
-	touchInit();
+    touchInit();
 
     // Start the RTC tracking IRQ
+    timerStart(3, ClockDivider_1024, TIMER_FREQ_1024(1), syncRTC);
     initClockIRQ();
+    irqSet(IRQ_NETWORK, NULL);  // IRQ_NETWORK is IRQ_RTC on dKA libnds
 
     fifoSetValue32Handler(FIFO_USER_01, menuValue32Handler, 0);
 
