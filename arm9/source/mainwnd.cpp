@@ -30,6 +30,7 @@
 #include "rominfownd.h"
 #include "romlauncher.h"
 #include "pluginmngr.h"
+#include "recent.h"
 #include "coverwnd.h"
 #include "irqs.h"
 #include "uisettings.h"
@@ -82,6 +83,8 @@ bool launchPluginFile(const cPluginManager::PluginAssociation& plugin, const std
             (!gs().overridePluginDefaults && plugin.useNdsBootstrapHb &&
              canUsePluginHbBootstrap()) ? 1 : gs().hbStrap;
     bool launched = false;
+    // Plugin files bypass launchRom(), which normally updates Recently Played.
+    cRecent::AddToRecent(selectedPath);
     themeMusic().stop();
     switch (homebrewLoader) {
         case 1:
