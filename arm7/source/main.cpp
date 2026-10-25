@@ -13,6 +13,7 @@
 #include "../../share/memtool.h"
 #include "picoLoader7.h"
 #include "my_i2c.h"
+#include "nand_service.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -202,9 +203,26 @@ int main() {
     // read User Settings from firmware
     readUserSettings();
 
+    // Share ARM7's SCFG state with ARM9, matching TWiLight Menu++'s
+    // restricted-mode detection.
+    *(volatile u32*)0x02FFFDF0 = REG_SCFG_EXT;
+
+    // Detect the DSiWarehax MBK6 layout used to select the DSi Sound donor
+    // category when SCFG is locked.
+    if (isDSiMode() && REG_SCFG_EXT == 0) {
+        const u32 wordBak = *(volatile u32*)0x037C0000;
+        *(volatile u32*)0x037C0000 = 0x414C5253;
+        if (*(volatile u32*)0x037C0000 == 0x414C5253 &&
+            *(volatile u32*)0x037C8000 != 0x414C5253) {
+            *(volatile u32*)0x02FFE1A0 = 0x080037C0;
+        }
+        *(volatile u32*)0x037C0000 = wordBak;
+    }
+
     irqInit();
     fifoInit();
     touchInit();
+    initializeNandService();
 
     // Start the RTC tracking IRQ
     timerStart(3, ClockDivider_1024, TIMER_FREQ_1024(1), syncRTC);
@@ -237,6 +255,7 @@ int main() {
             sdmmc_get_cid(true, (u32*)0x2FFD7BC);    // Get eMMC CID
             *(u32*)(0x2FFFD0C) = 0;
         }
+        pollNandConsoleIdRequest();
         swiWaitForVBlank();
         if(reset_pico)
             resetDSPico();

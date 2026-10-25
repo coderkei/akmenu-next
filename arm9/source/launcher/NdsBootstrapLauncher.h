@@ -20,7 +20,8 @@ class NdsBootstrapLauncher : public ILauncher {
 
   private:
     bool prepareCheats(void);
-    bool prepareIni(bool hb, const std::string& homebrewArg = "");
+    bool prepareIni(bool hb, const std::string& homebrewArg = "",
+                    bool homebrewLaunch = false);
     bool launchRomInternal(std::string romPath, std::string savePath, u32 flags,
                            u32 cheatOffset, u32 cheatSize, bool hb,
                            const std::string& homebrewArg);

@@ -25,6 +25,7 @@
 #include "../ui/msgbox.h"
 #include "../ui/progresswnd.h"
 #include "ILauncher.h"
+#include "NdsBootstrapDonor.h"
 #include "NdsBootstrapLauncher.h"
 #include "nds_loader_arm9.h"
 #include "fsmngr.h"
@@ -103,7 +104,8 @@ cheat_failed:
     return false;
 }
 
-bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg) {
+bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg,
+                                      bool homebrewLaunch) {
     CIniFile ini;
     hotkeyCheck = false;
 
@@ -114,6 +116,7 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg) {
 
     if(hb == true)
     {
+        configureNdsBootstrapDonors(ini, false, false);
         ini.SetString("NDS-BOOTSTRAP", "DSI_MODE", 0);
         ini.SaveIniFile("/_nds/nds-bootstrap.ini");
         return true;
@@ -123,7 +126,9 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg) {
 
     ini.SetString("NDS-BOOTSTRAP", "QUIT_PATH", fsManager().resolveSystemPath("/_nds/akmenunext/launcher.nds"));
 
-    ini.SetString("NDS-BOOTSTRAP", "CONSOLE_MODEL", is3DS() ? "2" : "0");
+    const bool consoleIs3DS = is3DS();
+    ini.SetString("NDS-BOOTSTRAP", "CONSOLE_MODEL", consoleIs3DS ? "2" : "0");
+    configureNdsBootstrapDonors(ini, consoleIs3DS, !homebrewLaunch);
 
     std::string custIniPath = fsManager().resolveSystemPath("/_nds/akmenunext/ndsbs.ini");
 
@@ -317,7 +322,7 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
         remove("/_nds/nds-bootstrap/nds-bootstrap.ini");
         }
         // Setup nds-bootstrap INI parameters
-        if (!prepareIni(false, homebrewArg)) return false;
+        if (!prepareIni(false, homebrewArg, true)) return false;
         progressWnd().setPercent(25);
         return launchHbStrap(savePath);
     }
