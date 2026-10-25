@@ -6,7 +6,10 @@
 
 #pragma once
 
+#include <string>
+
 class CIniFile;
 
 void initializeNdsBootstrapDonors();
-void configureNdsBootstrapDonors(CIniFile& ini, bool is3DS, bool allowAutoDiscovery);
+void configureNdsBootstrapDonors(CIniFile& ini, bool is3DS, bool allowAutoDiscovery,
+                                 const std::string& bootstrapIniPath = "");

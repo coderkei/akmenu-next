@@ -272,14 +272,6 @@ static bool makeDsiSdAlias(const std::string& path, char* alias, size_t aliasSiz
 }
 }  // namespace
 
-void smoothProgress(u8 start, u8 end) {
-    for(u8 p = start; p <= end; p += 5) {
-        progressWnd().setPercent(p);
-        swiWaitForVBlank();
-    }
-    progressWnd().setPercent(end);
-}
-
 void slot2RamAccess(){
     // if running from NDS slot
     if (io_dldi_data->ioInterface.features & FEATURE_SLOT_NDS) {
@@ -306,6 +298,7 @@ void slot2RamAccess(){
 
 bool NdsBootstrapLauncher::prepareCheats() {
     u32 gameCode, crc32;
+    const std::string cheatDataPath = mBootstrapRoot + "_nds/nds-bootstrap/cheatData.bin";
 
     if (cCheat::romData(mRomPath, gameCode, crc32)) {
         FILE* cheatDb = fopen((SFN_CHEATS).c_str(), "rb");
@@ -315,8 +308,8 @@ bool NdsBootstrapLauncher::prepareCheats() {
         if (cCheat::searchCheatData(cheatDb, gameCode, crc32, cheatOffset, cheatSize)) {
             cCheat cheat;
             cheat.parse(mRomPath);
-            cheat.writeCheatsToFile("/_nds/nds-bootstrap/cheatData.bin");
-            FILE* cheatData = fopen("/_nds/nds-bootstrap/cheatData.bin","rb");
+            cheat.writeCheatsToFile(cheatDataPath.c_str());
+            FILE* cheatData = fopen(cheatDataPath.c_str(), "rb");
             if (cheatData) {
                 u32 check[2];
                 fread(check, 1, 8, cheatData);
@@ -335,8 +328,8 @@ bool NdsBootstrapLauncher::prepareCheats() {
 
 cheat_failed:
     // Remove cheat bin if exists
-    if (access("/_nds/nds-bootstrap/cheatData.bin", F_OK) == 0) {
-        remove("/_nds/nds-bootstrap/cheatData.bin");
+    if (access(cheatDataPath.c_str(), F_OK) == 0) {
+        remove(cheatDataPath.c_str());
     }
 
     return false;
@@ -354,9 +347,10 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg,
 
     if(hb == true)
     {
-        configureNdsBootstrapDonors(ini, false, false);
+        const std::string bootstrapIniPath = mBootstrapRoot + "_nds/nds-bootstrap.ini";
+        configureNdsBootstrapDonors(ini, false, false, bootstrapIniPath);
         ini.SetString("NDS-BOOTSTRAP", "DSI_MODE", 0);
-        ini.SaveIniFile("/_nds/nds-bootstrap.ini");
+        ini.SaveIniFile(bootstrapIniPath);
         debugOverlay::updateDonorStatus(ini, false);
         return true;
     }
@@ -392,7 +386,8 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg,
 
     const bool consoleIs3DS = is3DS();
     ini.SetString("NDS-BOOTSTRAP", "CONSOLE_MODEL", consoleIs3DS ? "2" : "0");
-    configureNdsBootstrapDonors(ini, consoleIs3DS, !homebrewLaunch);
+    const std::string bootstrapIniPath = mBootstrapRoot + "_nds/nds-bootstrap.ini";
+    configureNdsBootstrapDonors(ini, consoleIs3DS, !homebrewLaunch, bootstrapIniPath);
 
     std::string custIniPath = fsManager().resolveSystemPath("/_nds/akmenunext/ndsbs.ini");
 
@@ -509,12 +504,12 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg,
         ini.SetString("NDS-BOOTSTRAP", "PHAT_COLORS", "1");
     }
 
-    if (access("/_nds/debug.txt", F_OK) == 0) {
+    if (access((mBootstrapRoot + "_nds/debug.txt").c_str(), F_OK) == 0) {
         ini.SetString("NDS-BOOTSTRAP", "LOGGING", "1");
         ini.SetString("NDS-BOOTSTRAP", "DEBUG", "1");
     }
 
-    ini.SaveIniFile("/_nds/nds-bootstrap.ini");
+    ini.SaveIniFile(bootstrapIniPath);
     debugOverlay::updateDonorStatus(ini, !homebrewLaunch);
 
     return true;
@@ -563,10 +558,11 @@ bool NdsBootstrapLauncher::launchPlugin(std::string romPath, const std::string& 
 bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string savePath, u32 flags,
                                              u32 cheatOffset, u32 cheatSize, bool hb,
                                              const std::string& homebrewArg) {
-    std::string ndsBootstrapPath = fsManager().resolveSystemPath("/_nds/nds-bootstrap-release.nds");
-    std::string ndsBootstrapPathNightly = fsManager().resolveSystemPath("/_nds/nds-bootstrap-nightly.nds");
-    std::string ndsHbBootstrapPath = fsManager().resolveSystemPath("/_nds/nds-bootstrap-hb-release.nds");
-    std::string ndsBootstrapCheck = fsManager().resolveSystemPath("/_nds/pagefile.sys");
+    mBootstrapRoot = fsManager().getFSRoot();
+    std::string ndsBootstrapPath = mBootstrapRoot + "_nds/nds-bootstrap-release.nds";
+    std::string ndsBootstrapPathNightly = mBootstrapRoot + "_nds/nds-bootstrap-nightly.nds";
+    std::string ndsHbBootstrapPath = mBootstrapRoot + "_nds/nds-bootstrap-hb-release.nds";
+    std::string ndsBootstrapCheck = mBootstrapRoot + "_nds/pagefile.sys";
     bool useNightly = false;
     bool hbStrap = hb;
 
@@ -585,8 +581,9 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
         progressWnd().show();
         progressWnd().setPercent(0);
         //Clean up old INI
-        if (access("/_nds/nds-bootstrap/nds-bootstrap.ini", F_OK) == 0) {
-        remove("/_nds/nds-bootstrap/nds-bootstrap.ini");
+        const std::string bootstrapIniPath = mBootstrapRoot + "_nds/nds-bootstrap.ini";
+        if (access(bootstrapIniPath.c_str(), F_OK) == 0) {
+            remove(bootstrapIniPath.c_str());
         }
         // Setup nds-bootstrap INI parameters
         if (!prepareIni(false, homebrewArg, true)) return false;
@@ -604,6 +601,22 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
     if (dsiWare && (!isDSiMode() || romPath.compare(0, 4, "sd:/") != 0)) {
         printError("DSiWare launch requires a ROM on the DSi SD card and DSi mode.");
         return false;
+    }
+
+    if (dsiWare) {
+        // Prefer the DSi SD bootstrap and keep its INI and working files beside it.
+        mBootstrapRoot = "sd:/";
+        ndsBootstrapCheck = mBootstrapRoot + "_nds/pagefile.sys";
+        const std::string sdBootstrapPath =
+                mBootstrapRoot + "_nds/nds-bootstrap-release.nds";
+        const std::string sdBootstrapPathNightly =
+                mBootstrapRoot + "_nds/nds-bootstrap-nightly.nds";
+        if (access(sdBootstrapPath.c_str(), F_OK) == 0) {
+            ndsBootstrapPath = sdBootstrapPath;
+        }
+        if (access(sdBootstrapPathNightly.c_str(), F_OK) == 0) {
+            ndsBootstrapPathNightly = sdBootstrapPathNightly;
+        }
     }
 
     bool useUnlaunch = false;
@@ -714,10 +727,15 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
     }
 
     // Create the nds-bootstrap directory if it doesn't exist
-    if (access("/_nds/nds-bootstrap/", F_OK) != 0) {
-        mkdir("/_nds/nds-bootstrap/", 0777);
+    const std::string bootstrapDirectory = mBootstrapRoot + "_nds/nds-bootstrap/";
+    const std::string ndsDirectory = mBootstrapRoot + "_nds/";
+    if (access(ndsDirectory.c_str(), F_OK) != 0) {
+        mkdir(ndsDirectory.c_str(), 0777);
     }
-    smoothProgress(0, 25);
+    if (access(bootstrapDirectory.c_str(), F_OK) != 0) {
+        mkdir(bootstrapDirectory.c_str(), 0777);
+    }
+    progressWnd().setPercent(25);
 
     // Setup argv to launch nds-bootstrap                             
     if(!useNightly){
@@ -728,36 +746,38 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
     }
 
     progressWnd().setTipText("Initializing nds-bootstrap...");
-    smoothProgress(25, 50);
+    progressWnd().setPercent(50);
 
     //Clean up old INI
-    if (access("/_nds/nds-bootstrap/nds-bootstrap.ini", F_OK) == 0) {
-        remove("/_nds/nds-bootstrap/nds-bootstrap.ini");
+    const std::string bootstrapIniPath = mBootstrapRoot + "_nds/nds-bootstrap.ini";
+    if (access(bootstrapIniPath.c_str(), F_OK) == 0) {
+        remove(bootstrapIniPath.c_str());
     }
 
     // Setup nds-bootstrap INI parameters
     if (!prepareIni(false)) return false;
-    smoothProgress(50, 75);
+    progressWnd().setPercent(75);
 
     // Prepare cheat codes if enabled
     // Remove cheat bin if exists to start clean
-    if (access("/_nds/nds-bootstrap/cheatData.bin", F_OK) == 0) {
-        remove("/_nds/nds-bootstrap/cheatData.bin");
+    const std::string cheatDataPath = mBootstrapRoot + "_nds/nds-bootstrap/cheatData.bin";
+    if (access(cheatDataPath.c_str(), F_OK) == 0) {
+        remove(cheatDataPath.c_str());
     }
     if (!_romInfo.saveInfo().getCheat() || !gs().cheats) {
         progressWnd().setTipText("Booting game...");
-        smoothProgress(75, 100);
+        progressWnd().setPercent(100);
     }
     else {
         progressWnd().setTipText("Loading usrcheat.dat...");
-        smoothProgress(75, 90);
+        progressWnd().setPercent(90);
         if (flags & PATCH_CHEATS) {
             if (!prepareCheats()) {
                 return false;
             }
         }
         progressWnd().setTipText("Booting game...");
-        smoothProgress(90, 100);
+        progressWnd().setPercent(100);
     }
 
     // enable slot2 ram access if available

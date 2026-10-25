@@ -310,17 +310,24 @@ void cRomInfoWnd::pressSaveType(void) {
     settingWnd.addSettingItem(
             LANG("save type", "text"), _values,
             cSaveManager::SaveTypeToDisplaySaveType((SAVE_TYPE)_romInfo.saveInfo().saveType));
-    size_t firstTabItemCount = 1;
-    const bool hasLoaderSetting = fsManager().isFlashcart() && !_romInfo.isDSiWare();
+    size_t nextFirstTabItem = 1;
+    const bool hasLoaderSetting =
+            fsManager().isFlashcart() &&
+            (!_romInfo.isDSiWare() || _fullName.compare(0, 5, "fat:/") == 0);
+    size_t loaderItem = (size_t)-1;
+    size_t nightlyItem = (size_t)-1;
+    size_t dsmodeItem = (size_t)-1;
+    size_t boostcpuItem = (size_t)-1;
+    size_t cardreaddmaItem = (size_t)-1;
 
     if (hasLoaderSetting){
         _values.clear();
         _values.push_back("Pico-Loader");
         _values.push_back("nds-bootstrap");
         _values.push_back(LANG("save type", "default"));
+        loaderItem = nextFirstTabItem++;
         settingWnd.addSettingItem(LANG("nds bootstrap", "loader"), _values,
-                                _romInfo.saveInfo().getLoader());
-        firstTabItemCount++;
+                                  _romInfo.saveInfo().getLoader());
     }
 
     if((!gs().pico && _romInfo.saveInfo().getLoader() == 2) || _romInfo.saveInfo().getLoader() == 1){
@@ -328,30 +335,33 @@ void cRomInfoWnd::pressSaveType(void) {
         _values.push_back(LANG("nds bootstrap", "release"));
         _values.push_back(LANG("nds bootstrap", "nightly"));
         _values.push_back(LANG("save type", "default"));
+        nightlyItem = nextFirstTabItem++;
         settingWnd.addSettingItem(LANG("nds bootstrap", "text"), _values,
-                                _romInfo.saveInfo().getNightly());
+                                  _romInfo.saveInfo().getNightly());
 
         _values.clear();
         _values.push_back(LANG("switches", "Disable"));
         _values.push_back(LANG("switches", "Enable"));
         _values.push_back(LANG("save type", "default"));
+        dsmodeItem = nextFirstTabItem++;
         settingWnd.addSettingItem(LANG("nds bootstrap", "dsmode"), _values,
-                                _romInfo.saveInfo().getDsMode());
+                                  _romInfo.saveInfo().getDsMode());
 
         _values.clear();
         _values.push_back(LANG("switches", "Disable"));
         _values.push_back(LANG("switches", "Enable"));
         _values.push_back(LANG("save type", "default"));
+        boostcpuItem = nextFirstTabItem++;
         settingWnd.addSettingItem(LANG("nds bootstrap", "boostcpu"), _values,
-                                _romInfo.saveInfo().getBoostCpu());
+                                  _romInfo.saveInfo().getBoostCpu());
 
         _values.clear();
         _values.push_back(LANG("switches", "Disable"));
         _values.push_back(LANG("switches", "Enable"));
         _values.push_back(LANG("save type", "default"));
+        cardreaddmaItem = nextFirstTabItem++;
         settingWnd.addSettingItem(LANG("nds bootstrap", "carddma"), _values,
-                                _romInfo.saveInfo().getCardReadDma());
-        firstTabItemCount += 4;
+                                  _romInfo.saveInfo().getCardReadDma());
     }
 
     size_t dsiWareBooterItem = (size_t)-1;
@@ -360,7 +370,7 @@ void cRomInfoWnd::pressSaveType(void) {
         _values.push_back(lang().GetString("nds bootstrap", "Global", "Global"));
         _values.push_back(lang().GetString("nds bootstrap", "nds-bootstrap", "nds-bootstrap"));
         _values.push_back(lang().GetString("nds bootstrap", "Unlaunch", "Unlaunch"));
-        dsiWareBooterItem = firstTabItemCount++;
+        dsiWareBooterItem = nextFirstTabItem++;
         settingWnd.addSettingItem(
                 lang().GetString("nds bootstrap", "dsiware booter", "DSiWare booter"),
                 _values, _romInfo.saveInfo().getDsiWareBooter());
@@ -427,18 +437,16 @@ void cRomInfoWnd::pressSaveType(void) {
     }
 
     u8 loader_choice = 2, nightly_choice = 2, dsmode_choice = 2, boostcpu_choice = 2, cardreaddma_choice = 2;
-    if (hasLoaderSetting) {
-        loader_choice = settingWnd.getItemSelection(0, 1);
-        nightly_choice = settingWnd.getItemSelection(0, 2);
-        dsmode_choice = settingWnd.getItemSelection(0, 3);
-        boostcpu_choice = settingWnd.getItemSelection(0, 4);
-        cardreaddma_choice = settingWnd.getItemSelection(0, 5);
-    } else {
-        nightly_choice = settingWnd.getItemSelection(0, 1);
-        dsmode_choice = settingWnd.getItemSelection(0, 2);
-        boostcpu_choice = settingWnd.getItemSelection(0, 3);
-        cardreaddma_choice = settingWnd.getItemSelection(0, 4);
-    }
+    if (loaderItem != (size_t)-1)
+        loader_choice = settingWnd.getItemSelection(0, loaderItem);
+    if (nightlyItem != (size_t)-1)
+        nightly_choice = settingWnd.getItemSelection(0, nightlyItem);
+    if (dsmodeItem != (size_t)-1)
+        dsmode_choice = settingWnd.getItemSelection(0, dsmodeItem);
+    if (boostcpuItem != (size_t)-1)
+        boostcpu_choice = settingWnd.getItemSelection(0, boostcpuItem);
+    if (cardreaddmaItem != (size_t)-1)
+        cardreaddma_choice = settingWnd.getItemSelection(0, cardreaddmaItem);
 
     if (loader_choice == (u8)-1) loader_choice = 2;
     if (nightly_choice == (u8)-1) nightly_choice = 2;

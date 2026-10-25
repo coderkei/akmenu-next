@@ -248,9 +248,11 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
 
         u8 loader = aRomInfo.saveInfo().getLoader();
         // loader = 0: pico, 1: nds-bootstrap, 2: global
+        const bool usePicoLoader = ((gs().pico && loader == 2) || loader == 0) &&
+                                   aFullPath[0] != 's' &&
+                                   (!isDsiWare || isDSiMode());
         if (aRomInfo.isNdz() ||
-            (!isDsiWare && (((gs().pico && loader == 2) || loader == 0) &&
-                            aFullPath[0] != 's'))) {  // regular DS ROMs on SD use nds-bootstrap
+            usePicoLoader) {
             launcher = new DSpicoLauncher();
         }
         else {

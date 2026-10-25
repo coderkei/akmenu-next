@@ -237,16 +237,18 @@ void initializeNdsBootstrapDonors() {
     debugOverlay::updateDonorStatus(savedIni, true);
 }
 
-void configureNdsBootstrapDonors(CIniFile& ini, bool is3DS, bool allowAutoDiscovery) {
+void configureNdsBootstrapDonors(CIniFile& ini, bool is3DS, bool allowAutoDiscovery,
+                                 const std::string& bootstrapIniPath) {
     const bool isDsiMode = isDSiMode();
     const bool restrictedDsi = allowAutoDiscovery && isDsiMode && !is3DS &&
                                *(vu32*)0x02FFFDF0 == 0;
     const bool dsiSoundCategory = restrictedDsi && *(vu32*)0x02FFE1A0 == 0x080037C0;
 
-    const std::string bootstrapIniPath =
-        fsManager().resolveSystemPath("/_nds/nds-bootstrap.ini");
+    const std::string selectedBootstrapIniPath =
+        bootstrapIniPath.empty() ? fsManager().resolveSystemPath("/_nds/nds-bootstrap.ini")
+                                : bootstrapIniPath;
     CIniFile previousIni;
-    const bool havePreviousIni = previousIni.LoadIniFile(bootstrapIniPath);
+    const bool havePreviousIni = previousIni.LoadIniFile(selectedBootstrapIniPath);
     std::string previousPaths[4];
     bool replaceMissing[4] = {false, false, false, false};
     bool needNandMount = false;
