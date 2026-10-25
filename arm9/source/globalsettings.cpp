@@ -45,6 +45,7 @@ cGlobalSettings::cGlobalSettings() {
     ignoreCrc16 = false;
     nightly = false;
     safeMode = false;
+    debug = false;
     show12hrClock = false;
     showCovers = true;
     playThemeMusic = true;
@@ -85,6 +86,7 @@ void cGlobalSettings::loadSettings() {
     boostCpu = ini.GetInt("system", "boostcpu", boostCpu);
     ignoreCrc16 = ini.GetInt("system", "ignorecrc16", ignoreCrc16);
     nightly = ini.GetInt("system", "nightly", nightly);
+    debug = ini.GetInt("system", "debug", debug);
     dma = ini.GetInt("system", "dma", dma);
     sdsave = ini.GetInt("system", "sdsave", sdsave);
     safeMode = ini.GetInt("system", "safemode", safeMode);
@@ -155,6 +157,7 @@ void cGlobalSettings::saveSettings() {
     ini.SetInt("system", "safemode", safeMode);
     ini.SetInt("system", "savedir", saveDir);
     ini.SetInt("system", "nightly", nightly);
+    ini.SetInt("system", "debug", debug);
     ini.SetInt("system", "Show12hrClock", show12hrClock);
     ini.SetInt("system", "showCovers", showCovers);
     ini.SetInt("system", "playThemeMusic", playThemeMusic);

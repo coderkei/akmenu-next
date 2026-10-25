@@ -23,13 +23,13 @@ const u32 kHaveSdCommand = 0x56484453;
 const u32 kNandStartCommand = 0x5453414E;
 const u32 kNandReadCommand = 0x4452414E;
 const u32 kGetConsoleIdCommand = 0x44494347;
+const u32 kConsoleIdFailed = 0x52454347; // 'GCER'
 
 static void nandSyncHandler(void) {
     volatile u32* const shared = (volatile u32*)kSharedCommandBase;
     const u32 command = shared[3];
     if (command != kHaveSdCommand && command != kNandStartCommand &&
         command != kNandReadCommand) {
-        // Other IPC sync users retain ownership of their shared state.
         return;
     }
 
@@ -58,7 +58,9 @@ static void nandSyncHandler(void) {
 }
 
 TWL_CODE static void setAesCtr(u32* ctr) {
-    for (int i = 0; i < 4; ++i) REG_AES_IV[i] = ctr[3 - i];
+    // REG_AES_IV is byte-addressed in legacy libnds; write all four words.
+    vu32* const ivWords = (vu32*)REG_AES_IV;
+    for (int i = 0; i < 4; ++i) ivWords[i] = ctr[3 - i];
 }
 
 TWL_CODE static void aesKey3Encrypt(void* in, void* out, void* iv) {
@@ -79,29 +81,32 @@ TWL_CODE static void aesKey3Encrypt(void* in, void* out, void* iv) {
     for (int i = 0; i < 16; i += 4) *((u32*)((u8*)out + i)) = REG_AES_RDFIFO;
 }
 
-TWL_CODE static void getConsoleId(u32 bufferAddress) {
+TWL_CODE static bool getConsoleId(u32 bufferAddress) {
     // Match TWiLight Menu++'s vblank boundary workaround for 3DS mode.
     while (REG_VCOUNT != 191) {}
     while (REG_VCOUNT == 191) {}
 
-    u8 base[16] = {0};
-    u8 input[16] = {0};
-    u8 iv[16] = {0};
+    u32 base[4] = {0};
+    u32 input[4] = {0};
+    u32 iv[4] = {0};
     u8* scratch = (u8*)bufferAddress + 0x200;
     u8* output = (u8*)bufferAddress;
-    u8* key3 = (u8*)0x40044D0;
 
     aesKey3Encrypt(input, base, iv);
     for (int i = 0; i < 16; ++i) {
+        bool found = false;
         for (int value = 0; value < 256; ++value) {
-            key3[i] = value & 0xFF;
+            AES_KEYSLOT3.normalkey[i] = value & 0xFF;
             aesKey3Encrypt(input, scratch, iv);
             if (memcmp(scratch, base, 16) == 0) {
                 output[i] = value;
+                found = true;
                 break;
             }
         }
+        if (!found) return false;
     }
+    return true;
 }
 }  // namespace
 
@@ -116,7 +121,6 @@ void pollNandConsoleIdRequest(void) {
 
     volatile u32* const command = (volatile u32*)0x02FFFD0C;
     if (*command == kGetConsoleIdCommand) {
-        getConsoleId(*(vu32*)0x02FFFD08);
-        *command = 0;
+        *command = getConsoleId(*(vu32*)0x02FFFD08) ? 0 : kConsoleIdFailed;
     }
 }

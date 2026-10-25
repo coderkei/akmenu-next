@@ -7,6 +7,8 @@
 #ifndef _H_F_XY
 #define _H_F_XY
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif

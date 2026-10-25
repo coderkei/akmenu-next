@@ -14,6 +14,7 @@
 #include "crypto.h"
 #include "sector0.h"
 #include "f_xy.h"
+#include "nandio.h"
 
 //#define SECTOR_SIZE 512
 #define CRYPT_BUF_LEN 64
@@ -30,21 +31,31 @@ static u8 crypt_buf[SECTOR_SIZE * CRYPT_BUF_LEN] ALIGN(32);
 
 static u32 fat_sig_fix_offset = 0;
 
-static u32 sector_buf32[SECTOR_SIZE/sizeof(u32)];
+static u32 sector_buf32[SECTOR_SIZE/sizeof(u32)] ALIGN(32);
 static u8 *sector_buf = (u8*)sector_buf32;
+static char nand_error[64] = "FAT volume not recognized";
+
+const char* nandio_get_error(void) {
+	return nand_error;
+}
 
 void nandio_set_fat_sig_fix(u32 offset) {
 	fat_sig_fix_offset = offset;
 }
 
-void getConsoleID(u8 *consoleID){
+static bool getConsoleID(u8 *consoleID){
 	u8 *fifo=(u8*)crypt_buf; //shared mem address that has our computed key3 stuff
 	DC_InvalidateRange(fifo, 0x400);
-	*(u32*)(0xCFFFD08) = (u32)fifo;
-	*(u32*)(0xCFFFD0C) = 0x44494347; // 'GCID'
-	while (*(u32*)(0xCFFFD0C) != 0) {
+	*(vu32*)(0xCFFFD08) = (u32)fifo;
+	*(vu32*)(0xCFFFD0C) = 0x44494347; // 'GCID'
+	while (*(vu32*)(0xCFFFD0C) == 0x44494347) {
 		swiDelay(100);
 	}
+	if (*(vu32*)(0xCFFFD0C) != 0) {
+		snprintf(nand_error, sizeof(nand_error), "AES key recovery failed");
+		return false;
+	}
+	DC_InvalidateRange(fifo, 0x400);
 
 	u8 key[16]; //key3 normalkey - keyslot 3 is used for DSi/twln NAND crypto
 	u8 key_xy[16]; //key3_y ^ key3_x
@@ -61,6 +72,7 @@ void getConsoleID(u8 *consoleID){
 
 	memcpy(&consoleID[0], &key_x[0], 4);
 	memcpy(&consoleID[4], &key_x[0xC], 4);
+	return true;
 }
 
 //---------------------------------------------------------------------------------
@@ -94,12 +106,17 @@ bool my_nand_ReadSectors(sec_t sector, sec_t numSectors,void* buffer) {
 	}
 
 	int result = sharedAddr[3];
-	
+	if (result != 0) {
+		snprintf(nand_error, sizeof(nand_error), "sector read failed (%d)", result);
+		return false;
+	}
+	DC_InvalidateRange(buffer, numSectors * 512);
 	return result == 0;
 }
 
 bool nandio_startup() {
 	int result = 0;
+	snprintf(nand_error, sizeof(nand_error), "FAT volume not recognized");
 	*(vu32*)0x0CFFFA00 = 0x54534554;
 	if (*(vu32*)0x0CFFFA00 == 0x54534554) {
 		sharedAddr = (vu32*)0x0CFFFA00;
@@ -116,7 +133,10 @@ bool nandio_startup() {
 	}
 	result = sharedAddr[3];
 
-	if (result==0) return false;
+	if (result==0) {
+		snprintf(nand_error, sizeof(nand_error), "SD/MMC unavailable");
+		return false;
+	}
 
 	sharedAddr[3] = 0x5453414E;
 	// if (my_sdio_isNoSGba) {
@@ -130,15 +150,19 @@ bool nandio_startup() {
 
 	result = sharedAddr[3];
 
-	if (result != 0) return false;
+	if (result != 0) {
+		snprintf(nand_error, sizeof(nand_error), "NAND init failed (%d)", result);
+		return false;
+	}
 
 	if (!my_nand_ReadSectors(0, 1, sector_buf)) return false;
 	is3DS = parse_ncsd(sector_buf, 0) == 0;
 
-	if (*(u32*)(0x2FFD7BC) == 0) {
+	const u8* emmcCid = (const u8*)memUncached((void*)0x02FFD7BC);
+	if (*(const vu32*)emmcCid == 0) {
 		// Get eMMC CID
-		*(u32*)(0xCFFFD0C) = 0x454D4D43;
-		while (*(u32*)(0xCFFFD0C) != 0) {
+		*(vu32*)(0xCFFFD0C) = 0x454D4D43;
+		while (*(vu32*)(0xCFFFD0C) != 0) {
 			swiDelay(100);
 		}
 	}
@@ -147,15 +171,19 @@ bool nandio_startup() {
 	u8 consoleIDfixed[8];
 
 	// Get ConsoleID
-	getConsoleID(consoleID);
+	if (!getConsoleID(consoleID)) return false;
 	for (int i = 0; i < 8; i++) {
 		consoleIDfixed[i] = consoleID[7-i];
 	}
 
 	// iprintf("sector 0 is %s\n", is3DS ? "3DS" : "DSi");
-	dsi_crypt_init((const u8*)consoleIDfixed, (const u8*)0x2FFD7BC, is3DS);
+	dsi_crypt_init((const u8*)consoleIDfixed, emmcCid, is3DS);
 	dsi_nand_crypt(sector_buf, sector_buf, 0, SECTOR_SIZE / AES_BLOCK_SIZE);
-	parse_mbr(sector_buf, is3DS, 0);
+    // Partition layouts vary; validate only the MBR signature.
+	if (sector_buf[0x1FE] != 0x55 || sector_buf[0x1FF] != 0xAA) {
+		snprintf(nand_error, sizeof(nand_error), "decrypted MBR invalid");
+		return false;
+	}
 
 	mbr_t *mbr = (mbr_t*)sector_buf;
 	nandio_set_fat_sig_fix(is3DS ? 0 : mbr->partitions[0].offset);

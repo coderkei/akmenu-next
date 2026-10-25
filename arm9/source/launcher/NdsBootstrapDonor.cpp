@@ -19,6 +19,8 @@
 
 #include <nds.h>
 
+#include "../debugoverlay.h"
+#include "fifotool.h"
 #include "../fsmngr.h"
 #include "../inifile.h"
 #include "../nand/nandio.h"
@@ -56,11 +58,7 @@ static bool isNandPath(const std::string& path) {
 static bool mountNand(void) {
     static bool nandMounted = false;
     if (nandMounted) return true;
-    if (!fatMountSimple("nand", &io_dsi_nand)) {
-        nandMounted = access("nand:/", F_OK) == 0;
-        return nandMounted;
-    }
-    nandMounted = access("nand:/", F_OK) == 0;
+    nandMounted = fatMountSimple("nand", &io_dsi_nand);
     return nandMounted;
 }
 
@@ -93,7 +91,11 @@ static bool makeAppPath(u32 titleType, u32 titleId, int appIndex,
     if (pathLength <= 0 || (size_t)pathLength >= sizeof(path)) return false;
 
     appPath.assign(path);
-    return isRegularFile(appPath);
+    FILE* app = fopen(appPath.c_str(), "rb");
+    if (!app) return false;
+    const bool readable = fgetc(app) != EOF;
+    fclose(app);
+    return readable;
 }
 
 static bool findInstalledApp(u32 titleType, u32 titleId, std::string& appPath) {
@@ -103,7 +105,6 @@ static bool findInstalledApp(u32 titleType, u32 titleId, std::string& appPath) {
 }
 
 static bool readSystemApp(std::string& appPath, u32& arm7Length) {
-    // These are the title ID words used by TWiLight Menu++'s SCFG-locked path.
     const u32 titleId = *(vu32*)0x02000428;
     const u32 titleType = *(vu32*)0x0200042C;
     if (!findInstalledApp(titleType, titleId, appPath)) return false;
@@ -171,8 +172,7 @@ static u32 dsiSoundTitleId(int region) {
 }
 
 static bool findRegionalSdk50Donor(int region, std::string& appPath) {
-    // Matches TWiLight Menu++'s installed SDK 5.0 DSiWare donor order and
-    // regional availability. A zero ID means that title is unavailable there.
+    // Zero denotes a title unavailable in that region.
     static const u32 kRegionalTitleIds[][6] = {
         {0x4B44394A, 0x4B443945, 0x4B443956, 0x4B443956, 0x4B443943, 0},
         {0x4B41444A, 0x4B414445, 0x4B414456, 0x4B414456, 0, 0},
@@ -198,6 +198,44 @@ static bool findDsiSoundDonor(int region, std::string& appPath) {
     return titleId != 0 && findInstalledApp(0x00030005, titleId, appPath);
 }
 }  // namespace
+
+void initializeNdsBootstrapDonors() {
+    if (!isDSiMode() || *(vu32*)0x02FFFDF0 != 0) {
+        debugOverlay::setDonorSearchStatus("not needed", "restricted auto-discovery not applicable");
+        return;
+    }
+
+    fifoSendValue32(FIFO_USER_01, MENU_MSG_IS_3DS);
+    fifoWaitValue32(FIFO_USER_01);
+    if (fifoGetValue32(FIFO_USER_01) != 0) {
+        debugOverlay::setDonorSearchStatus("not needed", "restricted auto-discovery not applicable");
+        return;
+    }
+
+    CIniFile donors;
+    configureNdsBootstrapDonors(donors, false, true);
+
+    // Preserve other INI settings during startup.
+    const std::string bootstrapIniPath =
+        fsManager().resolveSystemPath("/_nds/nds-bootstrap.ini");
+    CIniFile bootstrapIni;
+    bootstrapIni.LoadIniFile(bootstrapIniPath);
+    bool changed = false;
+    for (size_t i = 0; i < sizeof(kDonorKeys) / sizeof(kDonorKeys[0]); ++i) {
+        const std::string path = donors.GetString("NDS-BOOTSTRAP", kDonorKeys[i], "");
+        if (path != bootstrapIni.GetString("NDS-BOOTSTRAP", kDonorKeys[i], "")) {
+            bootstrapIni.SetString("NDS-BOOTSTRAP", kDonorKeys[i], path);
+            changed = true;
+        }
+    }
+    if (changed && !bootstrapIni.SaveIniFile(bootstrapIniPath)) {
+        debugOverlay::setDonorSearchStatus(NULL, "bootstrap INI write failed");
+    }
+
+    CIniFile savedIni;
+    savedIni.LoadIniFile(bootstrapIniPath);
+    debugOverlay::updateDonorStatus(savedIni, true);
+}
 
 void configureNdsBootstrapDonors(CIniFile& ini, bool is3DS, bool allowAutoDiscovery) {
     const bool isDsiMode = isDSiMode();
@@ -238,6 +276,10 @@ void configureNdsBootstrapDonors(CIniFile& ini, bool is3DS, bool allowAutoDiscov
 
     bool nandMounted = false;
     if (needNandMount && isDsiMode) nandMounted = mountNand();
+    const std::string nandStatus = !needNandMount || !isDsiMode
+                                     ? "not needed"
+                                     : nandMounted ? "mounted"
+                                                   : std::string("mount failed: ") + nandio_get_error();
 
     for (int i = 0; i < 4; ++i) {
         const std::string& path = previousPaths[i];
@@ -247,25 +289,34 @@ void configureNdsBootstrapDonors(CIniFile& ini, bool is3DS, bool allowAutoDiscov
         if ((!nandPath || nandMounted) && isRegularFile(path)) {
             ini.SetString("NDS-BOOTSTRAP", kDonorKeys[i], path);
         } else if (nandPath && isDsiMode && !nandMounted) {
-            // Keep an uncheckable NAND setting if the mount failed. Replacing
-            // it without being able to inspect the file could discard a valid
-            // manual path.
+            // Preserve manual NAND paths when they cannot be checked.
             ini.SetString("NDS-BOOTSTRAP", kDonorKeys[i], path);
         } else if (restrictedDsi && (i == sdk50Key || i == sdk5Key)) {
             replaceMissing[i] = true;
         }
     }
 
-    if (!restrictedDsi || !nandMounted) return;
+    if (!restrictedDsi) {
+        debugOverlay::setDonorSearchStatus(nandStatus.c_str(), "restricted auto-discovery not applicable");
+        return;
+    }
+    if (needNandMount && !nandMounted) {
+        debugOverlay::setDonorSearchStatus(nandStatus.c_str(), "not run: NAND unavailable");
+        return;
+    }
 
     const bool needsSdk50Donor = previousPaths[sdk50Key].empty() || replaceMissing[sdk50Key];
     const bool needsSdk5Donor = previousPaths[sdk5Key].empty() || replaceMissing[sdk5Key];
-    if (!needsSdk50Donor && !needsSdk5Donor) return;
+    if (!needsSdk50Donor && !needsSdk5Donor) {
+        debugOverlay::setDonorSearchStatus(nandStatus.c_str(), "existing donor entries retained");
+        return;
+    }
 
     std::string systemAppPath;
     u32 systemAppArm7Length = 0;
     const bool haveSystemApp = readSystemApp(systemAppPath, systemAppArm7Length);
 
+    bool sdk50DonorFound = false;
     if (needsSdk50Donor) {
         bool donorFound = false;
         if (haveSystemApp && isSdk50DonorLength(systemAppArm7Length, dsiSoundCategory)) {
@@ -281,12 +332,26 @@ void configureNdsBootstrapDonors(CIniFile& ini, bool is3DS, bool allowAutoDiscov
                                             : findRegionalSdk50Donor(region, alternateDonor);
             if (foundAlternate) {
                 ini.SetString("NDS-BOOTSTRAP", kDonorKeys[sdk50Key], alternateDonor);
+                donorFound = true;
             }
         }
+        sdk50DonorFound = donorFound;
     }
 
+    bool sdk5DonorFound = false;
     if (needsSdk5Donor && haveSystemApp &&
         isSdk5DonorLength(systemAppArm7Length, dsiSoundCategory)) {
         ini.SetString("NDS-BOOTSTRAP", kDonorKeys[sdk5Key], systemAppPath);
+        sdk5DonorFound = true;
+    }
+
+    if (sdk50DonorFound || sdk5DonorFound) {
+        debugOverlay::setDonorSearchStatus(nandStatus.c_str(), "compatible donor configured");
+    } else {
+        const int region = readNandRegion();
+        debugOverlay::setDonorSearchStatus(
+                nandStatus.c_str(), region < REGION_JAPAN || region > REGION_KOREA
+                                    ? "region unavailable"
+                                    : "no compatible installed donor found");
     }
 }

@@ -25,6 +25,7 @@
 #include "../ui/msgbox.h"
 #include "../ui/progresswnd.h"
 #include "ILauncher.h"
+#include "../debugoverlay.h"
 #include "NdsBootstrapDonor.h"
 #include "NdsBootstrapLauncher.h"
 #include "nds_loader_arm9.h"
@@ -119,6 +120,7 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg,
         configureNdsBootstrapDonors(ini, false, false);
         ini.SetString("NDS-BOOTSTRAP", "DSI_MODE", 0);
         ini.SaveIniFile("/_nds/nds-bootstrap.ini");
+        debugOverlay::updateDonorStatus(ini, false);
         return true;
     }
 
@@ -249,6 +251,7 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg,
     }
 
     ini.SaveIniFile("/_nds/nds-bootstrap.ini");
+    debugOverlay::updateDonorStatus(ini, !homebrewLaunch);
 
     return true;
 }

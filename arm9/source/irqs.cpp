@@ -14,6 +14,7 @@
 #include "calendarwnd.h"
 #include "coverwnd.h"
 #include "dbgtool.h"
+#include "debugoverlay.h"
 #include "diskicon.h"
 #include "globalsettings.h"
 #include "timer.h"
@@ -54,6 +55,7 @@ void cIRQ::redrawTopScreen() {
         coverWindow().drawBackdrop();
         coverWindow().draw();
     }
+    debugOverlay::draw();
     gdi().present(GE_SUB);
 }
 

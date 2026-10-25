@@ -8,4 +8,5 @@
 
 class CIniFile;
 
+void initializeNdsBootstrapDonors();
 void configureNdsBootstrapDonors(CIniFile& ini, bool is3DS, bool allowAutoDiscovery);

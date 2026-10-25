@@ -18,7 +18,9 @@
 
 #include <sys/stat.h>
 #include "dbgtool.h"
+#include "debugoverlay.h"
 #include "fsmngr.h"
+#include "launcher/NdsBootstrapDonor.h"
 
 namespace {
 bool directoryExists(const std::string& path) {
@@ -182,6 +184,8 @@ int main(int argc, char* argv[]) {
     if (themeResult == THEME_SELECTION_FAILED) showNoValidThemesMessage();
 
     uiSettings().loadSettings();
+    debugOverlay::initialize();
+    initializeNdsBootstrapDonors();
 
     bool saveListOK = saveManager().importSaveList(SFN_CUSTOM_SAVELIST, SFN_OFFICIAL_SAVELIST);
     if (!saveListOK) {

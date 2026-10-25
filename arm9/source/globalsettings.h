@@ -72,6 +72,7 @@ class cGlobalSettings {
     bool nightly;
     bool dma;
     bool safeMode;
+    bool debug;
     bool show12hrClock;
     bool showCovers;
     bool playThemeMusic;

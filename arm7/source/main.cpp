@@ -203,12 +203,10 @@ int main() {
     // read User Settings from firmware
     readUserSettings();
 
-    // Share ARM7's SCFG state with ARM9, matching TWiLight Menu++'s
-    // restricted-mode detection.
+    // Share ARM7's SCFG state with ARM9.
     *(volatile u32*)0x02FFFDF0 = REG_SCFG_EXT;
 
-    // Detect the DSiWarehax MBK6 layout used to select the DSi Sound donor
-    // category when SCFG is locked.
+    // Detect the DSiWarehax MBK6 layout.
     if (isDSiMode() && REG_SCFG_EXT == 0) {
         const u32 wordBak = *(volatile u32*)0x037C0000;
         *(volatile u32*)0x037C0000 = 0x414C5253;
