@@ -44,9 +44,16 @@ bool loadBannerFromBin(DSRomInfo& rominfo, const std::string& path) {
         return false;
     }
 
-    size_t read = fread(&rominfo.banner(), 1, sizeof(tNDSBanner), f);
+    // Keep the banner buffer off the ARM9 stack and avoid replacing a valid
+    // fallback with a partial banner if a sidecar is truncated.
+    static tNDSBanner loadedBanner;
+    size_t read = fread(&loadedBanner, 1, sizeof(loadedBanner), f);
     fclose(f);
-    return read == sizeof(tNDSBanner);
+    if (read != sizeof(loadedBanner)) return false;
+
+    memcpy(&rominfo.banner(), &loadedBanner, sizeof(loadedBanner));
+    rominfo.setExtIcon("");
+    return true;
 }
 
 bool isNativeDSRom(const std::string& filename) {
@@ -69,6 +76,9 @@ std::string gameTitleFor(const std::string& filename) {
         const cPluginManager::PluginAssociation* plugin = pluginManager().findPlugin(filename);
         if (plugin) hasBanner = loadBannerFromBin(rominfo, plugin->iconPath);
     }
+
+    // A file-specific banner overrides both the ROM banner and plugin icon.
+    if (loadBannerFromBin(rominfo, filename + ".bin")) hasBanner = true;
 
     if (!hasBanner) return "";
     return unicode_to_local_string(rominfo.banner().titles[gs().language], 128, NULL);
@@ -462,6 +472,9 @@ bool cMainList::enterDir(const std::string& dirName) {
                         rominfo.setExtIcon(extName.substr(1));
                 }
                 if (allowUnknown && !rominfo.isExtIcon()) rominfo.setExtIcon("unknown");
+
+                // Sidecars use the full filename, e.g. Mario.nds.bin.
+                loadBannerFromBin(rominfo, filename + ".bin");
             }
             _romInfoList.push_back(rominfo);
         }
