@@ -91,6 +91,11 @@ enum DISPLAY_SAVE_TYPE {
 #define SAVE_INFO_EX_CARD_READ_DMA (BIT(21))
 #define SAVE_INFO_EX_GLOBAL_CARD_READ_DMA (BIT(22))
 
+#define SAVE_INFO_EX_DSIWARE_BOOTER_MASK 0x03
+#define SAVE_INFO_EX_DSIWARE_BOOTER_GLOBAL 0
+#define SAVE_INFO_EX_DSIWARE_BOOTER_NDS_BOOTSTRAP 1
+#define SAVE_INFO_EX_DSIWARE_BOOTER_UNLAUNCH 2
+
 typedef struct SAVE_INFO_EX_T {
     u8 gameTitle[12];
     u8 gameCode[4];
@@ -130,6 +135,18 @@ typedef struct SAVE_INFO_EX_T {
     };
     u8 getCardReadDma(void) {
         return getFlag(SAVE_INFO_EX_CARD_READ_DMA, SAVE_INFO_EX_GLOBAL_CARD_READ_DMA, true);
+    };
+    u8 getDsiWareBooter(void) const {
+        const u8 value = reserved[0] & SAVE_INFO_EX_DSIWARE_BOOTER_MASK;
+        return value <= SAVE_INFO_EX_DSIWARE_BOOTER_UNLAUNCH
+                       ? value
+                       : SAVE_INFO_EX_DSIWARE_BOOTER_GLOBAL;
+    };
+    void setDsiWareBooter(u8 value) {
+        if (value > SAVE_INFO_EX_DSIWARE_BOOTER_UNLAUNCH)
+            value = SAVE_INFO_EX_DSIWARE_BOOTER_GLOBAL;
+        reserved[0] = (reserved[0] & ~SAVE_INFO_EX_DSIWARE_BOOTER_MASK) |
+                      (value & SAVE_INFO_EX_DSIWARE_BOOTER_MASK);
     };
     bool isDownloadPlay(void) {
         return getState(SAVE_INFO_EX_DOWNLOAD_PLAY, SAVE_INFO_EX_GLOBAL_DOWNLOAD_PLAY, false,

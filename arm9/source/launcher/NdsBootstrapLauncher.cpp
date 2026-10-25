@@ -157,16 +157,108 @@ static std::string replaceSaveExtension(const std::string& path, const char* ext
     return path.substr(0, dot) + extension;
 }
 
-static bool getDsiWareSaveSizes(const std::string& romPath, u32& publicSize,
-                                u32& privateSize) {
-    // sNDSHeaderExt::pubSavSize and prvSavSize are at 0x238 and 0x23C.
+static bool getDsiWareHeaderInfo(const std::string& romPath, u32& twlRomSize,
+                                 u32& publicSize, u32& privateSize) {
+    // sNDSHeaderExt::twlRomSize, pubSavSize, and prvSavSize are at 0x210, 0x238, and 0x23C.
     FILE* rom = fopen(romPath.c_str(), "rb");
     if (!rom) return false;
-    const bool readOk = fseek(rom, 0x238, SEEK_SET) == 0 &&
+    const bool readOk = fseek(rom, 0x210, SEEK_SET) == 0 &&
+                        fread(&twlRomSize, sizeof(twlRomSize), 1, rom) == 1 &&
+                        fseek(rom, 0x238, SEEK_SET) == 0 &&
                         fread(&publicSize, sizeof(publicSize), 1, rom) == 1 &&
                         fread(&privateSize, sizeof(privateSize), 1, rom) == 1;
     fclose(rom);
     return readOk;
+}
+
+static bool moveDsiWareSaveBesideRom(const std::string& configuredPath,
+                                     const std::string& romSidecarPath) {
+    if (configuredPath == romSidecarPath || access(configuredPath.c_str(), F_OK) != 0 ||
+        access(romSidecarPath.c_str(), F_OK) == 0) {
+        return true;
+    }
+    return rename(configuredPath.c_str(), romSidecarPath.c_str()) == 0;
+}
+
+static bool appendUtf8Codepoint(const std::string& text, size_t& offset, u16* output,
+                                size_t capacity, size_t& outputLength) {
+    const u8 first = (u8)text[offset++];
+    u32 codepoint;
+    u32 minimum;
+    size_t continuationCount;
+    if (first < 0x80) {
+        codepoint = first;
+        minimum = 0;
+        continuationCount = 0;
+    } else if ((first & 0xE0) == 0xC0) {
+        codepoint = first & 0x1F;
+        minimum = 0x80;
+        continuationCount = 1;
+    } else if ((first & 0xF0) == 0xE0) {
+        codepoint = first & 0x0F;
+        minimum = 0x800;
+        continuationCount = 2;
+    } else if ((first & 0xF8) == 0xF0) {
+        codepoint = first & 0x07;
+        minimum = 0x10000;
+        continuationCount = 3;
+    } else {
+        return false;
+    }
+
+    if (offset + continuationCount > text.size()) return false;
+    for (size_t ii = 0; ii < continuationCount; ++ii) {
+        const u8 next = (u8)text[offset++];
+        if ((next & 0xC0) != 0x80) return false;
+        codepoint = (codepoint << 6) | (next & 0x3F);
+    }
+    if (codepoint < minimum || codepoint > 0x10FFFF ||
+        (codepoint >= 0xD800 && codepoint <= 0xDFFF)) {
+        return false;
+    }
+
+    const size_t needed = codepoint > 0xFFFF ? 2 : 1;
+    if (outputLength + needed > capacity) return false;
+    if (needed == 1) {
+        output[outputLength++] = (u16)codepoint;
+    } else {
+        codepoint -= 0x10000;
+        output[outputLength++] = (u16)(0xD800 | (codepoint >> 10));
+        output[outputLength++] = (u16)(0xDC00 | (codepoint & 0x3FF));
+    }
+    return true;
+}
+
+static bool makeUnlaunchPath(const std::string& romPath, u16* output, size_t capacity) {
+    std::string path = romPath;
+    if (path.compare(0, 4, "sd:/") == 0) path.replace(0, 4, "sdmc:/");
+
+    size_t inputOffset = 0;
+    size_t outputLength = 0;
+    while (inputOffset < path.size()) {
+        if (!appendUtf8Codepoint(path, inputOffset, output, capacity, outputLength)) return false;
+    }
+    output[outputLength] = 0;
+    return true;
+}
+
+static bool bootDsiWareWithUnlaunch(const std::string& romPath) {
+    u16 unlaunchPath[0x104] = {0};
+    if (!makeUnlaunchPath(romPath, unlaunchPath, 0x103)) return false;
+
+    memcpy((void*)0x02000800, "AutoLoadInfo", 12);
+    *(vu16*)0x0200080C = 0x3F0;
+    *(vu16*)0x0200080E = 0;
+    *(vu32*)0x02000810 = BIT(0) | BIT(1);
+    *(vu16*)0x02000814 = 0x7FFF;
+    *(vu16*)0x02000816 = 0x7FFF;
+    memset((void*)0x02000818, 0, 0x20 + 0x208 + 0x1C0);
+    memcpy((void*)0x02000838, unlaunchPath, sizeof(unlaunchPath));
+    *(vu16*)0x0200080E = swiCRC16(0xFFFF, (void*)0x02000810, 0x3F0);
+
+    DC_FlushAll();
+    fifoSendValue32(FIFO_USER_01, MENU_MSG_UNLAUNCH_BOOT);
+    while (true) swiWaitForVBlank();
 }
 
 static bool makeDsiSdAlias(const std::string& path, char* alias, size_t aliasSize) {
@@ -502,18 +594,73 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
         return launchHbStrap(savePath);
     }
 
-    //has the user used nds-bootstrap before?
-    if(access(ndsBootstrapCheck.c_str(), F_OK) != 0){
-        akui::messageBox(NULL, LANG("nds bootstrap", "firsttimetitle"), LANG("nds bootstrap", "firsttime"), MB_OK);
-    }
-
     _romInfo.MayBeDSRom(romPath);
     bool dsiWare = _romInfo.isDSiWare();
+    u32 dsiWareTwlRomSize = 0;
+    u32 dsiWarePublicSaveSize = 0;
+    u32 dsiWarePrivateSaveSize = 0;
 
     // DSiWare saves and bootstrap paths are supported from the DSi SD card in DSi mode.
     if (dsiWare && (!isDSiMode() || romPath.compare(0, 4, "sd:/") != 0)) {
         printError("DSiWare launch requires a ROM on the DSi SD card and DSi mode.");
         return false;
+    }
+
+    bool useUnlaunch = false;
+    if (dsiWare) {
+        if (!getDsiWareHeaderInfo(romPath, dsiWareTwlRomSize, dsiWarePublicSaveSize,
+                                  dsiWarePrivateSaveSize)) {
+            printError("Could not read the DSiWare ROM header.");
+            return false;
+        }
+
+        const u8 booterOverride = _romInfo.saveInfo().getDsiWareBooter();
+        const bool requestedUnlaunch =
+                booterOverride == SAVE_INFO_EX_DSIWARE_BOOTER_UNLAUNCH ||
+                ((booterOverride == SAVE_INFO_EX_DSIWARE_BOOTER_GLOBAL ||
+                  booterOverride > SAVE_INFO_EX_DSIWARE_BOOTER_UNLAUNCH) &&
+                 gs().dsiWareUnlaunch);
+        const bool unlaunchCanBootTitle =
+                dsiWareTwlRomSize < 0x04000000 && *(vu32*)0x02FFFDF0 != 0;
+        useUnlaunch = requestedUnlaunch && unlaunchCanBootTitle && !is3DS();
+
+        if (useUnlaunch) {
+            mRomPath = romPath;
+            mSavePath = savePath;
+            mDsiWarePubPath = replaceSaveExtension(mRomPath, ".pub");
+            mDsiWarePrvPath = replaceSaveExtension(mRomPath, ".prv");
+            const std::string configuredPubPath = replaceSaveExtension(mSavePath, ".pub");
+            const std::string configuredPrvPath = replaceSaveExtension(mSavePath, ".prv");
+
+            if (!moveDsiWareSaveBesideRom(configuredPubPath, mDsiWarePubPath) ||
+                !moveDsiWareSaveBesideRom(configuredPrvPath, mDsiWarePrvPath)) {
+                printError("Could not move the DSiWare save files beside the ROM for Unlaunch.");
+                return false;
+            }
+
+            progressWnd().setTipText("Preparing DSiWare saves...");
+            progressWnd().show();
+            progressWnd().setPercent(0);
+            if ((dsiWarePublicSaveSize > 0 &&
+                 !ensureDsiWareSave(mDsiWarePubPath, dsiWarePublicSaveSize)) ||
+                (dsiWarePrivateSaveSize > 0 &&
+                 !ensureDsiWareSave(mDsiWarePrvPath, dsiWarePrivateSaveSize))) {
+                progressWnd().hide();
+                printError("Could not create the DSiWare save files on the SD card.");
+                return false;
+            }
+
+            progressWnd().hide();
+            if (!bootDsiWareWithUnlaunch(mRomPath)) {
+                printError("Could not prepare the Unlaunch DSiWare boot path.");
+                return false;
+            }
+        }
+    }
+
+    //has the user used nds-bootstrap before?
+    if(access(ndsBootstrapCheck.c_str(), F_OK) != 0){
+        akui::messageBox(NULL, LANG("nds bootstrap", "firsttimetitle"), LANG("nds bootstrap", "firsttime"), MB_OK);
     }
 
     progressWnd().setTipText("Initializing nds-bootstrap...");
@@ -549,14 +696,17 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
     mFlags = flags;
 
     if (dsiWare) {
-        mDsiWarePubPath = replaceSaveExtension(mSavePath, ".pub");
-        mDsiWarePrvPath = replaceSaveExtension(mSavePath, ".prv");
+        const std::string romPubPath = replaceSaveExtension(mRomPath, ".pub");
+        const std::string romPrvPath = replaceSaveExtension(mRomPath, ".prv");
+        const std::string configuredPubPath = replaceSaveExtension(mSavePath, ".pub");
+        const std::string configuredPrvPath = replaceSaveExtension(mSavePath, ".prv");
+        mDsiWarePubPath = access(romPubPath.c_str(), F_OK) == 0 ? romPubPath : configuredPubPath;
+        mDsiWarePrvPath = access(romPrvPath.c_str(), F_OK) == 0 ? romPrvPath : configuredPrvPath;
 
-        u32 publicSaveSize = 0;
-        u32 privateSaveSize = 0;
-        if (!getDsiWareSaveSizes(mRomPath, publicSaveSize, privateSaveSize) ||
-            (publicSaveSize > 0 && !ensureDsiWareSave(mDsiWarePubPath, publicSaveSize)) ||
-            (privateSaveSize > 0 && !ensureDsiWareSave(mDsiWarePrvPath, privateSaveSize))) {
+        if ((dsiWarePublicSaveSize > 0 &&
+             !ensureDsiWareSave(mDsiWarePubPath, dsiWarePublicSaveSize)) ||
+            (dsiWarePrivateSaveSize > 0 &&
+             !ensureDsiWareSave(mDsiWarePrvPath, dsiWarePrivateSaveSize))) {
             progressWnd().hide();
             printError("Could not create the DSiWare save files on the SD card.");
             return false;

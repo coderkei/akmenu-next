@@ -663,6 +663,7 @@ void cMainWnd::setParam(void) {
     size_t ndsCardDmaItem;
     size_t ndsLanguageOverrideItem;
     size_t ndsPhatColorItem = (size_t)-1;
+    size_t ndsDsiWareBooterItem = (size_t)-1;
     size_t ndsHomebrewLoaderItem = (size_t)-1;
 
     if (fsManager().isFlashcart()) {
@@ -714,6 +715,16 @@ void cMainWnd::setParam(void) {
         _values.push_back(LANG("switches", "Enable"));
         ndsPhatColorItem = ndsItem++;
         settingWnd.addSettingItem(LANG("nds bootstrap", "phatCol"), _values, gs().phatCol);
+    }
+
+    if (isDSiMode()) {
+        _values.clear();
+        _values.push_back(lang().GetString("nds bootstrap", "nds-bootstrap", "nds-bootstrap"));
+        _values.push_back(lang().GetString("nds bootstrap", "Unlaunch", "Unlaunch"));
+        ndsDsiWareBooterItem = ndsItem++;
+        settingWnd.addSettingItem(
+                lang().GetString("nds bootstrap", "dsiware booter", "DSiWare booter"),
+                _values, gs().dsiWareUnlaunch);
     }
 
     _values.clear();
@@ -817,6 +828,10 @@ void cMainWnd::setParam(void) {
     }
     if (isDSiMode()) {
         gs().phatCol = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsPhatColorItem);
+    }
+    if (ndsDsiWareBooterItem != (size_t)-1) {
+        gs().dsiWareUnlaunch =
+                settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsDsiWareBooterItem);
     }
     gs().hbStrap = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsHomebrewLoaderItem);
 

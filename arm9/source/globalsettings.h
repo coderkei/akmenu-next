@@ -86,6 +86,7 @@ class cGlobalSettings {
     int hbStrap;
     bool overridePluginDefaults;
     bool pico;
+    bool dsiWareUnlaunch;
     int iconSource;
     int cardReadDma;
     int fileSortMode;

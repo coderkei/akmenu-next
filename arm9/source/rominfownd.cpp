@@ -248,7 +248,7 @@ void cRomInfoWnd::setRomInfo(const DSRomInfo& romInfo) {
     _buttonFlash.hide();
     _buttonCopy.hide();
     _buttonCheats.hide();
-    if (_romInfo.isDSRom() && !_romInfo.isHomebrew()) {
+    if (_romInfo.isDSRom() && (!_romInfo.isHomebrew() || _romInfo.isDSiWare())) {
         const char* stLangStrings[] = {"Unknown", "No Save", "4K", "64K", "512K", "2M", "4M", "8M",
                                        "Unknown", "Unknown", "1M", "16M", "32M",  "64M"};
         if (_romInfo.saveInfo().saveType < sizeof(stLangStrings) / sizeof(char*)) {
@@ -259,7 +259,7 @@ void cRomInfoWnd::setRomInfo(const DSRomInfo& romInfo) {
             _saveTypeText = "";
         addCode();
         _buttonSaveType.show();
-        if (gs().cheatDB) _buttonCheats.show();
+        if (!_romInfo.isHomebrew() && gs().cheatDB) _buttonCheats.show();
     } else if (isGbaRom) {
         _buttonFlash.show();
         _buttonSaveType.setText("\x03 " + LANG("exp window", "flash to nor"));
@@ -291,7 +291,7 @@ void cRomInfoWnd::onShow() {
 #define ITEM_ICON 1, 2
 
 void cRomInfoWnd::pressSaveType(void) {
-    if (!_romInfo.isDSRom() || _romInfo.isHomebrew()) return;
+    if (!_romInfo.isDSRom() || (_romInfo.isHomebrew() && !_romInfo.isDSiWare())) return;
 
     cSettingWnd settingWnd(0, 0, 252, 188, this, LANG("save type", "tab1"));
     std::vector<std::string> _values;
@@ -310,14 +310,17 @@ void cRomInfoWnd::pressSaveType(void) {
     settingWnd.addSettingItem(
             LANG("save type", "text"), _values,
             cSaveManager::SaveTypeToDisplaySaveType((SAVE_TYPE)_romInfo.saveInfo().saveType));
+    size_t firstTabItemCount = 1;
+    const bool hasLoaderSetting = fsManager().isFlashcart() && !_romInfo.isDSiWare();
 
-    if (fsManager().isFlashcart()){
+    if (hasLoaderSetting){
         _values.clear();
         _values.push_back("Pico-Loader");
         _values.push_back("nds-bootstrap");
         _values.push_back(LANG("save type", "default"));
         settingWnd.addSettingItem(LANG("nds bootstrap", "loader"), _values,
                                 _romInfo.saveInfo().getLoader());
+        firstTabItemCount++;
     }
 
     if((!gs().pico && _romInfo.saveInfo().getLoader() == 2) || _romInfo.saveInfo().getLoader() == 1){
@@ -348,6 +351,19 @@ void cRomInfoWnd::pressSaveType(void) {
         _values.push_back(LANG("save type", "default"));
         settingWnd.addSettingItem(LANG("nds bootstrap", "carddma"), _values,
                                 _romInfo.saveInfo().getCardReadDma());
+        firstTabItemCount += 4;
+    }
+
+    size_t dsiWareBooterItem = (size_t)-1;
+    if (_romInfo.isDSiWare()) {
+        _values.clear();
+        _values.push_back(lang().GetString("nds bootstrap", "Global", "Global"));
+        _values.push_back(lang().GetString("nds bootstrap", "nds-bootstrap", "nds-bootstrap"));
+        _values.push_back(lang().GetString("nds bootstrap", "Unlaunch", "Unlaunch"));
+        dsiWareBooterItem = firstTabItemCount++;
+        settingWnd.addSettingItem(
+                lang().GetString("nds bootstrap", "dsiware booter", "DSiWare booter"),
+                _values, _romInfo.saveInfo().getDsiWareBooter());
     }
 
     settingWnd.addSettingTab(LANG("save type", "tab2"));
@@ -411,7 +427,7 @@ void cRomInfoWnd::pressSaveType(void) {
     }
 
     u8 loader_choice = 2, nightly_choice = 2, dsmode_choice = 2, boostcpu_choice = 2, cardreaddma_choice = 2;
-    if (fsManager().isFlashcart()) {
+    if (hasLoaderSetting) {
         loader_choice = settingWnd.getItemSelection(0, 1);
         nightly_choice = settingWnd.getItemSelection(0, 2);
         dsmode_choice = settingWnd.getItemSelection(0, 3);
@@ -434,6 +450,11 @@ void cRomInfoWnd::pressSaveType(void) {
             0, 0, 0, settingWnd.getItemSelection(ITEM_CHEATS),
             settingWnd.getItemSelection(ITEM_SAVESLOT), 2, 0, 0, settingWnd.getItemSelection(ITEM_ICON), 0, 0,
             loader_choice, nightly_choice, dsmode_choice, boostcpu_choice, cardreaddma_choice);
+
+    if (dsiWareBooterItem != (size_t)-1) {
+        _romInfo.saveInfo().setDsiWareBooter(
+                settingWnd.getItemSelection(0, dsiWareBooterItem));
+    }
 
     saveManager().updateCustomSaveList(_romInfo.saveInfo());
 }

@@ -137,6 +137,17 @@ static u8 check3DS(void) {
     return is3DS;
 }
 
+static void returnToDsiMenu(void) {
+    if (isDSiMode() && REG_SNDEXTCNT != 0) {
+        my_i2cWriteRegister(0x4A, 0x12, my_i2cReadRegister(0x4A, 0x12) | 1);
+        my_i2cWriteRegister(0x4A, 0x70, 0x01);
+        my_i2cWriteRegister(0x4A, 0x11, 0x01);
+    } else {
+        writePowerManagement(PM_CONTROL2_REG,
+                             readPowerManagement(PM_CONTROL2_REG) | PM_CONTROL2_RESET);
+    }
+}
+
 static void menuValue32Handler(u32 value, void* data) {
     switch (value) {
         case MENU_MSG_GBA: {
@@ -152,6 +163,9 @@ static void menuValue32Handler(u32 value, void* data) {
         case MENU_MSG_ARM7_REBOOT:
             prepareReset();
             swiSoftReset();
+            break;
+        case MENU_MSG_UNLAUNCH_BOOT:
+            returnToDsiMenu();
             break;
         case MENU_MSG_ARM7_REBOOT_PICOLOADER:
             reset_pico = true;
