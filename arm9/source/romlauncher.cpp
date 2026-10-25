@@ -142,17 +142,15 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
     std::string saveName;
     std::string useSavesPath;
     ILauncher* launcher = nullptr;
-    bool isDsiWare;
+    const bool isDsiWare = aRomInfo.isDSiWare();
     bool hb = false;
 
-    if (!aRomInfo.isHomebrew()) {
+    if (!aRomInfo.isHomebrew() || isDsiWare) {
         u32 gameCode;
         memcpy(&gameCode, aRomInfo.saveInfo().gameCode, sizeof(gameCode));  // because alignment
         bool isBigSave = false;
         u32 bigSaveSize = 8 * 1024 * 1024;
         u32 bigSaveMask = 14;
-        // check for DSiWare
-        isDsiWare = aRomInfo.isDSiWare();
         // reading speed setting
         std::string disk = aFullPath.substr(0, 5);
         // bool dma = false, protection = aRomInfo.saveInfo().isProtection();
@@ -250,7 +248,9 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
 
         u8 loader = aRomInfo.saveInfo().getLoader();
         // loader = 0: pico, 1: nds-bootstrap, 2: global
-        if(aRomInfo.isNdz() || (((gs().pico && loader == 2) || loader == 0) && aFullPath[0] != 's')){ //roms can only be launched from the sd with nds-bootstrap
+        if (aRomInfo.isNdz() ||
+            (!isDsiWare && (((gs().pico && loader == 2) || loader == 0) &&
+                            aFullPath[0] != 's'))) {  // regular DS ROMs on SD use nds-bootstrap
             launcher = new DSpicoLauncher();
         }
         else {
@@ -273,7 +273,7 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
                 break;
         }
     }
-    if (!aRomInfo.isHomebrew()) {
+    if (!aRomInfo.isHomebrew() || isDsiWare) {
         cRecent::AddToRecent(aFullPath);
     }
     themeMusic().stop();

@@ -29,6 +29,8 @@ class NdsBootstrapLauncher : public ILauncher {
     bool hotkeyCheck;
     std::string mRomPath;
     std::string mSavePath;
+    std::string mDsiWarePubPath;
+    std::string mDsiWarePrvPath;
     u32 mFlags;
     DSRomInfo _romInfo;
 };

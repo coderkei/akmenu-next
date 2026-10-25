@@ -17,7 +17,7 @@ SOURCE_PATH := ../arm9
 # all directories are relative to this makefile
 #---------------------------------------------------------------------------------
 BUILD    := build
-SOURCES  := $(SOURCE_PATH)/source $(SOURCE_PATH)/source/ui $(SOURCE_PATH)/source/font $(SOURCE_PATH)/source/launcher/slot2 $(SOURCE_PATH)/source/launcher $(SOURCE_PATH)/source/saves $(SOURCE_PATH)/source/nand
+SOURCES  := $(SOURCE_PATH)/source $(SOURCE_PATH)/source/ui $(SOURCE_PATH)/source/font $(SOURCE_PATH)/source/launcher/slot2 $(SOURCE_PATH)/source/launcher $(SOURCE_PATH)/source/launcher/libfat_ext $(SOURCE_PATH)/source/saves $(SOURCE_PATH)/source/nand
 INCLUDES := $(SOURCE_PATH)/include ../share $(SOURCES)
 DATA     := $(SOURCE_PATH)/data ../data
 GRAPHICS :=
@@ -63,7 +63,7 @@ export VPATH := $(foreach dir,$(SOURCES),$(CURDIR)/$(dir))\
 
 export DEPSDIR := $(CURDIR)/$(BUILD)
 
-CFILES   := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
+CFILES   := $(filter-out tonccpy.c,$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c))))
 CPPFILES := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 SFILES   := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 PNGFILES := $(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.png)))

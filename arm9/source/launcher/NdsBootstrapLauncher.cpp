@@ -34,6 +34,151 @@
 #include "slot2/io_g6_common.h"
 #include "slot2/io_m3_common.h"
 #include "slot2/io_sc_common.h"
+#include "libfat_ext/fat_ext.h"
+
+namespace {
+struct DsiWareFatHeader {
+    u8 bootJump[3];
+    u8 oemName[8];
+    u16 bytesPerSector;
+    u8 sectorsPerCluster;
+    u16 reservedSectors;
+    u8 numberOfFats;
+    u16 rootEntryCount;
+    u16 totalSectors;
+    u8 mediaDescriptor;
+    u16 fatSize;
+    u16 sectorsPerTrack;
+    u16 numberOfHeads;
+    u32 hiddenSectors;
+    u32 totalSectors32;
+    u8 driveNumber;
+    u8 reserved;
+    u8 bootSignature;
+    u32 volumeId;
+    u8 volumeLabel[11];
+    u8 fileSystemType[8];
+    u8 bootCode[448];
+    u16 bootSectorSignature;
+} __attribute__((packed));
+
+static_assert(sizeof(DsiWareFatHeader) == 0x200, "DSiWare FAT boot sector must be 512 bytes");
+
+static u32 alignDsiWareValue(u32 value, u32 multiple) {
+    const u32 remainder = value % multiple;
+    return remainder ? value + multiple - remainder : value;
+}
+
+// DSiWare save images follow TWiLightMenu++'s formatter, based on NTM's sav.c.
+static bool createDsiWareSave(const std::string& path, u32 size) {
+    const u32 sectorSize = 0x200;
+    if (size < sectorSize) return false;
+
+    const u32 maxSectors = size / sectorSize;
+    if (maxSectors > 0xFFFF) return false;
+
+    u32 sectorCount = 1;
+    u32 sectorsPerTrack = 1;
+    u32 numberOfHeads = 1;
+    u32 nextSectorCount = 0;
+    while (nextSectorCount <= maxSectors) {
+        nextSectorCount = sectorsPerTrack * (numberOfHeads + 1) * (numberOfHeads + 1);
+        if (nextSectorCount <= maxSectors) {
+            numberOfHeads++;
+            sectorCount = nextSectorCount;
+
+            sectorsPerTrack++;
+            nextSectorCount = sectorsPerTrack * numberOfHeads * numberOfHeads;
+            if (nextSectorCount <= maxSectors) sectorCount = nextSectorCount;
+        }
+    }
+    nextSectorCount = (sectorsPerTrack + 1) * numberOfHeads * numberOfHeads;
+    if (nextSectorCount <= maxSectors) {
+        sectorsPerTrack++;
+        sectorCount = nextSectorCount;
+    }
+
+    const u8 sectorsPerCluster = sectorCount > (8 << 10) ? 8 :
+                                 sectorCount > (1 << 10) ? 4 : 1;
+    const u16 rootEntryCount = size < 0x8C000 ? 0x20 : 0x200;
+    const u32 totalClusters = alignDsiWareValue(sectorCount, sectorsPerCluster) /
+                              sectorsPerCluster;
+    const u32 fatBytes = (alignDsiWareValue(totalClusters, 2) / 2) * 3;
+    const u32 fatSize = alignDsiWareValue(fatBytes, sectorSize) / sectorSize;
+
+    DsiWareFatHeader header;
+    memset(&header, 0, sizeof(header));
+    header.bootJump[0] = 0xE9;
+    memcpy(header.oemName, "MSWIN4.1", 8);
+    header.bytesPerSector = sectorSize;
+    header.sectorsPerCluster = sectorsPerCluster;
+    header.reservedSectors = 1;
+    header.numberOfFats = 2;
+    header.rootEntryCount = rootEntryCount;
+    header.totalSectors = sectorCount;
+    header.mediaDescriptor = 0xF8;
+    header.fatSize = fatSize;
+    header.sectorsPerTrack = sectorsPerTrack;
+    header.numberOfHeads = numberOfHeads;
+    header.driveNumber = 0x05;
+    header.bootSignature = 0x29;
+    header.volumeId = 0x12345678;
+    memcpy(header.volumeLabel, "VOLUMELABEL", 11);
+    memcpy(header.fileSystemType, "FAT12   ", 8);
+    header.bootSectorSignature = 0xAA55;
+
+    FILE* save = fopen(path.c_str(), "wb");
+    if (!save) return false;
+
+    bool success = fwrite(&header, sizeof(header), 1, save) == 1;
+    u32 written = 0;
+    while (success && written < size) {
+        written += 0x8000;
+        if (written > size) written = size;
+        success = fseek(save, written - 1, SEEK_SET) == 0 && fputc('\0', save) != EOF;
+    }
+    if (fclose(save) != 0) success = false;
+    if (!success) remove(path.c_str());
+    return success;
+}
+
+static bool ensureDsiWareSave(const std::string& path, u32 size) {
+    struct stat existing;
+    if (stat(path.c_str(), &existing) == 0 && existing.st_size > 0) return true;
+    return createDsiWareSave(path, size);
+}
+
+static std::string replaceSaveExtension(const std::string& path, const char* extension) {
+    const size_t slash = path.find_last_of("/\\");
+    const size_t dot = path.find_last_of('.');
+    if (dot == std::string::npos || (slash != std::string::npos && dot < slash)) {
+        return path + extension;
+    }
+    return path.substr(0, dot) + extension;
+}
+
+static bool getDsiWareSaveSizes(const std::string& romPath, u32& publicSize,
+                                u32& privateSize) {
+    // sNDSHeaderExt::pubSavSize and prvSavSize are at 0x238 and 0x23C.
+    FILE* rom = fopen(romPath.c_str(), "rb");
+    if (!rom) return false;
+    const bool readOk = fseek(rom, 0x238, SEEK_SET) == 0 &&
+                        fread(&publicSize, sizeof(publicSize), 1, rom) == 1 &&
+                        fread(&privateSize, sizeof(privateSize), 1, rom) == 1;
+    fclose(rom);
+    return readOk;
+}
+
+static bool makeDsiSdAlias(const std::string& path, char* alias, size_t aliasSize) {
+    if (path.empty() || path.size() >= 256 || path.compare(0, 4, "sd:/") != 0 ||
+        aliasSize < 5) {
+        return false;
+    }
+    memset(alias, 0, aliasSize);
+    fatGetAliasPath("sd:/", path.c_str(), alias);
+    return strncmp(alias, "sd:/", 4) == 0 && alias[4] != '\0';
+}
+}  // namespace
 
 void smoothProgress(u8 start, u8 end) {
     for(u8 p = start; p <= end; p += 5) {
@@ -124,7 +269,32 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg,
         return true;
     }
 
-    ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", mSavePath);
+    if (_romInfo.isDSiWare()) {
+        char romAlias[256] = {0};
+        char publicSaveAlias[256] = {0};
+        char privateSaveAlias[256] = {0};
+        if (!makeDsiSdAlias(mRomPath, romAlias, sizeof(romAlias)) ||
+            (access(mDsiWarePubPath.c_str(), F_OK) == 0 &&
+             !makeDsiSdAlias(mDsiWarePubPath, publicSaveAlias, sizeof(publicSaveAlias))) ||
+            (access(mDsiWarePrvPath.c_str(), F_OK) == 0 &&
+             !makeDsiSdAlias(mDsiWarePrvPath, privateSaveAlias, sizeof(privateSaveAlias)))) {
+            progressWnd().hide();
+            printError("Could not prepare the DSiWare SD card paths for nds-bootstrap.");
+            return false;
+        }
+
+        ini.SetString("NDS-BOOTSTRAP", "APP_PATH", romAlias);
+        ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", publicSaveAlias);
+        ini.SetString("NDS-BOOTSTRAP", "PRV_PATH", privateSaveAlias);
+        ini.SetInt("NDS-BOOTSTRAP", "BOOST_CPU", 1);
+        ini.SetInt("NDS-BOOTSTRAP", "BOOST_VRAM", 1);
+        ini.SetInt("NDS-BOOTSTRAP", "DONOR_SDK_VER", 5);
+        ini.SetInt("NDS-BOOTSTRAP", "GAME_SOFT_RESET", 1);
+        ini.SetInt("NDS-BOOTSTRAP", "PATCH_MPU_REGION", 0);
+        ini.SetInt("NDS-BOOTSTRAP", "PATCH_MPU_SIZE", 0);
+    } else {
+        ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", mSavePath);
+    }
 
     ini.SetString("NDS-BOOTSTRAP", "QUIT_PATH", fsManager().resolveSystemPath("/_nds/akmenunext/launcher.nds"));
 
@@ -223,7 +393,9 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg,
             break;
     }
 
-    if(_romInfo.saveInfo().isDsMode()) {
+    if (_romInfo.isDSiWare()) {
+        ini.SetInt("NDS-BOOTSTRAP", "DSI_MODE", 1);
+    } else if (_romInfo.saveInfo().isDsMode()) {
         ini.SetString("NDS-BOOTSTRAP", "DSI_MODE", "0");
     }
 
@@ -338,9 +510,9 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
     _romInfo.MayBeDSRom(romPath);
     bool dsiWare = _romInfo.isDSiWare();
 
-    // check for DSiWare
-    if(dsiWare){
-        printError("DSiWare is not supported with the selected loader. Please use Pico-Loader if available for this device.");
+    // DSiWare saves and bootstrap paths are supported from the DSi SD card in DSi mode.
+    if (dsiWare && (!isDSiMode() || romPath.compare(0, 4, "sd:/") != 0)) {
+        printError("DSiWare launch requires a ROM on the DSi SD card and DSi mode.");
         return false;
     }
 
@@ -375,6 +547,21 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
     mRomPath = romPath;
     mSavePath = savePath;
     mFlags = flags;
+
+    if (dsiWare) {
+        mDsiWarePubPath = replaceSaveExtension(mSavePath, ".pub");
+        mDsiWarePrvPath = replaceSaveExtension(mSavePath, ".prv");
+
+        u32 publicSaveSize = 0;
+        u32 privateSaveSize = 0;
+        if (!getDsiWareSaveSizes(mRomPath, publicSaveSize, privateSaveSize) ||
+            (publicSaveSize > 0 && !ensureDsiWareSave(mDsiWarePubPath, publicSaveSize)) ||
+            (privateSaveSize > 0 && !ensureDsiWareSave(mDsiWarePrvPath, privateSaveSize))) {
+            progressWnd().hide();
+            printError("Could not create the DSiWare save files on the SD card.");
+            return false;
+        }
+    }
 
     // Create the nds-bootstrap directory if it doesn't exist
     if (access("/_nds/nds-bootstrap/", F_OK) != 0) {
