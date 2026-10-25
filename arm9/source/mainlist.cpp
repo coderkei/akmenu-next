@@ -38,7 +38,7 @@
 using namespace akui;
 
 namespace {
-bool loadBannerFromBin(DSRomInfo& rominfo, const std::string& path) {
+bool loadBannerFromBin(DSRomInfo& rominfo, const std::string& path, bool sidecar) {
     FILE* f = fopen(path.c_str(), "rb");
     if (!f) {
         return false;
@@ -53,6 +53,7 @@ bool loadBannerFromBin(DSRomInfo& rominfo, const std::string& path) {
 
     memcpy(&rominfo.banner(), &loadedBanner, sizeof(loadedBanner));
     rominfo.setExtIcon("");
+    rominfo.setBannerFile(path, sidecar);
     return true;
 }
 
@@ -74,11 +75,11 @@ std::string gameTitleFor(const std::string& filename) {
         hasBanner = rominfo.isDSRom();
     } else {
         const cPluginManager::PluginAssociation* plugin = pluginManager().findPlugin(filename);
-        if (plugin) hasBanner = loadBannerFromBin(rominfo, plugin->iconPath);
+        if (plugin) hasBanner = loadBannerFromBin(rominfo, plugin->iconPath, false);
     }
 
     // A file-specific banner overrides both the ROM banner and plugin icon.
-    if (loadBannerFromBin(rominfo, filename + ".bin")) hasBanner = true;
+    if (loadBannerFromBin(rominfo, filename + ".bin", true)) hasBanner = true;
 
     if (!hasBanner) return "";
     return unicode_to_local_string(rominfo.banner().titles[gs().language], 128, NULL);
@@ -97,6 +98,7 @@ cMainList::cMainList(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::str
       _topSlot2(5) {
     _viewMode = VM_LIST;
     _activeIconScale = 1;
+    _activeIconToken = 0;
     _activeIcon.hide();
     _activeIcon.update();
     animationManager().addAnimation(&_activeIcon);
@@ -456,7 +458,7 @@ bool cMainList::enterDir(const std::string& dirName) {
                 } else if (".nds" != extName && ".ndz" != extName && ".dsi" != extName &&
                            ".srl" != extName && ".ids" != extName) {
                     const cPluginManager::PluginAssociation* plugin = pluginManager().findPlugin(filename);
-                    if (plugin && loadBannerFromBin(rominfo, plugin->iconPath)) {
+                    if (plugin && loadBannerFromBin(rominfo, plugin->iconPath, false)) {
                         allowExt = false;
                     } else {
                         rominfo.setBannerFromIcon("unknown_banner.bin", "", unknown_banner_bin);
@@ -474,7 +476,7 @@ bool cMainList::enterDir(const std::string& dirName) {
                 if (allowUnknown && !rominfo.isExtIcon()) rominfo.setExtIcon("unknown");
 
                 // Sidecars use the full filename, e.g. Mario.nds.bin.
-                loadBannerFromBin(rominfo, filename + ".bin");
+                loadBannerFromBin(rominfo, filename + ".bin", true);
             }
             _romInfoList.push_back(rominfo);
         }
@@ -646,6 +648,7 @@ void cMainList::updateActiveIcon(bool updateContent) {
         if (!_activeIcon.visible()) {
             u8 backBuffer[32 * 32 * 2];
             zeroMemory(backBuffer, 32 * 32 * 2);
+            _activeIconToken = _romInfoList[_selectedRowId].iconToken();
             _romInfoList[_selectedRowId].drawDSRomIconMem(backBuffer);
             memcpy(_activeIcon.buffer(), backBuffer, 32 * 32 * 2);
             _activeIcon.setBufferChanged();
@@ -658,6 +661,14 @@ void cMainList::updateActiveIcon(bool updateContent) {
             dbg_printf("sel %d ac ico x %d y %d\n", _selectedRowId, itemX, itemY);
             for (u8 i = 0; i < 8; ++i) dbg_printf("%02x", backBuffer[i]);
             dbg_printf("\n");
+        } else if (_romInfoList[_selectedRowId].iconToken() != _activeIconToken) {
+            // DSi animated icon moved to another frame
+            u8 backBuffer[32 * 32 * 2];
+            zeroMemory(backBuffer, 32 * 32 * 2);
+            _activeIconToken = _romInfoList[_selectedRowId].iconToken();
+            _romInfoList[_selectedRowId].drawDSRomIconMem(backBuffer);
+            memcpy(_activeIcon.buffer(), backBuffer, 32 * 32 * 2);
+            _activeIcon.setBufferChanged();
         }
     } else if (_activeIcon.visible()) {
         _activeIcon.hide();

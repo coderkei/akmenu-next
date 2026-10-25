@@ -114,6 +114,7 @@ bool checkInitIni(const std::string& targetPath, const std::string& initPath) {
 #include "userwnd.h"
 #include "pluginmngr.h"
 #include "thememusic.h"
+#include "iconanimcache.h"
 
 using namespace akui;
 
@@ -312,6 +313,7 @@ int main(int argc, char* argv[]) {
     while (true) {
         timer().updateFps();
         themeMusic().update();
+        iconAnimCache().newFrame();
 
         INPUT& inputs = updateInput();
 

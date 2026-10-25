@@ -110,6 +110,7 @@ class cMainList : public akui::cListView {
     cZoomingIcon _activeIcon;
 
     float _activeIconScale;
+    u16 _activeIconToken;  // animation token shown in _activeIcon, 0 when static
 
     bool _showAllFiles;
 

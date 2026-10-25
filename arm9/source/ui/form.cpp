@@ -11,6 +11,7 @@
 #include "timer.h"
 #include "ui.h"
 #include "thememusic.h"
+#include "iconanimcache.h"
 //#include "dbgtool.h"
 //#include "windowmanager.h"
 
@@ -171,6 +172,7 @@ u32 cForm::doModal() {
     do {  // manually update system loop
         timer().updateFps();
         themeMusic().update();
+        iconAnimCache().newFrame();
         INPUT& inputs = updateInput();
         processInput(inputs);
         windowManager().update();
