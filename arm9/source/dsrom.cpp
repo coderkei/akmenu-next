@@ -8,6 +8,9 @@
 */
 
 #include "dsrom.h"
+#include "animatedicon.h"
+#include "iconanimcache.h"
+#include "irqs.h"
 #include "dbgtool.h"
 #include "fileicons.h"
 #include "gamecode.h"
@@ -57,6 +60,12 @@ DSRomInfo& DSRomInfo::operator=(const DSRomInfo& src) {
     _fileName = src._fileName;
     _romVersion = src._romVersion;
     _extIcon = src._extIcon;
+    _bannerSource = src._bannerSource;
+    _dsiFlags = src._dsiFlags;
+    _animState = src._animState;
+    _bannerOffset = src._bannerOffset;
+    _animStartTick = src._animStartTick;
+    _bannerPath = src._bannerPath;
     return *this;
 }
 
@@ -66,6 +75,7 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
     _isDSiWare = EFalse;
     _isModernHomebrew = EFalse;
     _isNdz = false;
+    setBuiltinBanner();
     FILE* f = fopen(filename.c_str(), "rb");
     if (NULL == f)  // 锟斤拷锟侥硷拷失锟斤拷
     {
@@ -96,6 +106,8 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
         if (sizeof(tNDSBanner) == fread(&banner, 1, sizeof(banner), f) &&
             swiCRC16(0xffff, banner.icon, 0x840 - 32) == banner.crc) {
             memcpy(&_banner, &banner, sizeof(_banner));
+            _bannerSource = EBannerRom;
+            _bannerOffset = ndzBannerOffset;
         } else {
             loadBannerIcon(_banner, "nds_banner.bin", nds_banner_bin);
         }
@@ -117,6 +129,7 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
         return true;
     } else {
         _isDSRom = ETrue;
+        if (fseek(f, 0x1BF, SEEK_SET) != 0 || fread(&_dsiFlags, 1, 1, f) != 1) _dsiFlags = 0;
 
         //check for modern homebrew
         //Assume homebrew until proven otherwise
@@ -210,12 +223,16 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
                 if (gs().ignoreCrc16) {
                     dbg_printf("banner crc error, %04x/%04x (ignoring)\n", banner.crc, crc);
                     memcpy(&_banner, &banner, sizeof(_banner));
+                    _bannerSource = EBannerRom;
+                    _bannerOffset = header.bannerOffset;
                 } else {
                     dbg_printf("banner crc error, %04x/%04x\n", banner.crc, crc);
                     loadBannerIcon(_banner, "nds_banner.bin", nds_banner_bin);
                 }
             } else {
                 memcpy(&_banner, &banner, sizeof(_banner));
+                _bannerSource = EBannerRom;
+                _bannerOffset = header.bannerOffset;
             }
         }
     } else {
@@ -249,28 +266,47 @@ void DSRomInfo::drawDSRomIcon(u8 x, u8 y, GRAPHICS_ENGINE engine, bool small) {
             break;
     }
 
+    const u8* bitmap = _banner.icon;
+    const u16* palette = _banner.palette;
+    const tDsiIconAnim* anim = currentAnim();
+    const u16 token = anim ? animToken(*anim) : 0;
+    const bool hflip = dsiTokenHFlip(token), vflip = dsiTokenVFlip(token);
+    if (token) {
+        bitmap = anim->bitmaps[dsiTokenBitmap(token)];
+        palette = anim->palettes[dsiTokenPalette(token)];
+    }
+
     for (int tile = 0; tile < 16; ++tile) {
         for (int pixel = 0; pixel < 32; ++pixel) {
-            u8 a_byte = _banner.icon[(tile << 5) + pixel];
+            u8 a_byte = bitmap[(tile << 5) + pixel];
 
             int px = ((tile & 3) << 3) + ((pixel << 1) & 7);
             int py = ((tile >> 2) << 3) + (pixel >> 2);
+            int px1 = px + 1;  // high nibble is the right-hand pixel
+
+            if (hflip) {
+                px = 31 - px;
+                px1 = 31 - px1;
+            }
+            if (vflip) py = 31 - py;
 
             if(small){
                 px /= 2;
                 py /= 2;
+                // unflipped icons keep the existing small-icon placement
+                px1 = hflip ? px1 / 2 : px + 1;
             }
 
             u8 idx1 = (a_byte & 0xf0) >> 4;
             u8 idx2 = (a_byte & 0x0f);
 
             if (skiptransparent || 0 != idx1) {
-                gdi().setPenColor(_banner.palette[idx1], engine);
-                gdi().drawPixel(px + 1 + x, py + y, engine);
+                gdi().setPenColor(palette[idx1], engine);
+                gdi().drawPixel(px1 + x, py + y, engine);
             }
 
             if (skiptransparent || 0 != idx2) {
-                gdi().setPenColor(_banner.palette[idx2], engine);
+                gdi().setPenColor(palette[idx2], engine);
                 gdi().drawPixel(px + x, py + y, engine);
             }
         }
@@ -295,25 +331,42 @@ void DSRomInfo::drawDSRomIconMem(void* mem) {
             cIcons::maskBlt(iconBackground(), pmem);
             break;
     }
+    const u8* bitmap = _banner.icon;
+    const u16* palette = _banner.palette;
+    const tDsiIconAnim* anim = currentAnim();
+    const u16 token = anim ? animToken(*anim) : 0;
+    const bool hflip = dsiTokenHFlip(token), vflip = dsiTokenVFlip(token);
+    if (token) {
+        bitmap = anim->bitmaps[dsiTokenBitmap(token)];
+        palette = anim->palettes[dsiTokenPalette(token)];
+    }
+
     for (int tile = 0; tile < 16; ++tile) {
         for (int pixel = 0; pixel < 32; ++pixel) {
-            u8 a_byte = _banner.icon[(tile << 5) + pixel];
+            u8 a_byte = bitmap[(tile << 5) + pixel];
 
             // int px = (tile & 3) * 8 + (2 * pixel & 7);
             // int py = (tile / 4) * 8 + (2 * pixel / 8);
             int px = ((tile & 3) << 3) + ((pixel << 1) & 7);
             int py = ((tile >> 2) << 3) + (pixel >> 2);
+            int px1 = px + 1;  // high nibble is the right-hand pixel
+
+            if (hflip) {
+                px = 31 - px;
+                px1 = 31 - px1;
+            }
+            if (vflip) py = 31 - py;
 
             u8 idx1 = (a_byte & 0xf0) >> 4;
             if (skiptransparent || 0 != idx1) {
-                pmem[py * 32 + px + 1] = _banner.palette[idx1] | BIT(15);
+                pmem[py * 32 + px1] = palette[idx1] | BIT(15);
                 // gdi().setPenColor( _banner.palette[idx1] );
                 // gdi().drawPixel( px+1+x, py+y, engine );
             }
 
             u8 idx2 = (a_byte & 0x0f);
             if (skiptransparent || 0 != idx2) {
-                pmem[py * 32 + px] = _banner.palette[idx2] | BIT(15);
+                pmem[py * 32 + px] = palette[idx2] | BIT(15);
                 // gdi().setPenColor( _banner.palette[idx2] );
                 // gdi().drawPixel( px+x, py+y, engine );
             }
@@ -323,6 +376,7 @@ void DSRomInfo::drawDSRomIconMem(void* mem) {
 
 bool DSRomInfo::loadGbaRomInfo(const std::string& filename) {
     _isGbaRom = EFalse;
+    setBuiltinBanner();
     memset(_saveInfo.gameCode, 0, sizeof(_saveInfo.gameCode));
     _romVersion = 0;
     FILE* gbaFile = fopen(filename.c_str(), "rb");
@@ -397,6 +451,7 @@ void DSRomInfo::setExtIcon(const std::string& aValue) {
 
 void DSRomInfo::setBanner(const std::string& anExtIcon, const u8* aBanner) {
     setExtIcon(anExtIcon);
+    setBuiltinBanner();
     memcpy(&banner(), aBanner, sizeof(tNDSBanner));
 }
 
@@ -404,6 +459,7 @@ bool DSRomInfo::setBannerFromFile(const std::string& anExtIcon,
                                   const std::string& path)
 {
     setExtIcon(anExtIcon);
+    setBuiltinBanner();
     FILE* f = fopen(path.c_str(), "rb");
     if (!f) return false;
     size_t read = fread(&banner(), 1, sizeof(tNDSBanner), f);
@@ -415,5 +471,102 @@ void DSRomInfo::setBannerFromIcon(const std::string& filename,
                                   const std::string& anExtIcon,
                                   const u8* builtInBanner) {
     setExtIcon(anExtIcon);
+    setBuiltinBanner();
     loadBannerIcon(_banner, filename, builtInBanner);
+}
+
+void DSRomInfo::setBannerFile(const std::string& path, bool sidecar) {
+    _bannerSource = sidecar ? EBannerSidecar : EBannerFile;
+    _bannerOffset = 0;
+    _animState = EAnimUnknown;
+    if (_banner.version >= DSI_BANNER_VERSION_ANIMATED)
+        _bannerPath = path;
+    else
+        _bannerPath.clear();
+}
+
+bool DSRomInfo::hasBannerSave(void) {
+    return isDSiWare() && (_dsiFlags & BIT(2));
+}
+
+const tDsiIconAnim* DSRomInfo::currentAnim(void) {
+    if (!gs().Animation || _extIcon >= 0 || _animState == EAnimNone) return NULL;
+
+    const u16 bannerCrc = dsiReadLe16((const u8*)&_banner + DSI_BANNER_ANIM_CRC_OFFSET);
+    const tDsiIconAnim* anim = NULL;
+
+    // A user sidecar always wins: its own animation or nothing.
+    if (_bannerSource == EBannerSidecar) {
+        if (_bannerPath.empty()) {
+            _animState = EAnimNone;
+            return NULL;
+        }
+        switch (iconAnimCache().get(_bannerPath, EAnimInBanner, 0, bannerCrc, anim)) {
+            case EAnimReady:
+                return animReady(EAnimFromBanner, anim);
+            case EAnimFailed:
+                _animState = EAnimNone;
+                return NULL;
+            default:
+                return NULL;
+        }
+    }
+
+    if (_animState == EAnimUnknown || _animState == EAnimFromSave) {
+        if (hasBannerSave()) {
+            switch (iconAnimCache().get(dsiBannerSavePath(_fileName), EAnimInBannerSave, 0, 0, anim)) {
+                case EAnimReady:
+                    return animReady(EAnimFromSave, anim);
+                case EAnimPending:
+                    return NULL;
+                case EAnimFailed:
+                    break;
+            }
+        }
+        _animState = EAnimTryBanner;
+    }
+
+    const bool fromRom = _bannerSource == EBannerRom;
+    if ((!fromRom && _bannerSource != EBannerFile) || _banner.version < DSI_BANNER_VERSION_ANIMATED ||
+        (!fromRom && _bannerPath.empty())) {
+        _animState = EAnimNone;
+        return NULL;
+    }
+    switch (iconAnimCache().get(fromRom ? _fileName : _bannerPath, EAnimInBanner,
+                                fromRom ? _bannerOffset : 0, bannerCrc, anim)) {
+        case EAnimReady:
+            return animReady(EAnimFromBanner, anim);
+        case EAnimFailed:
+            _animState = EAnimNone;
+            return NULL;
+        default:
+            return NULL;
+    }
+}
+
+const tDsiIconAnim* DSRomInfo::animReady(u8 state, const tDsiIconAnim* anim) {
+    if (_animState != state) {
+        _animState = state;
+        _animStartTick = cIRQ::vblankCount();
+    }
+    return anim;
+}
+
+// Looping icons share one clock so every view of a game shows the same frame; a play-once
+// sequence runs from when its icon first appeared.
+u16 DSRomInfo::animToken(const tDsiIconAnim& anim) {
+    const u32 now = cIRQ::vblankCount();
+    return dsiAnimTokenAt(anim, dsiAnimLoops(anim) ? now : now - _animStartTick);
+}
+
+u16 DSRomInfo::iconToken(void) {
+    const tDsiIconAnim* anim = currentAnim();
+    return anim ? animToken(*anim) : 0;
+}
+
+void DSRomInfo::setBuiltinBanner(void) {
+    _bannerSource = EBannerBuiltin;
+    _bannerOffset = 0;
+    _animState = EAnimUnknown;
+    _bannerPath.clear();
 }

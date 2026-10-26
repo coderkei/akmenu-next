@@ -31,7 +31,11 @@ class cIRQ {
 
     static void vBlank();
 
+    // VBlanks since boot (60 Hz); drives icon animation.
+    static u32 vblankCount() { return _vblankCount; }
+
     static bool _vblankStarted;
+    static volatile u32 _vblankCount;
 };
 
 typedef t_singleton<cIRQ> irq_s;

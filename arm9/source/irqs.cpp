@@ -26,6 +26,7 @@
 using namespace akui;
 
 bool cIRQ::_vblankStarted(false);
+volatile u32 cIRQ::_vblankCount(0);
 
 void cIRQ::init() {
     irqSet(IRQ_VBLANK, vBlank);
@@ -60,6 +61,7 @@ void cIRQ::redrawTopScreen() {
 }
 
 void cIRQ::vBlank() {
+    ++_vblankCount;
     if (!_vblankStarted) return;
 
     timer().updateTimer();
