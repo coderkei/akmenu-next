@@ -19,6 +19,10 @@ Frontend for [nds-bootstrap](https://github.com/DS-Homebrew/nds-bootstrap/) and 
 
 Please check the [AKMenu-Next Docs](https://coderkei.github.io/akmenu-next-docs/) for setting up or updating AKMenu-Next.
 
+## Making themes
+
+Use [AKTheme Studio](https://coderkei.github.io/akmenu-next-theme-editor/) to create custom themes for AKMenu-Next.
+
 ## Building from source
 
 Requires the pre-calico version of devkitarm to be installed with the `nds-dev` package.
