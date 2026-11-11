@@ -314,6 +314,7 @@ int main(int argc, char* argv[]) {
         windowManager().update();
 
         gdi().present(GE_MAIN);
+        cIRQ::update();
 
 
     }

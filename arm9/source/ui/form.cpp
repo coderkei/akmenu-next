@@ -11,6 +11,7 @@
 #include "timer.h"
 #include "ui.h"
 #include "thememusic.h"
+#include "irqs.h"
 //#include "dbgtool.h"
 //#include "windowmanager.h"
 
@@ -175,6 +176,7 @@ u32 cForm::doModal() {
         processInput(inputs);
         windowManager().update();
         gdi().present(GE_MAIN);
+        cIRQ::update();
         // dbg_printf( "modal window looping\n" );
     } while (modalRet() == (u32)-1);
 
@@ -191,6 +193,7 @@ u32 cForm::doStatic() {
     processInput(inputs);
     windowManager().update();
     gdi().present(GE_MAIN);
+    cIRQ::update();
 
     return modalRet();
 }

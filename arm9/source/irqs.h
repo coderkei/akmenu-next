@@ -31,7 +31,11 @@ class cIRQ {
 
     static void vBlank();
 
+    static void update();
+
     static bool _vblankStarted;
+
+    static volatile bool _redrawPending;
 };
 
 typedef t_singleton<cIRQ> irq_s;
