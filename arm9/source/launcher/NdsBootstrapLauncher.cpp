@@ -638,6 +638,15 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
         }
     }
 
+    if (!dsiWare && isDSiMode() && romPath.compare(0, 4, "sd:/") == 0 &&
+        mBootstrapRoot != "sd:/" &&
+        access("sd:/_nds/nds-bootstrap-release.nds", F_OK) == 0) {
+        mBootstrapRoot = "sd:/";
+        ndsBootstrapCheck = mBootstrapRoot + "_nds/pagefile.sys";
+        ndsBootstrapPath = mBootstrapRoot + "_nds/nds-bootstrap-release.nds";
+        ndsBootstrapPathNightly = mBootstrapRoot + "_nds/nds-bootstrap-nightly.nds";
+    }
+
     bool useUnlaunch = false;
     if (dsiWare) {
         if (!getDsiWareHeaderInfo(romPath, dsiWareTwlRomSize, dsiWarePublicSaveSize,

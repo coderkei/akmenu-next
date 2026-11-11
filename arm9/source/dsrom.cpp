@@ -103,10 +103,6 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
         return true;
     }
 
-    if (header.unitCode == 0x03) {
-        _isDSiWare = ETrue;
-    }
-
     ///////// ROM Header /////////
     u16 crc = swiCRC16(0xFFFF, &header, 0x15E);
     if (crc != header.headerCRC16)  // 锟侥硷拷头 CRC 锟斤拷锟襟，诧拷锟斤拷nds锟斤拷戏
@@ -172,18 +168,18 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
                     ((u32)header.arm7executeAddress >= 0x037F0000 && (u32)header.arm7destination >= 0x037F0000))) {
                 _isModernHomebrew = EFalse; // Old hb requiring DLDI
             }
-
-            u8 accessControl = 0;
-            fseek(f, 0x1BF, SEEK_SET);
-            fread(&accessControl, 1, 1, f);
-
-            if (!_isHomebrew && (header.unitCode != 0) && (accessControl & BIT(4))) {
-                _isDSiWare = ETrue;
-            }
     }
         if ((u32)(header.arm7destination) >= 0x037F8000 ||
             0x23232323 == gamecode(header.gameCode)) {  // 23->'#'
             _isHomebrew = ETrue;
+        }
+
+        u32 accessControl = 0;
+        fseek(f, 0x1B4, SEEK_SET);
+        fread(&accessControl, sizeof(accessControl), 1, f);
+
+        if (_isHomebrew == EFalse && (header.unitCode != 0) && (accessControl & BIT(4))) {
+            _isDSiWare = ETrue;
         }
     }
 
