@@ -8,13 +8,11 @@ Bug fixes, new features, documentation improvements, compatibility fixes, and ot
 
 ## Toolchain and compatibility
 
-AKMenu-Next targets the legacy pre-Calico devkitPro Nintendo DS environment and is built against **libnds 1.8.3**.
+AKMenu-Next builds with **BlocksDS 1.25.0** on the Wonderful Toolchain. Follow the [build instructions](README.md#building-from-source) and use the BlocksDS libnds headers, picolibc, and SDK tools.
 
-Changes should remain compatible with the project's existing devkitARM/libnds toolchain.
+Keep build tools and dependencies within the BlocksDS and Wonderful environment. If devkitPro is also installed, check the build log for devkitPro tools, headers, or libraries before changing code to fix a build failure.
 
-Please do not migrate code to libnds 2.x/Calico or replace legacy libnds functionality with modern equivalents simply to match current devkitPro examples. This includes areas such as ARM7/ARM9 communication, FIFO handling, interrupts, timers, startup code, and build configuration.
-
-If the project fails to compile with a current devkitPro installation, first consider whether the installed toolchain is incompatible rather than modifying AKMenu-Next to accommodate it.
+Use BlocksDS documentation and examples for SDK APIs. devkitPro's Calico and libnds 2.x are outside the supported build environment. Preserve existing hardware behaviour, especially ARM7/ARM9 communication, interrupts, startup, and loader hand-offs.
 
 ## Keep contributions focused
 
