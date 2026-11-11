@@ -258,6 +258,18 @@ int main() {
             }
             fifoSendValue32(FIFO_USER_01, 1);
         }
+        if (isDSiMode() && *(u32*)(0x2FFFD0C) == 0x454D4D43) {
+            int oldIME = enterCriticalSection();
+            const u32 fifoIrqs = REG_IE & (IRQ_SEND_FIFO | IRQ_RECV_FIFO);
+            REG_IE &= ~fifoIrqs;
+            leaveCriticalSection(oldIME);
+            SDMMC_init(SDMMC_DEV_eMMC);
+            SDMMC_getCidRaw(SDMMC_DEV_eMMC, (u32*)0x2FFD7BC);
+            oldIME = enterCriticalSection();
+            REG_IE |= fifoIrqs;
+            leaveCriticalSection(oldIME);
+            *(u32*)(0x2FFFD0C) = 0;
+        }
         swiWaitForVBlank();
         if(reset_pico)
             resetDSPico();
