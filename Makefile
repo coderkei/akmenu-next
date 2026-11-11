@@ -1,8 +1,15 @@
 #---------------------------------------------------------------------------------
 .SUFFIXES:
 #---------------------------------------------------------------------------------
-ifeq ($(strip $(DEVKITARM)),)
-$(error "Please set DEVKITARM in your environment. export DEVKITARM=<path to>devkitARM")
+export BLOCKSDS			?= /opt/blocksds/core
+export BLOCKSDSEXT		?= /opt/blocksds/external
+export WONDERFUL_TOOLCHAIN	?= /opt/wonderful
+
+ifeq ($(strip $(BLOCKSDS)),)
+$(error "Please set BLOCKSDS in your environment. export BLOCKSDS=<path to>blocksds/core")
+endif
+ifeq ($(wildcard $(BLOCKSDS)/sys/crts/ds_arm9.specs),)
+$(error "$(BLOCKSDS)/sys/crts/ds_arm9.specs not found. Check BLOCKSDS")
 endif
 
 export TARGET := $(shell basename $(CURDIR))
@@ -28,9 +35,7 @@ else
     endif
 endif
 
-include $(DEVKITARM)/ds_rules
-
-.PHONY: nds-bootloader checkarm7 checkarm9 clean
+.PHONY: nds-bootloader checkarm7 checkarm9 clean organize_files make_cia
 
 #---------------------------------------------------------------------------------
 # main targets
@@ -46,21 +51,21 @@ nds-bootloader: data
 
 #---------------------------------------------------------------------------------
 checkarm7:
-	$(MAKE) -C arm7
+	+$(MAKE) -f Makefile.arm7 --no-print-directory
 
 #---------------------------------------------------------------------------------
 checkarm9: nds-bootloader
-	$(MAKE) -C arm9
+	+$(MAKE) -f Makefile.arm9 --no-print-directory
 
 #---------------------------------------------------------------------------------
 
 $(TARGET).nds : $(NITRO_FILES) checkarm7 checkarm9
-	ndstool	-c $(TARGET).nds -7 arm7/$(TARGET).elf -9 arm9/$(TARGET).elf \
+	$(BLOCKSDS)/tools/ndstool/ndstool	-c $(TARGET).nds -7 build/arm7.elf -9 build/arm9.elf \
 	-h 0x200 -t banner.bin \
 	$(_ADDFILES)
 
 $(TARGET).dsi : $(NITRO_FILES) checkarm7 checkarm9
-	ndstool	-c $@ -7 arm7/$(TARGET).elf -9 arm9/$(TARGET).elf \
+	$(BLOCKSDS)/tools/ndstool/ndstool	-c $@ -7 build/arm7.elf -9 build/arm9.elf \
 	-t banner.bin \
 	-g NEXT 01 "AKMENU" -z 80040407 -u 00030004 -a 00000138 -p 0001 \
 	$(_ADDFILES)
@@ -81,9 +86,10 @@ make_cia:
 
 #---------------------------------------------------------------------------------
 clean:
-	$(MAKE) -C arm9 clean
+	$(MAKE) -f Makefile.arm9 clean --no-print-directory
 	$(MAKE) -C nds-bootloader clean
-	$(MAKE) -C arm7 clean
+	$(MAKE) -f Makefile.arm7 clean --no-print-directory
+	rm -rf build
 	rm -rf data
 	rm -f package/*.nds package/*.dsi package/*.cia
 	rm -f *.nds *.dsi
