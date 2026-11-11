@@ -33,6 +33,7 @@ class cExpansion {
 
   public:
     cExpansion() : iId(0), iRamPage(ENorPage) {
+        if (isDSiMode()) return;
         SetShake(8);
         OpenNorWrite();
         ReadNorFlashID();

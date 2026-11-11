@@ -131,11 +131,12 @@ static bool createDsiWareSave(const std::string& path, u32 size) {
     if (!save) return false;
 
     bool success = fwrite(&header, sizeof(header), 1, save) == 1;
-    u32 written = 0;
+    static const u8 zeros[0x200] = {0};
+    u32 written = sizeof(header);
     while (success && written < size) {
-        written += 0x8000;
-        if (written > size) written = size;
-        success = fseek(save, written - 1, SEEK_SET) == 0 && fputc('\0', save) != EOF;
+        const u32 chunk = size - written < sizeof(zeros) ? size - written : sizeof(zeros);
+        success = fwrite(zeros, 1, chunk, save) == chunk;
+        written += chunk;
     }
     if (fclose(save) != 0) success = false;
     if (!success) remove(path.c_str());
