@@ -7,6 +7,7 @@
 
 #include <sys/stat.h>
 #include <unistd.h>
+#include <cctype>
 #include <cstdio>
 #include <cstring>
 #include <string>
@@ -34,7 +35,6 @@
 #include "slot2/io_g6_common.h"
 #include "slot2/io_m3_common.h"
 #include "slot2/io_sc_common.h"
-#include "libfat_ext/fat_ext.h"
 
 namespace {
 struct DsiWareFatHeader {
@@ -266,9 +266,27 @@ static bool makeDsiSdAlias(const std::string& path, char* alias, size_t aliasSiz
         aliasSize < 5) {
         return false;
     }
+    std::string result = "sd:/";
+    size_t start = 4;
+    while (start < path.size()) {
+        size_t end = path.find('/', start);
+        if (end == std::string::npos) end = path.size();
+        if (end > start) {
+            char shortName[FAT_SHORT_FILE_NAME_MAX + 1] = {0};
+            if (!FAT_getShortNameFor(path.substr(0, end).c_str(), shortName)) return false;
+            if (shortName[0] == '\0') {
+                for (size_t i = start; i < end; ++i) result += (char)toupper((unsigned char)path[i]);
+            } else {
+                result += shortName;
+            }
+            if (end < path.size()) result += '/';
+        }
+        start = end + 1;
+    }
+    if (result.size() >= aliasSize) return false;
     memset(alias, 0, aliasSize);
-    fatGetAliasPath("sd:/", path.c_str(), alias);
-    return strncmp(alias, "sd:/", 4) == 0 && alias[4] != '\0';
+    memcpy(alias, result.c_str(), result.size());
+    return alias[4] != '\0';
 }
 }  // namespace
 

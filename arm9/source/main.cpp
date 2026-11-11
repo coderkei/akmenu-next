@@ -42,13 +42,13 @@ bool requiredSystemFilesExist() {
 void showMissingSystemFilesMessage() {
     consoleDemoInit();
     consoleClear();
-    iprintf("AKMenu-Next system files are\n");
-    iprintf("missing or corrupted.\n\n");
-    iprintf("Please reinstall AKMenu-Next and");
-    iprintf("ensure your SD/MicroSD card is\n");
-    iprintf("working correctly.\n\n");
-    iprintf("This is a common symptom of\n");
-    iprintf("counterfeit or failing SD cards.");
+    printf("AKMenu-Next system files are\n");
+    printf("missing or corrupted.\n\n");
+    printf("Please reinstall AKMenu-Next and");
+    printf("ensure your SD/MicroSD card is\n");
+    printf("working correctly.\n\n");
+    printf("This is a common symptom of\n");
+    printf("counterfeit or failing SD cards.");
 
     while (true) swiWaitForVBlank();
 }
@@ -56,17 +56,17 @@ void showMissingSystemFilesMessage() {
 void showNoValidThemesMessage() {
     consoleDemoInit();
     consoleClear();
-    iprintf("AKMenu-Next cannot launch:\n");
-    iprintf("no valid themes are installed.\n\n");
-    iprintf("Add a valid theme to:\n");
-    iprintf("_nds/akmenunext/ui\n\n");
-    iprintf("Then restart AKMenu-Next.\n\n");
-    iprintf("If valid themes are installed,\n");
-    iprintf("the files may be corrupted.\n\n");
-    iprintf("Ensure your SD/MicroSD card is\n");
-    iprintf("working correctly.\n\n");
-    iprintf("This is a common symptom with\n");
-    iprintf("counterfeit or failing SD cards.");
+    printf("AKMenu-Next cannot launch:\n");
+    printf("no valid themes are installed.\n\n");
+    printf("Add a valid theme to:\n");
+    printf("_nds/akmenunext/ui\n\n");
+    printf("Then restart AKMenu-Next.\n\n");
+    printf("If valid themes are installed,\n");
+    printf("the files may be corrupted.\n\n");
+    printf("Ensure your SD/MicroSD card is\n");
+    printf("working correctly.\n\n");
+    printf("This is a common symptom with\n");
+    printf("counterfeit or failing SD cards.");
 
     while (true) swiWaitForVBlank();
 }
@@ -117,14 +117,6 @@ bool checkInitIni(const std::string& targetPath, const std::string& initPath) {
 
 using namespace akui;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-void __libnds_exit(int rc) {}
-#ifdef __cplusplus
-}
-#endif
-
 int main(int argc, char* argv[]) {
     irq().init();
 
@@ -140,7 +132,7 @@ int main(int argc, char* argv[]) {
     initInput();
 
     // turn led on
-    ledBlink(PM_LED_ON);
+    ledBlink(LED_ALWAYS_ON);
 
     // wait_press_b();
     //  init fat

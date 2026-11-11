@@ -61,13 +61,13 @@ checkarm9: nds-bootloader
 
 $(TARGET).nds : $(NITRO_FILES) checkarm7 checkarm9
 	$(BLOCKSDS)/tools/ndstool/ndstool	-c $(TARGET).nds -7 build/arm7.elf -9 build/arm9.elf \
-	-h 0x200 -t banner.bin \
+	-h 0x200 -pass -t banner.bin \
 	$(_ADDFILES)
 
 $(TARGET).dsi : $(NITRO_FILES) checkarm7 checkarm9
 	$(BLOCKSDS)/tools/ndstool/ndstool	-c $@ -7 build/arm7.elf -9 build/arm9.elf \
 	-t banner.bin \
-	-g NEXT 01 "AKMENU" -z 80040407 -u 00030004 -a 00000138 -p 0001 \
+	-g NEXT 01 "AKMENU" -z 80040407 -u 00030004 -a 00000138 -p 0001 -uc 3 \
 	$(_ADDFILES)
 
 #---------------------------------------------------------------------------------

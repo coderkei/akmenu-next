@@ -20,8 +20,7 @@ COMPDB		?= 0
 SOURCEDIRS	:= arm9/source
 INCLUDEDIRS	:= arm9/source arm9/source/ui arm9/source/font \
 		   arm9/source/launcher/slot2 arm9/source/launcher \
-		   arm9/source/launcher/libfat_ext arm9/source/saves \
-		   arm9/source/nand share
+		   arm9/source/saves share
 GFXDIRS		:=
 BINDIRS		:= arm9/data data
 AUDIODIRS	:=

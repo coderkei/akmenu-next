@@ -14,7 +14,7 @@ std::string formatString(const char* fmt, ...) {
     va_list argList;
     va_start(argList, fmt);
     char* ptempStr = NULL;
-    size_t max_len = vasiprintf(&ptempStr, f, argList);
+    size_t max_len = vasprintf(&ptempStr, f, argList);
     std::string str(ptempStr);
     str.resize(max_len);
     free(ptempStr);

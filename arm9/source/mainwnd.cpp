@@ -42,7 +42,6 @@
 #include <dirent.h>
 #include <fat.h>
 #include <unistd.h>
-#include <sys/iosupport.h>
 
 #include "launcher/HomebrewLauncher.h"
 #include "launcher/DSpicoLauncher.h"

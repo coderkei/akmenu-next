@@ -14,7 +14,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include <cerrno>
 #include <cstdio>
+#include <cstring>
 #include <string>
 
 #include <nds.h>
@@ -23,7 +25,6 @@
 #include "fifotool.h"
 #include "../fsmngr.h"
 #include "../inifile.h"
-#include "../nand/nandio.h"
 
 namespace {
 const char* const kDonorKeys[] = {
@@ -58,7 +59,7 @@ static bool isNandPath(const std::string& path) {
 static bool mountNand(void) {
     static bool nandMounted = false;
     if (nandMounted) return true;
-    nandMounted = fatMountSimple("nand", &io_dsi_nand);
+    nandMounted = nandInit(true);
     return nandMounted;
 }
 
@@ -281,7 +282,7 @@ void configureNdsBootstrapDonors(CIniFile& ini, bool is3DS, bool allowAutoDiscov
     const std::string nandStatus = !needNandMount || !isDsiMode
                                      ? "not needed"
                                      : nandMounted ? "mounted"
-                                                   : std::string("mount failed: ") + nandio_get_error();
+                                                   : std::string("mount failed: ") + strerror(errno);
 
     for (int i = 0; i < 4; ++i) {
         const std::string& path = previousPaths[i];

@@ -9,6 +9,7 @@
 
 #include "rominfownd.h"
 #include <sys/stat.h>
+#include <time.h>
 #include "cheatwnd.h"
 #include "gbaloader.h"
 #include "globalsettings.h"
