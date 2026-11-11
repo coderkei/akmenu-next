@@ -8,4 +8,4 @@
 */
 
 #define AKMENU_VERSION_MAIN "3"
-#define AKMENU_VERSION_SUB "1.0"
+#define AKMENU_VERSION_SUB "2.0"

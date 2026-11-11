@@ -8,25 +8,23 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: devkitpro/devkitarm:20241104
-    name: Build with Docker using devkitARM (pre-calico)
+    container: skylyrac/blocksds:slim-v1.25.0@sha256:c5f19b95d9c2f312e6a68ea244d2ed5120203b4b82af9785937a349096f8e5e4
+    name: Build with Docker using BlocksDS 1.25.0
 
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - name: Update packages
+      - name: Install packages
         run: |
-          sudo -n sed -i '/bullseye-security/d' /etc/apt/sources.list 2>/dev/null || true
+          apt-get update
+          apt-get install -y --no-install-recommends zip
 
-          for f in /etc/apt/sources.list.d/*.list; do
-            [ -e "$f" ] || continue
-            sudo -n sed -i '/bullseye-security/d' "$f"
-          done
-
-          sudo -n apt-get update
-          sudo -n apt-get install -y fakeroot zip p7zip-full
+      - name: Show toolchain versions
+        run: |
+          wf-pacman -Q blocksds-toolchain toolchain-gcc-arm-none-eabi-gcc toolchain-gcc-arm-none-eabi-binutils toolchain-gcc-arm-none-eabi-picolibc-generic toolchain-gcc-arm-none-eabi-libstdcxx-picolibc
+          cat "$BLOCKSDS/version.txt"
 
       - name: Silence all git safe directory warnings
         run: git config --system --add safe.directory '*'
@@ -35,8 +33,17 @@ jobs:
         run: chmod 777 -R "$GITHUB_WORKSPACE"
 
       - name: Build akmenu-next
+        shell: bash
         run: |
-          make -j$(nproc)
+          make -j$(nproc) VERBOSE=1 2>&1 | tee build.log
+
+      - name: Check build log for devkitPro leakage
+        shell: bash
+        run: |
+          if grep -inE 'devkitpro|devkitarm|ds_rules|-lfat' build.log; then
+            echo "devkitPro reference found in build log"
+            exit 1
+          fi
 
       - name: Run package script
         run: |

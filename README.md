@@ -25,8 +25,8 @@ Use [AKTheme Studio](https://coderkei.github.io/akmenu-next-theme-editor/) to cr
 
 ## Building from source
 
-Requires the pre-calico version of devkitarm to be installed with the `nds-dev` package.
-A docker image is available with this version on [docker hub](https://hub.docker.com/layers/devkitpro/devkitarm/20241104).
+Requires [BlocksDS](https://blocksds.skylyrac.net/) 1.25.0 (the `blocksds-toolchain` package of the Wonderful Toolchain).
+The CI uses the official docker image `skylyrac/blocksds:slim-v1.25.0` (`sha256:c5f19b95d9c2f312e6a68ea244d2ed5120203b4b82af9785937a349096f8e5e4`) from [docker hub](https://hub.docker.com/r/skylyrac/blocksds).
 
 Build the repository with `make`, then run `package.cmd/sh` depending on your OS to package the build for Flashcarts, DSi and 3DS.
 
