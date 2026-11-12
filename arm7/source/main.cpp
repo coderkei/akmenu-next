@@ -13,14 +13,12 @@
 #include "../../share/memtool.h"
 #include "picoLoader7.h"
 #include "my_i2c.h"
-#include "nand_service.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 extern void swiSwitchToGBAModeFixed(); // This is broken in libnds since 2008. Not fixed until libnds2 which this project isn't using yet.
 void __libnds_exit(int rc) {}
-void syncRTC(void); // syncRTC isn't defined in a libnds header, but it does exist so this fixes the compiler error
 #ifdef __cplusplus
 }
 #endif
@@ -234,12 +232,9 @@ int main() {
     irqInit();
     fifoInit();
     touchInit();
-    initializeNandService();
 
     // Start the RTC tracking IRQ
-    timerStart(3, ClockDivider_1024, TIMER_FREQ_1024(1), syncRTC);
-    initClockIRQ();
-    irqSet(IRQ_NETWORK, NULL);  // IRQ_NETWORK is IRQ_RTC on dKA libnds
+    initClockIRQTimer(LIBNDS_DEFAULT_TIMER_RTC);
 
     fifoSetValue32Handler(FIFO_USER_01, menuValue32Handler, 0);
 
@@ -247,7 +242,7 @@ int main() {
 
     irqSet(IRQ_VBLANK, VblankHandler);
 
-    irqEnable(IRQ_VBLANK | IRQ_NETWORK);
+    irqEnable(IRQ_VBLANK);
 
     if (isDSiMode() && REG_SNDEXTCNT != 0) {
 		i2cWriteRegister(0x4A, 0x12, 0x00);	// Press power-button for auto-reset
@@ -263,11 +258,18 @@ int main() {
             }
             fifoSendValue32(FIFO_USER_01, 1);
         }
-        if (*(u32*)(0x2FFFD0C) == 0x454D4D43) {
-            sdmmc_get_cid(true, (u32*)0x2FFD7BC);    // Get eMMC CID
+        if (isDSiMode() && *(u32*)(0x2FFFD0C) == 0x454D4D43) {
+            int oldIME = enterCriticalSection();
+            const u32 fifoIrqs = REG_IE & (IRQ_SEND_FIFO | IRQ_RECV_FIFO);
+            REG_IE &= ~fifoIrqs;
+            leaveCriticalSection(oldIME);
+            SDMMC_init(SDMMC_DEV_eMMC);
+            SDMMC_getCidRaw(SDMMC_DEV_eMMC, (u32*)0x2FFD7BC);
+            oldIME = enterCriticalSection();
+            REG_IE |= fifoIrqs;
+            leaveCriticalSection(oldIME);
             *(u32*)(0x2FFFD0C) = 0;
         }
-        pollNandConsoleIdRequest();
         swiWaitForVBlank();
         if(reset_pico)
             resetDSPico();

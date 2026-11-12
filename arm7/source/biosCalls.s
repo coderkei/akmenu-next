@@ -3,6 +3,7 @@
 
 @---------------------------------------------------------------------------------------
 .GLOBAL     swiSwitchToGBAModeFixed
+.type       swiSwitchToGBAModeFixed, %function
 .func swiSwitchToGBAModeFixed
 @---------------------------------------------------------------------------------------
 swiSwitchToGBAModeFixed:

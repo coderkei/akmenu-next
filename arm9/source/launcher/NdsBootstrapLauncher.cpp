@@ -7,6 +7,7 @@
 
 #include <sys/stat.h>
 #include <unistd.h>
+#include <cctype>
 #include <cstdio>
 #include <cstring>
 #include <string>
@@ -34,7 +35,6 @@
 #include "slot2/io_g6_common.h"
 #include "slot2/io_m3_common.h"
 #include "slot2/io_sc_common.h"
-#include "libfat_ext/fat_ext.h"
 
 namespace {
 struct DsiWareFatHeader {
@@ -131,11 +131,12 @@ static bool createDsiWareSave(const std::string& path, u32 size) {
     if (!save) return false;
 
     bool success = fwrite(&header, sizeof(header), 1, save) == 1;
-    u32 written = 0;
+    static const u8 zeros[0x200] = {0};
+    u32 written = sizeof(header);
     while (success && written < size) {
-        written += 0x8000;
-        if (written > size) written = size;
-        success = fseek(save, written - 1, SEEK_SET) == 0 && fputc('\0', save) != EOF;
+        const u32 chunk = size - written < sizeof(zeros) ? size - written : sizeof(zeros);
+        success = fwrite(zeros, 1, chunk, save) == chunk;
+        written += chunk;
     }
     if (fclose(save) != 0) success = false;
     if (!success) remove(path.c_str());
@@ -266,9 +267,27 @@ static bool makeDsiSdAlias(const std::string& path, char* alias, size_t aliasSiz
         aliasSize < 5) {
         return false;
     }
+    std::string result = "sd:/";
+    size_t start = 4;
+    while (start < path.size()) {
+        size_t end = path.find('/', start);
+        if (end == std::string::npos) end = path.size();
+        if (end > start) {
+            char shortName[FAT_SHORT_FILE_NAME_MAX + 1] = {0};
+            if (!FAT_getShortNameFor(path.substr(0, end).c_str(), shortName)) return false;
+            if (shortName[0] == '\0') {
+                for (size_t i = start; i < end; ++i) result += (char)toupper((unsigned char)path[i]);
+            } else {
+                result += shortName;
+            }
+            if (end < path.size()) result += '/';
+        }
+        start = end + 1;
+    }
+    if (result.size() >= aliasSize) return false;
     memset(alias, 0, aliasSize);
-    fatGetAliasPath("sd:/", path.c_str(), alias);
-    return strncmp(alias, "sd:/", 4) == 0 && alias[4] != '\0';
+    memcpy(alias, result.c_str(), result.size());
+    return alias[4] != '\0';
 }
 }  // namespace
 
@@ -617,6 +636,15 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
         if (access(sdBootstrapPathNightly.c_str(), F_OK) == 0) {
             ndsBootstrapPathNightly = sdBootstrapPathNightly;
         }
+    }
+
+    if (!dsiWare && isDSiMode() && romPath.compare(0, 4, "sd:/") == 0 &&
+        mBootstrapRoot != "sd:/" &&
+        access("sd:/_nds/nds-bootstrap-release.nds", F_OK) == 0) {
+        mBootstrapRoot = "sd:/";
+        ndsBootstrapCheck = mBootstrapRoot + "_nds/pagefile.sys";
+        ndsBootstrapPath = mBootstrapRoot + "_nds/nds-bootstrap-release.nds";
+        ndsBootstrapPathNightly = mBootstrapRoot + "_nds/nds-bootstrap-nightly.nds";
     }
 
     bool useUnlaunch = false;

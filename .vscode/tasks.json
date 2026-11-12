@@ -2,12 +2,18 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build and package (devKitPro MSYS2)",
+            "label": "Build and package (Wonderful/BlocksDS)",
             "type": "process",
-            "command": "C:\\devKitPro\\msys2\\usr\\bin\\bash.exe",
+            "command": "cmd.exe",
             "args": [
-                "-lc",
-                "cd /s/ndsdev/akmenu-next && make -j2 && cd package && ./package.sh"
+                "/c",
+                "C:\\devKitPro\\msys2\\opt\\wonderful\\wonderful_shell.cmd",
+                "-defterm",
+                "-no-start",
+                "-where",
+                "S:\\ndsdev\\akmenu-next",
+                "-c",
+                "make -j2 && cd package && ./package.sh"
             ],
             "group": {
                 "kind": "build",
@@ -59,7 +65,7 @@
         {
             "label": "Build, package, stage, and run in melonDS",
             "dependsOn": [
-                "Build and package (devKitPro MSYS2)",
+                "Build and package (Wonderful/BlocksDS)",
                 "Stage flashcart for melonDS",
                 "Open staged game in melonDS"
             ],

@@ -8,6 +8,7 @@
 */
 
 #include "progresswnd.h"
+#include "irqs.h"
 
 namespace akui {
 
@@ -56,6 +57,7 @@ void cProgressWnd::setPercent(u8 percent) {
     _bar.setPercent(percent);
     windowManager().update();
     gdi().present(GE_MAIN);
+    cIRQ::update();
 }
 
 void cProgressWnd::setTipText(const std::string& tipText) {

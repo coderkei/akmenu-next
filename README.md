@@ -25,10 +25,19 @@ Use [AKTheme Studio](https://coderkei.github.io/akmenu-next-theme-editor/) to cr
 
 ## Building from source
 
-Requires the pre-calico version of devkitarm to be installed with the `nds-dev` package.
-A docker image is available with this version on [docker hub](https://hub.docker.com/layers/devkitpro/devkitarm/20241104).
+Use BlocksDS 1.25.0 with the Wonderful Toolchain. Follow the BlocksDS setup guide for [Windows](https://blocksds.skylyrac.net/docs/setup/windows/) or [Linux](https://blocksds.skylyrac.net/docs/setup/linux/) to install `blocksds-toolchain` and set up the build shell. Have GNU Make and `zip` available in that shell. The full build uses the bundled CIA packager and has been verified on Windows and x86-64 Linux.
 
-Build the repository with `make`, then run `package.cmd/sh` depending on your OS to package the build for Flashcarts, DSi and 3DS.
+Check out the repository into a directory named `akmenu-next` with submodules initialized, including `nds-bootloader` at the commit recorded by this repository. The build uses the directory name for the CIA filename, which the packaging script expects to be `akmenu-next.cia`.
+
+From the repository root in the BlocksDS build shell (the Wonderful Toolchain Shell on Windows), run:
+
+```sh
+make -j2 && cd package && ./package.sh
+```
+
+The four archives appear in `package/`: `akmenu-next-flashcart.zip`, `akmenu-next-pico.zip`, `akmenu-next-dsi.zip`, and `akmenu-next-3ds.zip`.
+
+[GitHub Actions](.github/workflows/main.yml) builds and packages with the official [BlocksDS Docker image](https://hub.docker.com/r/skylyrac/blocksds) pinned to `skylyrac/blocksds:slim-v1.25.0@sha256:c5f19b95d9c2f312e6a68ea244d2ed5120203b4b82af9785937a349096f8e5e4`.
 
 ### Configuration
 

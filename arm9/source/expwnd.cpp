@@ -172,8 +172,10 @@ cWindow& cExpWnd::loadAppearance(const std::string& aFileName) {
 }
 
 void cExpWnd::onOK() {
-    expansion().SoftReset();
-    if (_Rumble.selectedItemId() > 0) cExpansion::SetShake(0xEF + _Rumble.selectedItemId());
+    if (!isDSiMode()) {
+        expansion().SoftReset();
+        if (_Rumble.selectedItemId() > 0) cExpansion::SetShake(0xEF + _Rumble.selectedItemId());
+    }
     cForm::onOK();
 }
 
@@ -182,14 +184,20 @@ void cExpWnd::onCancel() {
 }
 
 void cExpWnd::onRAM() {
-    expansion().SoftReset();
-    cExpansion::SetRompage(0x300);
-    cExpansion::OpenNorWrite();
-    cExpansion::EnableBrowser();
+    if (!isDSiMode()) {
+        expansion().SoftReset();
+        cExpansion::SetRompage(0x300);
+        cExpansion::OpenNorWrite();
+        cExpansion::EnableBrowser();
+    }
     cForm::onOK();
 }
 
 void cExpWnd::onSRAM() {
+    if (isDSiMode()) {
+        cForm::onOK();
+        return;
+    }
     std::string saveName = "fat:/sram-" + datetime().getTimeStampString() + ".sav";
     const u32 size = 4096 * 128, page = 4096, pages = 128;
     FILE* saveFile = fopen(saveName.c_str(), "wb");

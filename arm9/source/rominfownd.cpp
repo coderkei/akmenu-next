@@ -9,6 +9,7 @@
 
 #include "rominfownd.h"
 #include <sys/stat.h>
+#include <time.h>
 #include "cheatwnd.h"
 #include "gbaloader.h"
 #include "globalsettings.h"
@@ -365,7 +366,7 @@ void cRomInfoWnd::pressSaveType(void) {
     }
 
     size_t dsiWareBooterItem = (size_t)-1;
-    if (_romInfo.isDSiWare()) {
+    if (_romInfo.isDSiWare() && _fullName.compare(0, 4, "sd:/") == 0) {
         _values.clear();
         _values.push_back(lang().GetString("nds bootstrap", "Global", "Global"));
         _values.push_back(lang().GetString("nds bootstrap", "nds-bootstrap", "nds-bootstrap"));

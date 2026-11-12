@@ -26,6 +26,7 @@
 using namespace akui;
 
 bool cIRQ::_vblankStarted(false);
+volatile bool cIRQ::_redrawPending(false);
 
 void cIRQ::init() {
     irqSet(IRQ_VBLANK, vBlank);
@@ -59,6 +60,12 @@ void cIRQ::redrawTopScreen() {
     gdi().present(GE_SUB);
 }
 
+void cIRQ::update() {
+    if (!_redrawPending) return;
+    _redrawPending = false;
+    redrawTopScreen();
+}
+
 void cIRQ::vBlank() {
     if (!_vblankStarted) return;
 
@@ -69,7 +76,7 @@ void cIRQ::vBlank() {
     if (vBlankCounter++ > 30) {
         vBlankCounter = 0;
         bigClock().blinkColon();
-        redrawTopScreen();
+        _redrawPending = true;
 #if 0
         char fpsText[16];
         sprintf( fpsText, "fps %.2f\n", timer().getFps() );

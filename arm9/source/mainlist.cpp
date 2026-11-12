@@ -12,6 +12,7 @@
 #include "mainlist.h"
 #include <fat.h>
 #include <sys/dir.h>
+#include <sys/stat.h>
 #include <time.h>
 #include "../../share/memtool.h"
 #include "dbgtool.h"
