@@ -116,15 +116,15 @@ cMainList::cMainList(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::str
     } else {
         if (fsManager().isFlashcart()) {
             if (fsManager().isSDInserted()) {
-                _topCount = 5;
+                _topCount = 4;
                 _topuSD = 0;
                 _topuDSiSD = 1;
                 _topFavorites = 2;
                 _topRecent = 3;
-                _topSlot2 = 4;               
+                _topSlot2 = 4;
                 _topSlot1 = 5;
             } else {
-                _topCount = 4;
+                _topCount = 3;
                 _topuSD = 0;
                 _topFavorites = 1;
                 _topRecent = 2;
@@ -133,13 +133,13 @@ cMainList::cMainList(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::str
                 _topSlot1 = 5;
             }
         } else {
-                _topCount = 4;      
-                _topuDSiSD = 0;
-                _topFavorites = 1;
-                _topRecent = 2;
-                _topSlot1 = 3;
-                _topuSD = 4;
-                _topSlot2 = 5;
+            _topCount = 4;
+            _topuDSiSD = 0;
+            _topFavorites = 1;
+            _topRecent = 2;
+            _topSlot1 = 3;
+            _topuSD = 4;
+            _topSlot2 = 5;
         }
     }
 }
