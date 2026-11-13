@@ -12,6 +12,7 @@
 #include <sys/stat.h>
 #include "fontfactory.h"
 #include "inifile.h"
+#include "overlaylanguage.h"
 #include "systemfilenames.h"
 
 cGlobalSettings::cGlobalSettings() {
@@ -99,6 +100,11 @@ void cGlobalSettings::loadSettings() {
     resetHotKey = ini.GetInt("system", "resethotkey", resetHotKey);
     phatCol = ini.GetInt("system", "phatCol", phatCol);
     languageOverride = ini.GetInt("system", "languageOverride", languageOverride);
+    overlayLanguage = ini.GetInt("system", "overlayLanguage", 0);
+    if (overlayLanguage < 0 || static_cast<size_t>(overlayLanguage) >=
+                                      sizeof(overlayLanguages) / sizeof(overlayLanguages[0])) {
+        overlayLanguage = 0;
+    }
     hbStrap = ini.GetInt("system", "hbstrap", hbStrap);
     if (hbStrap < 0 || hbStrap > 2) hbStrap = 0;
     overridePluginDefaults =
@@ -169,6 +175,7 @@ void cGlobalSettings::saveSettings() {
     ini.SetInt("system", "boostcpu", boostCpu);
     ini.SetInt("system", "ignorecrc16", ignoreCrc16);
     ini.SetInt("system", "languageOverride", languageOverride);
+    ini.SetInt("system", "overlayLanguage", overlayLanguage);
     ini.SetInt("system", "hbstrap", hbStrap);
     ini.SetInt("system", "overridePluginDefaults", overridePluginDefaults);
     ini.SetInt("system", "pico", pico);

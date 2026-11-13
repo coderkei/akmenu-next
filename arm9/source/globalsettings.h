@@ -51,6 +51,7 @@ class cGlobalSettings {
     std::string uiName;
     std::string startupFolder;
     int languageOverride;
+    int overlayLanguage = 0;
     int resetHotKey;
     int scrollSpeed;
     int romLauncher;

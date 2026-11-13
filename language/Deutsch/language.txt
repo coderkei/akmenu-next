@@ -406,4 +406,39 @@ text = Sprachüberschreibung
 7 = 中文
 8 = Korean
 
+[overlay language]
+text = Overlay-Sprache
+auto = Auto
+ar = Arabisch
+ca = Katalanisch
+cs = Tschechisch
+da = Dänisch
+de = Deutsch
+el = Griechisch
+en = Englisch
+es = Spanisch
+fi = Finnisch
+fr = Französisch
+he = Hebräisch
+hu = Ungarisch
+id = Indonesisch
+it = Italienisch
+ja = Japanisch
+ko = Koreanisch
+nl = Niederländisch
+no = Norwegisch
+pl = Polnisch
+pt = Portugiesisch
+pt-BR = Portugiesisch (BR)
+ro = Rumänisch
+ru = Russisch
+ry = Russinisch
+sv = Schwedisch
+tr = Türkisch
+uk = Ukrainisch
+val = Valencianisch
+vi = Vietnamesisch
+zh-CN = Chinesisch (CN)
+zh-TW = Chinesisch (TW)
+
 [end]

@@ -381,4 +381,39 @@ text = 語言覆蓋
 7 = 中文
 8 = 韓文
 
+[overlay language]
+text = 遊戲內選單語言
+auto = 自動
+ar = 阿拉伯語
+ca = 加泰隆尼亞語
+cs = 捷克語
+da = 丹麥語
+de = 德語
+el = 希臘語
+en = 英語
+es = 西班牙語
+fi = 芬蘭語
+fr = 法語
+he = 希伯來語
+hu = 匈牙利語
+id = 印尼語
+it = 義大利語
+ja = 日語
+ko = 韓語
+nl = 荷蘭語
+no = 挪威語
+pl = 波蘭語
+pt = 葡萄牙語
+pt-BR = 葡萄牙語（巴西）
+ro = 羅馬尼亞語
+ru = 俄語
+ry = 盧森尼亞語
+sv = 瑞典語
+tr = 土耳其語
+uk = 烏克蘭語
+val = 瓦倫西亞語
+vi = 越南語
+zh-CN = 簡體中文
+zh-TW = 繁體中文
+
 [end]

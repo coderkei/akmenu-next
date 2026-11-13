@@ -38,6 +38,7 @@
 #include "fsmngr.h"
 #include "themewnd.h"
 #include "languagewnd.h"
+#include "overlaylanguage.h"
 
 #include <dirent.h>
 #include <fat.h>
@@ -664,6 +665,7 @@ void cMainWnd::setParam(void) {
     size_t ndsBoostCpuItem;
     size_t ndsCardDmaItem;
     size_t ndsLanguageOverrideItem;
+    size_t ndsOverlayLanguageItem;
     size_t ndsPhatColorItem = (size_t)-1;
     size_t ndsDsiWareBooterItem = (size_t)-1;
     size_t ndsHomebrewLoaderItem = (size_t)-1;
@@ -710,6 +712,15 @@ void cMainWnd::setParam(void) {
     _values.push_back(LANG("override", "8"));
     ndsLanguageOverrideItem = ndsItem++;
     settingWnd.addSettingItem(LANG("override", "text"), _values, gs().languageOverride);
+
+    _values.clear();
+    for (const auto& language : overlayLanguages) {
+        _values.push_back(lang().GetString("overlay language", language.code, language.label));
+    }
+    ndsOverlayLanguageItem = ndsItem++;
+    settingWnd.addSettingItem(
+            lang().GetString("overlay language", "text", "Overlay Language"), _values,
+            gs().overlayLanguage);
 
     if (isDSiMode()) {
         _values.clear();
@@ -824,6 +835,8 @@ void cMainWnd::setParam(void) {
     gs().cardReadDma = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsCardDmaItem);
     gs().languageOverride =
             settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsLanguageOverrideItem);
+    gs().overlayLanguage =
+            settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsOverlayLanguageItem);
 
     if (fsManager().isFlashcart()) {
         gs().pico = settingWnd.getItemSelection(TAB_NDS_BOOTSTRAP, ndsLoaderItem);

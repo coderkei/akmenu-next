@@ -404,4 +404,39 @@ text = Sostituzione della lingua
 7 = 中文
 8 = Korean
 
+[overlay language]
+text = Lingua del menu in gioco
+auto = Auto
+ar = Arabo
+ca = Catalano
+cs = Ceco
+da = Danese
+de = Tedesco
+el = Greco
+en = Inglese
+es = Spagnolo
+fi = Finlandese
+fr = Francese
+he = Ebraico
+hu = Ungherese
+id = Indonesiano
+it = Italiano
+ja = Giapponese
+ko = Coreano
+nl = Olandese
+no = Norvegese
+pl = Polacco
+pt = Portoghese
+pt-BR = Portoghese (BR)
+ro = Rumeno
+ru = Russo
+ry = Rusino
+sv = Svedese
+tr = Turco
+uk = Ucraino
+val = Valenciano
+vi = Vietnamita
+zh-CN = Cinese (CN)
+zh-TW = Cinese (TW)
+
 [end]

@@ -411,4 +411,39 @@ text = Anulación de idioma
 7 = 中文
 8 = Korean
 
+[overlay language]
+text = Idioma del menú en juego
+auto = Auto
+ar = Árabe
+ca = Catalán
+cs = Checo
+da = Danés
+de = Alemán
+el = Griego
+en = Inglés
+es = Español
+fi = Finés
+fr = Francés
+he = Hebreo
+hu = Húngaro
+id = Indonesio
+it = Italiano
+ja = Japonés
+ko = Coreano
+nl = Neerlandés
+no = Noruego
+pl = Polaco
+pt = Portugués
+pt-BR = Portugués (BR)
+ro = Rumano
+ru = Ruso
+ry = Rusino
+sv = Sueco
+tr = Turco
+uk = Ucraniano
+val = Valenciano
+vi = Vietnamita
+zh-CN = Chino (CN)
+zh-TW = Chino (TW)
+
 [end]

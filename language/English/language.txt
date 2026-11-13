@@ -376,4 +376,39 @@ text = Language Override
 7 = 中文
 8 = Korean
 
+[overlay language]
+text = Overlay Language
+auto = Auto
+ar = Arabic
+ca = Catalan
+cs = Czech
+da = Danish
+de = German
+el = Greek
+en = English
+es = Spanish
+fi = Finnish
+fr = French
+he = Hebrew
+hu = Hungarian
+id = Indonesian
+it = Italian
+ja = Japanese
+ko = Korean
+nl = Dutch
+no = Norwegian
+pl = Polish
+pt = Portuguese
+pt-BR = Portuguese (BR)
+ro = Romanian
+ru = Russian
+ry = Rusyn
+sv = Swedish
+tr = Turkish
+uk = Ukrainian
+val = Valencian
+vi = Vietnamese
+zh-CN = Chinese (CN)
+zh-TW = Chinese (TW)
+
 [end]

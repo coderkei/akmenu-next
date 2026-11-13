@@ -24,6 +24,7 @@
 #include "../mainlist.h"
 #include "../systemfilenames.h"
 #include "../language.h"
+#include "../overlaylanguage.h"
 #include "../ui/msgbox.h"
 #include "../ui/progresswnd.h"
 #include "ILauncher.h"
@@ -38,6 +39,18 @@
 #include "slot2/io_sc_common.h"
 
 namespace {
+const char* overlayLanguageCode() {
+    if (gs().overlayLanguage != 0) return overlayLanguages[gs().overlayLanguage].code;
+
+    for (const auto& language : overlayLanguages) {
+        if (language.menuDirectory &&
+            strcasecmp(gs().langDirectory.c_str(), language.menuDirectory) == 0) {
+            return language.code;
+        }
+    }
+    return "en";
+}
+
 struct DsiWareFatHeader {
     u8 bootJump[3];
     u8 oemName[8];
@@ -361,6 +374,7 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg,
     hotkeyCheck = false;
 
     ini.SetString("NDS-BOOTSTRAP", "NDS_PATH", mRomPath);
+    ini.SetString("NDS-BOOTSTRAP", "GUI_LANGUAGE", overlayLanguageCode());
     if (!homebrewArg.empty()) {
         ini.SetString("NDS-BOOTSTRAP", "HOMEBREW_ARG", homebrewArg);
     }
