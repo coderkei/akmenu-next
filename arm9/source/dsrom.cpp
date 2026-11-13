@@ -74,7 +74,7 @@ bool DSRomInfo::loadDSRomInfo(const std::string& filename, bool loadBanner) {
     }
 
     tNDSHeader header;
-    if (512 != fread(&header, 1, 512, f))  // 锟斤拷锟侥硷拷头失锟斤拷
+    if (sizeof(header) != fread(&header, 1, sizeof(header), f))  // 锟斤拷锟侥硷拷头失锟斤拷
     {
         dbg_printf("read rom header fail\n");
         loadBannerIcon(_banner, "unknown_nds_banner.bin", unknown_nds_banner_bin);
