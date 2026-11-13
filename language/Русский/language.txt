@@ -354,6 +354,7 @@ info = Сведения
 load text = Подождите...
 
 [resethotkey]
+Screen Swap Hotkey = Смена экранов
 text = Горячая клавиша меню
 0 = l-↓-select
 1 = l-r-start
@@ -409,5 +410,10 @@ val = Валенсийский
 vi = Вьетнамский
 zh-CN = Китайский (CN)
 zh-TW = Китайский (TW)
+
+[async card read]
+Async Card Read = Асинхронное чтение
+Minimal = Минимум
+Full = Полное
 
 [end]

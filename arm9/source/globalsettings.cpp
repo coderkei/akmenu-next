@@ -98,6 +98,7 @@ void cGlobalSettings::loadSettings() {
     autorunWithLastRom = ini.GetInt("system", "autorunWithLastRom", autorunWithLastRom);
     homebrewreset = ini.GetInt("system", "homebrewreset", homebrewreset);
     resetHotKey = ini.GetInt("system", "resethotkey", resetHotKey);
+    screenSwapHotKey = ini.GetInt("system", "screenSwapHotKey", 0);
     phatCol = ini.GetInt("system", "phatCol", phatCol);
     languageOverride = ini.GetInt("system", "languageOverride", languageOverride);
     overlayLanguage = ini.GetInt("system", "overlayLanguage", 0);
@@ -171,6 +172,7 @@ void cGlobalSettings::saveSettings() {
     ini.SetInt("system", "playThemeMusic", playThemeMusic);
     ini.SetInt("system", "homebrewreset", homebrewreset);
     ini.SetInt("system", "resethotkey", resetHotKey);
+    ini.SetInt("system", "screenSwapHotKey", screenSwapHotKey);
     ini.SetInt("system", "dsonly", dsOnly);
     ini.SetInt("system", "boostcpu", boostCpu);
     ini.SetInt("system", "ignorecrc16", ignoreCrc16);

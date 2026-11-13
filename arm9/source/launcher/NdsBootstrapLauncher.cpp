@@ -436,10 +436,12 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg,
         }
 
     std::string externalHotkey;
+    std::string externalScreenSwapHotkey;
     {
         CIniFile extIni;
         if (extIni.LoadIniFile(custIniPath)) {
             externalHotkey = extIni.GetString("ndsbs", "hotkey", "");
+            externalScreenSwapHotkey = extIni.GetString("ndsbs", "screenSwapHotkey", "");
             if (!externalHotkey.empty()) {
                 hotkeyCheck = true;
             } else {
@@ -488,6 +490,23 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg,
         default:
             break;
     }
+    const char* screenSwapHotkeys[] = {"740", "340", "700"};
+    const int screenSwapChoice = gs().screenSwapHotKey;
+    if (screenSwapChoice >= 0 && screenSwapChoice < 3) {
+        ini.SetString("NDS-BOOTSTRAP", "SCREEN_SWAP_HOTKEY", screenSwapHotkeys[screenSwapChoice]);
+    } else if (screenSwapChoice == 3 && !externalScreenSwapHotkey.empty()) {
+        ini.SetString("NDS-BOOTSTRAP", "SCREEN_SWAP_HOTKEY", externalScreenSwapHotkey);
+    }
+
+    if (!homebrewLaunch) {
+        const std::string manualPath = replaceSaveExtension(mRomPath, ".txt");
+        struct stat manualStat;
+        if (stat(manualPath.c_str(), &manualStat) == 0 && S_ISREG(manualStat.st_mode) &&
+            manualStat.st_size > 0) {
+            ini.SetString("NDS-BOOTSTRAP", "MANUAL_PATH", manualPath);
+        }
+    }
+
     switch(gs().languageOverride)
     {
         case 0:
@@ -529,14 +548,15 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg,
         ini.SetString("NDS-BOOTSTRAP", "BOOST_CPU", "1");
     }
 
-    u8 cardReadDmaSetting = _romInfo.saveInfo().getCardReadDma();
-    if (cardReadDmaSetting == 2) {
-        cardReadDmaSetting = gs().cardReadDma;
+    const u8 cardReadDma = _romInfo.saveInfo().getCardReadDma();
+    if (cardReadDma != 2) {
+        ini.SetInt("NDS-BOOTSTRAP", "CARD_READ_DMA", cardReadDma);
+    } else if (gs().cardReadDma == 1 || gs().cardReadDma == 2) {
+        ini.SetInt("NDS-BOOTSTRAP", "CARD_READ_DMA", gs().cardReadDma == 1 ? 1 : 0);
     }
-    if (cardReadDmaSetting == 1) {
-        ini.SetInt("NDS-BOOTSTRAP", "CARD_READ_DMA", 1);
-    } else if (cardReadDmaSetting == 2 || (cardReadDmaSetting == 0 && _romInfo.saveInfo().getCardReadDma() != 2)) {
-        ini.SetInt("NDS-BOOTSTRAP", "CARD_READ_DMA", 0);
+
+    if (!homebrewLaunch) {
+        ini.SetInt("NDS-BOOTSTRAP", "ASYNC_CARD_READ", _romInfo.saveInfo().getAsyncCardRead() - 1);
     }
     
     if(gs().phatCol && isDSiMode()) {

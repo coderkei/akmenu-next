@@ -383,6 +383,7 @@ loader = ゲームローダー
 carddma = Card Read DMA
 
 [resethotkey]
+Screen Swap Hotkey = 画面切替キー
 text = メニューホットキー
 0 = l-↓-select
 1 = l-r-start
@@ -438,5 +439,10 @@ val = バレンシア語
 vi = ベトナム語
 zh-CN = 中国語（簡体字）
 zh-TW = 中国語（繁体字）
+
+[async card read]
+Async Card Read = 非同期カード読込
+Minimal = 最小
+Full = 全体
 
 [end]

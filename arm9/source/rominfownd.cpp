@@ -320,6 +320,7 @@ void cRomInfoWnd::pressSaveType(void) {
     size_t dsmodeItem = (size_t)-1;
     size_t boostcpuItem = (size_t)-1;
     size_t cardreaddmaItem = (size_t)-1;
+    size_t asyncCardReadItem = (size_t)-1;
 
     if (hasLoaderSetting){
         _values.clear();
@@ -331,7 +332,9 @@ void cRomInfoWnd::pressSaveType(void) {
                                   _romInfo.saveInfo().getLoader());
     }
 
-    if((!gs().pico && _romInfo.saveInfo().getLoader() == 2) || _romInfo.saveInfo().getLoader() == 1){
+    if (_fullName.compare(0, 4, "sd:/") == 0 ||
+        (!gs().pico && _romInfo.saveInfo().getLoader() == 2) ||
+        _romInfo.saveInfo().getLoader() == 1) {
         _values.clear();
         _values.push_back(LANG("nds bootstrap", "release"));
         _values.push_back(LANG("nds bootstrap", "nightly"));
@@ -363,6 +366,15 @@ void cRomInfoWnd::pressSaveType(void) {
         cardreaddmaItem = nextFirstTabItem++;
         settingWnd.addSettingItem(LANG("nds bootstrap", "carddma"), _values,
                                   _romInfo.saveInfo().getCardReadDma());
+
+        _values.clear();
+        _values.push_back(LANG("switches", "Auto"));
+        _values.push_back(LANG("switches", "Disable"));
+        _values.push_back(LANG("async card read", "Minimal"));
+        _values.push_back(LANG("async card read", "Full"));
+        asyncCardReadItem = nextFirstTabItem++;
+        settingWnd.addSettingItem(LANG("async card read", "Async Card Read"), _values,
+                                  _romInfo.saveInfo().getAsyncCardRead());
     }
 
     size_t dsiWareBooterItem = (size_t)-1;
@@ -463,6 +475,9 @@ void cRomInfoWnd::pressSaveType(void) {
     if (dsiWareBooterItem != (size_t)-1) {
         _romInfo.saveInfo().setDsiWareBooter(
                 settingWnd.getItemSelection(0, dsiWareBooterItem));
+    }
+    if (asyncCardReadItem != (size_t)-1) {
+        _romInfo.saveInfo().setAsyncCardRead(settingWnd.getItemSelection(0, asyncCardReadItem));
     }
 
     saveManager().updateCustomSaveList(_romInfo.saveInfo());

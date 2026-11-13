@@ -53,6 +53,7 @@ class cGlobalSettings {
     int languageOverride;
     int overlayLanguage = 0;
     int resetHotKey;
+    int screenSwapHotKey = 0;
     int scrollSpeed;
     int romLauncher;
     int viewMode;

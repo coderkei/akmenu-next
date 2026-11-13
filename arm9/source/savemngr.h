@@ -95,6 +95,8 @@ enum DISPLAY_SAVE_TYPE {
 #define SAVE_INFO_EX_DSIWARE_BOOTER_GLOBAL 0
 #define SAVE_INFO_EX_DSIWARE_BOOTER_NDS_BOOTSTRAP 1
 #define SAVE_INFO_EX_DSIWARE_BOOTER_UNLAUNCH 2
+#define SAVE_INFO_EX_ASYNC_CARD_READ_MASK 0x0c
+#define SAVE_INFO_EX_ASYNC_CARD_READ_SHIFT 2
 
 typedef struct SAVE_INFO_EX_T {
     u8 gameTitle[12];
@@ -142,6 +144,15 @@ typedef struct SAVE_INFO_EX_T {
                        ? value
                        : SAVE_INFO_EX_DSIWARE_BOOTER_GLOBAL;
     };
+    u8 getAsyncCardRead() const {
+        return (reserved[0] & SAVE_INFO_EX_ASYNC_CARD_READ_MASK) >>
+               SAVE_INFO_EX_ASYNC_CARD_READ_SHIFT;
+    }
+    void setAsyncCardRead(u8 value) {
+        reserved[0] = (reserved[0] & ~SAVE_INFO_EX_ASYNC_CARD_READ_MASK) |
+                      ((value << SAVE_INFO_EX_ASYNC_CARD_READ_SHIFT) &
+                       SAVE_INFO_EX_ASYNC_CARD_READ_MASK);
+    }
     void setDsiWareBooter(u8 value) {
         if (value > SAVE_INFO_EX_DSIWARE_BOOTER_UNLAUNCH)
             value = SAVE_INFO_EX_DSIWARE_BOOTER_GLOBAL;

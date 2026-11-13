@@ -383,6 +383,7 @@ loader = Loader per i giochi
 carddma = Card Read DMA
 
 [resethotkey]
+Screen Swap Hotkey = Scambio schermi
 text = Pulsanti del menu
 0 = l-↓-select
 1 = l-r-start
@@ -438,5 +439,10 @@ val = Valenciano
 vi = Vietnamita
 zh-CN = Cinese (CN)
 zh-TW = Cinese (TW)
+
+[async card read]
+Async Card Read = Lettura asincrona
+Minimal = Minima
+Full = Completa
 
 [end]

@@ -360,6 +360,7 @@ info = 資訊
 load text = 請稍後...
 
 [resethotkey]
+Screen Swap Hotkey = 螢幕切換快捷鍵
 text = 選單熱鍵
 0 = l-↓-select
 1 = l-r-start
@@ -415,5 +416,10 @@ val = 瓦倫西亞語
 vi = 越南語
 zh-CN = 簡體中文
 zh-TW = 繁體中文
+
+[async card read]
+Async Card Read = 非同步讀卡
+Minimal = 最少
+Full = 完整
 
 [end]

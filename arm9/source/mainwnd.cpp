@@ -584,6 +584,11 @@ void cMainWnd::setParam(void) {
     const size_t systemSlot2Item = 2;
     settingWnd.addSettingItem(LANG("gba settings", "mode"), _values, gs().slot2mode);
 
+    _values = {"L+R+Up+X", "L+R+Up", "L+R+X", LANG("resethotkey", "6")};
+    const size_t screenSwapHotKeyItem = 3;
+    settingWnd.addSettingItem(LANG("resethotkey", "Screen Swap Hotkey"), _values,
+                              gs().screenSwapHotKey);
+
     // Interface: the appearance and behaviour of the file browser.
     settingWnd.addSettingTab(LANG("interface settings", "title"));
     size_t scrollSpeed = 0;
@@ -790,6 +795,7 @@ void cMainWnd::setParam(void) {
 
     // System
     gs().resetHotKey = settingWnd.getItemSelection(TAB_SYSTEM, 1);
+    gs().screenSwapHotKey = settingWnd.getItemSelection(TAB_SYSTEM, screenSwapHotKeyItem);
     gs().slot2mode = settingWnd.getItemSelection(TAB_SYSTEM, systemSlot2Item);
 
     // Interface

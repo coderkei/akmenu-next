@@ -357,6 +357,7 @@ info = Information
 load text = S'il vous plaît, attendez…
 
 [resethotkey]
+Screen Swap Hotkey = Échange des écrans
 text = Boutons de menu
 0 = l-↓-select
 1 = l-r-start
@@ -438,5 +439,10 @@ val = Valencien
 vi = Vietnamien
 zh-CN = Chinois (CN)
 zh-TW = Chinois (TW)
+
+[async card read]
+Async Card Read = Lecture asynchrone
+Minimal = Minimale
+Full = Complète
 
 [end]
