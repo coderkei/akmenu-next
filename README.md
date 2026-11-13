@@ -13,45 +13,53 @@
 
 ## AKMenu-Next
 
-Frontend for [nds-bootstrap](https://github.com/DS-Homebrew/nds-bootstrap/) and [Pico-Loader](https://github.com/LNH-team/pico-loader) based upon [lifehansolhacker's akmenu4 port](https://github.com/akmenu4/akmenu4).
+AKMenu-Next is a frontend for [nds-bootstrap](https://github.com/DS-Homebrew/nds-bootstrap/) and [Pico-Loader](https://github.com/LNH-team/pico-loader), based on [lifehansolhacker's akmenu4 port](https://github.com/akmenu4/akmenu4). The goal is to bring back the classic Acekard/Wood menu on modern setups, and to extend and modernise it along the way. It runs on flashcarts, the DSpico, DSi and 3DS.
+
+Features:
+
+* Launch DS games and homebrew with nds-bootstrap or Pico-Loader, with per-game settings
+* Themes, game covers and theme music
+* Cheats with `usrcheat.dat`
+* Plugins for other file types (NES, SNES, GBC, GBA, Videos and more)
+* Save slots for DS games
+* Slot-1 cards on DSi (with the card's banner shown in the menu), Slot-2 and EZ Flash 3 in 1 support for GBA games
+* Available in multiple languages
 
 ## Installing
 
-Please check the [AKMenu-Next Docs](https://coderkei.github.io/akmenu-next-docs/) for setting up or updating AKMenu-Next.
+Check the [AKMenu-Next Docs](https://coderkei.github.io/akmenu-next-docs/) for setting up or updating AKMenu-Next.
 
 ## Making themes
 
-Use [AKTheme Studio](https://coderkei.github.io/akmenu-next-theme-editor/) to create custom themes for AKMenu-Next.
+You can make your own themes with [AKTheme Studio](https://coderkei.github.io/akmenu-next-theme-editor/). The theme files, covers and music are documented in [Themes & Covers.md](Themes%20%26%20Covers.md).
 
 ## Building from source
 
-Use BlocksDS 1.25.0 with the Wonderful Toolchain. Follow the BlocksDS setup guide for [Windows](https://blocksds.skylyrac.net/docs/setup/windows/) or [Linux](https://blocksds.skylyrac.net/docs/setup/linux/) to install `blocksds-toolchain` and set up the build shell. Have GNU Make and `zip` available in that shell. The full build uses the bundled CIA packager and has been verified on Windows and x86-64 Linux.
+AKMenu-Next builds with BlocksDS 1.25.0 on the Wonderful Toolchain. Follow the BlocksDS setup guide for [Windows](https://blocksds.skylyrac.net/docs/setup/windows/) or [Linux](https://blocksds.skylyrac.net/docs/setup/linux/) to get `blocksds-toolchain` installed. You'll also need `make` and `zip`.
 
-Clone the repository into a directory named `akmenu-next` with submodules initialized, including `nds-bootloader`. The build uses the directory name for the CIA filename, which the packaging script expects to be `akmenu-next.cia`.
+Clone the repo with submodules (`nds-bootloader` is needed) and keep the folder named `akmenu-next`, since the CIA gets its name from the folder and the package script looks for `akmenu-next.cia`.
 
-From the repository root in the BlocksDS build shell (the Wonderful Toolchain Shell on Windows), run:
+Then from the BlocksDS shell (the Wonderful Toolchain Shell on Windows):
 
 ```sh
 make -j2 && cd package && ./package.sh
 ```
 
-The four archives appear in `package/`: `akmenu-next-flashcart.zip`, `akmenu-next-pico.zip`, `akmenu-next-dsi.zip`, and `akmenu-next-3ds.zip`.
+This gives you `akmenu-next-flashcart.zip`, `akmenu-next-pico.zip`, `akmenu-next-dsi.zip` and `akmenu-next-3ds.zip` in the `package` folder.
 
-[GitHub Actions](.github/workflows/main.yml) builds and packages with the official [BlocksDS Docker image](https://hub.docker.com/r/skylyrac/blocksds) pinned to `skylyrac/blocksds:slim-v1.25.0@sha256:c5f19b95d9c2f312e6a68ea244d2ed5120203b4b82af9785937a349096f8e5e4`.
+The [GitHub Actions build](.github/workflows/main.yml) uses the [BlocksDS Docker image](https://hub.docker.com/r/skylyrac/blocksds) if you'd rather build that way.
 
 ### Configuration
 
-* The system directory is `_nds/akmenunext` where the akmenu system files should be placed, along with a copy the nds-bootstrap files in the `_nds` folder.
-* The binary of akmenu-next additionally needs to be in the `_nds/akmenunext` folder as `launcher.nds` for theme & language reboots, this is automatically added if using the package script.
-* Cheats should be placed as `usrcheat.dat` into the `_nds/akmenunext/cheats` folder.
-* Theme installation and customization is documented in [Themes.md](Themes.md).
-* For flashcart related builds, files for the corresponding flashcart for Pico-Loader should go into the `_pico` folder.
-* Plugins go into `_nds/akmenunext/plugins`.
+* The system folder is `_nds/akmenunext`. The AKMenu-Next system files go there, and the nds-bootstrap files go in `_nds`.
+* AKMenu-Next also needs to be in `_nds/akmenunext` as `launcher.nds` so it can reboot for theme and language changes. The package script adds this for you.
+* Cheats go in `_nds/akmenunext/cheats` as `usrcheat.dat`.
+* For flashcart builds, the Pico-Loader files for your flashcart go in the `_pico` folder.
+* Plugins go in `_nds/akmenunext/plugins`.
 
 ### Plugins
 
-Plugin format is `{extension}.ini` (e.g. `gba.ini`) and follows the below format:
-
+A plugin is an ini file named after the extension it handles, e.g. `gba.ini`:
 
 ```
 [plugin]
@@ -63,24 +71,25 @@ bootstrap=0 //Use the Homebrew Loader setting
 hbargv=0 //Pass the plugin argument through nds-bootstrap-hb's HOMEBREW_ARG setting
 ```
 
-The specified extension will be recognised as a valid file and launched using the selected `.nds` path. Set at least one of `path`, `dsipath`, or `ntrpath`. `dsipath` and `ntrpath` take priority in their corresponding modes. If a mode-specific override is omitted, `path` is used as the fallback; if no path is configured for the current mode, the plugin cannot launch in that mode. `argv`, `bootstrap`, and `hbargv` continue to apply to the selected launcher.
+Files with that extension will show up in the file list and open with the `.nds` you set. You need at least one of `path`, `dsipath` or `ntrpath`. `dsipath` and `ntrpath` are used in DSi and DS mode, and `path` is the fallback if the one for the current mode isn't set. If there's no path for the current mode the plugin won't launch.
 
-Set `bootstrap=1` to use nds-bootstrap-hb for the plugin on DSi when no flashcart is detected. Otherwise, the selected Homebrew Loader setting is used. Enable **Override plugin defaults** in Other Settings to always use the selected Homebrew Loader setting, even when a plugin sets `bootstrap=1`. Selecting nds-bootstrap-hb in Homebrew Loader always uses nds-bootstrap-hb.
+* `argv=1` passes the file path to the emulator as a launch argument.
+* `bootstrap=1` uses nds-bootstrap-hb for the plugin on DSi when there's no flashcart. Otherwise the Homebrew Loader setting is used. If you turn on **Override plugin defaults** in Other Settings, the Homebrew Loader setting is always used, even with `bootstrap=1`.
+* `hbargv=1` writes the file path to `HOMEBREW_ARG` in `nds-bootstrap.ini` when nds-bootstrap-hb is the Homebrew Loader. This is separate from `argv`.
 
-Set `hbargv=1` to write the selected file path to `HOMEBREW_ARG` in `nds-bootstrap.ini` when nds-bootstrap-hb is the selected Homebrew Loader. This works independently of `argv`, which controls whether the path is also passed as a normal launch argument.
-The icon for the file will be read from `_nds/akmenunext/plugins/icons/{extension}.bin` as a banner file. If it is not found it will fall back to the default icon.
+The icon comes from `_nds/akmenunext/plugins/icons/{extension}.bin` (a banner file). If that's missing, the default icon is used. You can also put a banner next to a file, e.g. `Game.gbc.bin`, to give that file its own icon and title.
 
-If the `.gba` extension is used for a plugin and an EZ Flash 3 in 1 is inserted, the 3 in 1 will take priority over the plugin for loading `.gba` files.
+If you make a `.gba` plugin and have an EZ Flash 3 in 1 inserted, the 3 in 1 is used for `.gba` files instead.
 
-Please see the [AKMenu-Next Plugin Documentation](https://coderkei.github.io/akmenu-next-docs/guides/plugins/) for more information
+There's more in the [AKMenu-Next Plugin Documentation](https://coderkei.github.io/akmenu-next-docs/guides/plugins/).
 
 ## License
 
-This project is comprised of various sources and is collectively licensed under the GPL-3.0-or-later license.
-Please check [the license section](https://github.com/coderkei/akmenu-next/tree/main/licenses) for more information as well as a copy of all applicable licenses.
+This project is made up of code from a few different sources and is licensed as a whole under GPL-3.0-or-later.
+See [the licenses folder](https://github.com/coderkei/akmenu-next/tree/main/licenses) for more info and copies of all the licenses that apply.
 
 ## Contributing
 
-Contributions are welcome, however please ensure you have read [CONTRIBUTING.md](CONTRIBUTING.md) first before opening a pull request. Any issues regarding game compatibility should submitted on the [nds-bootstrap](https://github.com/DS-Homebrew/nds-bootstrap) repository or [Pico-Loader](https://github.com/LNH-team/pico-loader) repository.
+Contributions are welcome, just make sure you've read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. Game compatibility issues should go to [nds-bootstrap](https://github.com/DS-Homebrew/nds-bootstrap) or [Pico-Loader](https://github.com/LNH-team/pico-loader) instead.
 
 ![image](https://www.gnu.org/graphics/gplv3-127x51.png)
