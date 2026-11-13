@@ -311,6 +311,8 @@ int main(int argc, char* argv[]) {
 
         processInput(inputs);
 
+        wnd->_mainList->updateSlot1Banner();
+
         // swiWaitForVBlank();
 
         windowManager().update();

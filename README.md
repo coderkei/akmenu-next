@@ -27,7 +27,7 @@ Use [AKTheme Studio](https://coderkei.github.io/akmenu-next-theme-editor/) to cr
 
 Use BlocksDS 1.25.0 with the Wonderful Toolchain. Follow the BlocksDS setup guide for [Windows](https://blocksds.skylyrac.net/docs/setup/windows/) or [Linux](https://blocksds.skylyrac.net/docs/setup/linux/) to install `blocksds-toolchain` and set up the build shell. Have GNU Make and `zip` available in that shell. The full build uses the bundled CIA packager and has been verified on Windows and x86-64 Linux.
 
-Check out the repository into a directory named `akmenu-next` with submodules initialized, including `nds-bootloader` at the commit recorded by this repository. The build uses the directory name for the CIA filename, which the packaging script expects to be `akmenu-next.cia`.
+Clone the repository into a directory named `akmenu-next` with submodules initialized, including `nds-bootloader`. The build uses the directory name for the CIA filename, which the packaging script expects to be `akmenu-next.cia`.
 
 From the repository root in the BlocksDS build shell (the Wonderful Toolchain Shell on Windows), run:
 

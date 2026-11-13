@@ -47,6 +47,7 @@
 #include "launcher/HomebrewLauncher.h"
 #include "launcher/DSpicoLauncher.h"
 #include "launcher/NdsBootstrapLauncher.h"
+#include "launcher/DsiMenuLauncher.h"
 #include "launcher/PassMeLauncher.h"
 #include "launcher/Slot1Launcher.h"
 #include "launcher/nds_loader_arm9.h"
@@ -56,7 +57,7 @@ using namespace akui;
 
 namespace {
 bool canUsePluginHbBootstrap() {
-    return isDSiMode() && !fsManager().isFlashcart();
+    return fsManager().isDsiSdMode();
 }
 
 bool launchPluginFile(const cPluginManager::PluginAssociation& plugin, const std::string& selectedPath) {
@@ -489,6 +490,11 @@ void cMainWnd::launchSelected() {
     std::string fullPath = _mainList->getSelectedFullPath();
     std::string romName = _mainList->getSelectedShowName();
     if (fullPath.empty()) return;
+    if (fullPath == "dsilauncher:" && _mainList->getCurrentDir().empty()) {
+        themeMusic().stop();
+        launchDsiMenu();
+        return;
+    }
     if (fullPath.back() == '/') {
         _mainList->enterDir(fullPath);
         return;

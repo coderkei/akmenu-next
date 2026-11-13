@@ -24,7 +24,8 @@ void cFSManager::init(int argc, char* argv[]) {
     (void)mounted;
 
     // If we can mount fat, we're on a flashcart
-    if (chdir("fat:/") == 0) {
+    if ((_isFlashcart || argc == 0 || strncmp(argv[0], "sd:/", 4) != 0) &&
+        chdir("fat:/") == 0) {
         _isFlashcart = true;
         _fsRoot = "fat:";
     }
@@ -39,6 +40,16 @@ void cFSManager::init(int argc, char* argv[]) {
 
 bool cFSManager::isFlashcart() const {
     return _isFlashcart;
+}
+
+bool cFSManager::isDsiSdMode() const {
+    return isDSiMode() && !_isFlashcart;
+}
+
+bool cFSManager::mountNand() const {
+    static bool mounted = false;
+    if (!mounted) mounted = nandInit(true);
+    return mounted;
 }
 
 bool cFSManager::isSDInserted() const {

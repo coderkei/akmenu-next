@@ -42,6 +42,7 @@ class cMainList : public akui::cListView {
     int init();
 
     bool enterDir(const std::string& dirName);
+    void updateSlot1Banner();
 
     void backParentDir();
 
@@ -121,6 +122,15 @@ class cMainList : public akui::cListView {
     u32 _topRecent;
     u32 _topSlot1;
     u32 _topSlot2;
+    bool _showDsiLauncher = false;
+    bool _slot1Present = false;
+    u32 _slot1InsertedAt = 0;
+    bool _slot1BannerChecked = false;
+    u32 _slot1Attempts = 0;
+    bool _slot1HasBanner = false;
+    tNDSBanner _slot1Banner;
+    std::string _slot1Title;
+    void applySlot1Banner(bool notify);
 
   public:
     u32 Slot1(void) { return _topSlot1; }

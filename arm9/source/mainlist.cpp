@@ -35,6 +35,9 @@
 #include "windowmanager.h"
 #include "fsmngr.h"
 #include "pluginmngr.h"
+#include "irqs.h"
+#include "launcher/DsiMenuLauncher.h"
+#include "launcher/Slot1Banner.h"
 
 using namespace akui;
 
@@ -140,6 +143,12 @@ cMainList::cMainList(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std::str
             _topSlot1 = 3;
             _topuSD = 4;
             _topSlot2 = 5;
+            _showDsiLauncher = hasDsiMenuLauncher();
+            if (_showDsiLauncher) {
+                ++_topCount;
+                _topuSD = 5;
+                _topSlot2 = 6;
+            }
         }
     }
 }
@@ -220,6 +229,11 @@ bool cMainList::enterDir(const std::string& dirName) {
                 a_row.push_back("");
                 a_row.push_back("slot1:/");
                 rominfo.setBannerFromIcon("nand_banner.bin", "folder", nand_banner_bin);
+            } else if (_showDsiLauncher && i == _topCount - 1) {
+                a_row.push_back(lang().GetString("mainlist", "dsi launcher", "DSi Launcher"));
+                a_row.push_back("");
+                a_row.push_back("dsilauncher:");
+                rominfo.setBannerFromIcon("microsd_banner.bin", "folder", microsd_banner_bin);
             } else if (_topSlot2 == i) {
                 a_row.push_back(LANG("mainlist", "slot2 card"));
                 a_row.push_back("");
@@ -240,6 +254,7 @@ bool cMainList::enterDir(const std::string& dirName) {
             _romInfoList.push_back(rominfo);
         }
         _currentDir = "";
+        if (_slot1HasBanner) applySlot1Banner(false);
         directoryChanged();
         return true;
     }
@@ -478,6 +493,66 @@ bool cMainList::enterDir(const std::string& dirName) {
     return true;
 }
 
+void cMainList::updateSlot1Banner() {
+    if (!fsManager().isDsiSdMode() || !(REG_SCFG_EXT & SCFG_EXT_SCFG_MBK_REG)) return;
+
+    const bool present = !(REG_SCFG_MC & SCFG_MC_EJECTED);
+    const u32 frame = cIRQ::vblankCount();
+    if (present != _slot1Present) {
+        _slot1Present = present;
+        _slot1InsertedAt = frame;
+        _slot1Attempts = 0;
+        _slot1BannerChecked = false;
+        if (_slot1HasBanner) {
+            _slot1HasBanner = false;
+            applySlot1Banner(true);
+        }
+        return;
+    }
+    if (!present || _slot1BannerChecked || frame - _slot1InsertedAt < 8 ||
+        !_currentDir.empty() || _topSlot1 >= _rows.size()) return;
+
+    u16 bannerTitle[128];
+    if (!readSlot1Banner(_slot1Banner, bannerTitle, gs().language)) {
+        _slot1BannerChecked = ++_slot1Attempts >= 3;
+        _slot1InsertedAt = cIRQ::vblankCount();
+        return;
+    }
+    _slot1BannerChecked = true;
+    _slot1HasBanner = true;
+    _slot1Title = unicode_to_local_string(bannerTitle, 128, nullptr);
+    applySlot1Banner(true);
+}
+
+void cMainList::applySlot1Banner(bool notify) {
+    if (!_currentDir.empty() || _topSlot1 >= _rows.size()) return;
+
+    DSRomInfo& info = _romInfoList[_topSlot1];
+    std::string name = LANG("mainlist", "slot1 card");
+    std::string title;
+    if (_slot1HasBanner) {
+        info.setBanner("", reinterpret_cast<const u8*>(&_slot1Banner));
+        title = _slot1Title;
+        if (!title.empty()) {
+            name = title;
+            if (VM_LIST == _viewMode || VM_LIST_ICON == _viewMode) {
+                for (char& ch : name) {
+                    if (ch == '\n' || ch == '\r') ch = ' ';
+                }
+            }
+        }
+    } else {
+        info.setBannerFromIcon("nand_banner.bin", "folder", nand_banner_bin);
+    }
+
+    _rows[_topSlot1][SHOWNAME_COLUMN].setText(name);
+    _rows[_topSlot1][INTERNALNAME_COLUMN].setText(title.empty() ? name : title);
+    if (notify && _selectedRowId == _topSlot1) {
+        _activeIcon.hide();
+        selectChanged(_selectedRowId);
+    }
+}
+
 std::string cMainList::getSelectedFullPath() {
     if (!_rows.size()) return std::string("");
     return _rows[_selectedRowId][REALNAME_COLUMN].text();
@@ -622,6 +697,7 @@ void cMainList::setViewMode(VIEW_MODE mode) {
             setRowHeight(38);
             break;
     }
+    if (_slot1HasBanner) applySlot1Banner(false);
     scrollTo(_selectedRowId - _visibleRowCount + 1);
 }
 

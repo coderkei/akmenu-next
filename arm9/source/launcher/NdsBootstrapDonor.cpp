@@ -56,13 +56,6 @@ static bool isNandPath(const std::string& path) {
            (path[3] == 'd' || path[3] == 'D') && path[4] == ':';
 }
 
-static bool mountNand(void) {
-    static bool nandMounted = false;
-    if (nandMounted) return true;
-    nandMounted = nandInit(true);
-    return nandMounted;
-}
-
 static bool readTmdAppIndex(u32 titleType, u32 titleId, int& appIndex) {
     char tmdPath[96];
     const int pathLength = snprintf(tmdPath, sizeof(tmdPath),
@@ -278,7 +271,7 @@ void configureNdsBootstrapDonors(CIniFile& ini, bool is3DS, bool allowAutoDiscov
     }
 
     bool nandMounted = false;
-    if (needNandMount && isDsiMode) nandMounted = mountNand();
+    if (needNandMount && isDsiMode) nandMounted = fsManager().mountNand();
     const std::string nandStatus = !needNandMount || !isDsiMode
                                      ? "not needed"
                                      : nandMounted ? "mounted"
