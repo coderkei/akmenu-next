@@ -17,6 +17,7 @@
 #include <nds/ndstypes.h>
 
 #include "cheat.h"
+#include "../animatedicon.h"
 #include "../dsrom.h"
 #include "../flags.h"
 #include "../inifile.h"
@@ -391,6 +392,11 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg,
         ini.SetString("NDS-BOOTSTRAP", "APP_PATH", romAlias);
         ini.SetString("NDS-BOOTSTRAP", "SAV_PATH", publicSaveAlias);
         ini.SetString("NDS-BOOTSTRAP", "PRV_PATH", privateSaveAlias);
+        char bannerSaveAlias[256] = {0};
+        if (!mBannerSavePath.empty() &&
+            makeDsiSdAlias(mBannerSavePath, bannerSaveAlias, sizeof(bannerSaveAlias))) {
+            ini.SetString("NDS-BOOTSTRAP", "BNR_PATH", bannerSaveAlias);
+        }
         ini.SetInt("NDS-BOOTSTRAP", "BOOST_CPU", 1);
         ini.SetInt("NDS-BOOTSTRAP", "BOOST_VRAM", 1);
         ini.SetInt("NDS-BOOTSTRAP", "DONOR_SDK_VER", 5);
@@ -752,6 +758,12 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
             printError("Could not create the DSiWare save files on the SD card.");
             return false;
         }
+
+        // The banner save is cosmetic: a failure here never blocks the launch.
+        mBannerSavePath.clear();
+        const std::string bannerSavePath = dsiBannerSavePath(mRomPath);
+        if (_romInfo.hasBannerSave() && dsiEnsureBannerSave(bannerSavePath))
+            mBannerSavePath = bannerSavePath;
     }
 
     // Create the nds-bootstrap directory if it doesn't exist
