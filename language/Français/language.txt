@@ -335,9 +335,23 @@ info = Plus...
 deselect = Désélectionner
 
 [saveslot]
-title = Slot de sauvegarde
+title = Copier un slot de sauvegarde
 confirm = Êtes-vous sûr de vouloir copier ce slot ?
+copy = Copier
+source slot = Slot source
 target slot = Slot de destination
+no saves = Aucune sauvegarde trouvée. Sauvegardez dans le jeu ou vérifiez l’option du dossier 'saves'.
+same slot = Choisissez un autre slot de destination.
+overwrite = Remplacer la sauvegarde du slot de destination ?
+copying = Copie de la sauvegarde…
+copied = Sauvegarde copiée. Choisissez le slot de destination pour jouer.
+copied with override = Sauvegarde copiée. Vérifiez le réglage global du slot avant de jouer.
+read error = Lecture impossible. Vérifiez la sauvegarde source et la carte.
+write error = Écriture impossible. Vérifiez l’espace libre et l’accès à la carte.
+temporary exists = Vérifiez le fichier .tmp de la sauvegarde cible avant de réessayer.
+backup exists = Vérifiez le fichier .bak de la sauvegarde cible avant de réessayer.
+restore error = Échec de la copie. Restaurez la sauvegarde cible à partir du fichier .bak.
+cleanup error = Sauvegarde copiée. L’ancienne sauvegarde cible est toujours dans le fichier .bak.
 
 [mainlist]
 flash memory = Écraser la mémoire
@@ -352,6 +366,30 @@ text = Utiliser le chargeur ROM
 not found = Chargeur non trouvé
 error = Erreur
 info = Information
+save preparation error = Impossible de préparer la sauvegarde. Vérifiez l’espace libre, l’accès à la carte et le dossier 'saves'.
+file access error = Impossible d’ouvrir le fichier de lancement. Restaurez-le et vérifiez la carte.
+folder access error = Impossible de lire le dossier de lancement. Réinsérez la carte et réessayez.
+dldi error = Impossible d’appliquer le pilote de la carte. Réinstallez la version adaptée à votre linker.
+plugin missing = Installez le plugin à cet emplacement ou corrigez son fichier INI :
+slot1 missing = Restaurez le lanceur Slot-1 fourni avec AKMenu-Next :
+passme missing = Restaurez PassMeLoader à partir de votre paquet AKMenu-Next :
+pico missing = Installez les deux fichiers Pico-Loader de votre linker dans /_pico :
+bootstrap hb missing = Installez la version homebrew de nds-bootstrap ici ou changez le lanceur homebrew :
+bootstrap nightly missing = Installez la version Nightly ici ou sélectionnez Release comme version de nds-bootstrap :
+bootstrap release missing = Installez la version Release de nds-bootstrap ici :
+bootstrap ini missing = Restaurez ndsbs.ini à partir de votre paquet AKMenu-Next :
+pico path long = Chemin du jeu ou de la sauvegarde trop long pour Pico-Loader. Raccourcissez le nom du fichier ou des dossiers.
+pico plugin path long = Chemin du plugin trop long pour Pico-Loader. Raccourcissez le nom du fichier ou des dossiers.
+pico read error = Lecture de Pico-Loader impossible. Réinstallez les deux fichiers dans /_pico.
+bootstrap ini write error = Écriture de nds-bootstrap.ini impossible. Vérifiez l’accès à la carte et l’espace libre.
+dsiware path error = Chemins du jeu DSiWare ou des sauvegardes illisibles. Vérifiez la carte SD de la console.
+dsiware mode error = Placez le jeu DSiWare sur la carte SD de la console et lancez AKMenu-Next en mode DSi.
+dsiware header error = En-tête DSiWare illisible. Vérifiez la carte SD ou restaurez le fichier du jeu.
+unlaunch save error = Unlaunch exige les sauvegardes dans le dossier du jeu. Vérifiez l’accès à la carte SD et réessayez.
+unlaunch path error = Unlaunch ne peut pas utiliser ce chemin. Raccourcissez le nom du fichier ou des dossiers.
+cheat preparation error = Impossible de préparer les codes. Vérifiez usrcheat.dat ou désactivez les codes pour ce jeu.
+plugin dsi path missing = Chemin du plugin absent en mode DSi. Vérifiez son fichier INI dans _nds/akmenunext/plugins.
+plugin ds path missing = Chemin du plugin absent en mode DS. Vérifiez son fichier INI dans _nds/akmenunext/plugins.
 
 [loading]
 load text = S'il vous plaît, attendez…

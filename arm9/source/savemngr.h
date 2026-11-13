@@ -281,6 +281,9 @@ class cSaveManager {
     static bool initializeSaveFile(const std::string& romFilename, u8 slot, u32 size);
 
     static std::string generateSaveName(const std::string& romFilename, u8 slot);
+    static std::string saveLocation(const std::string& romFilename);
+    static std::string copySaveFile(const std::string& source, const std::string& target,
+                                    bool replace);
 
     SAVE_TYPE getSaveTypeByFile(const std::string& romFilename);
 

@@ -324,7 +324,21 @@ deselect = Kein Cheat
 [saveslot]
 title = Speicher-Slot kopieren
 confirm = Bist Du sicher, dass Du den Speicher-Slot kopieren möchtest?
-target slot = Ziel Speicher-Slot
+copy = Kopieren
+source slot = Quell-Slot
+target slot = Ziel-Slot
+no saves = Keine Spielstände gefunden. Speichere zuerst im Spiel oder prüfe die Einstellung für den Ordner 'saves'.
+same slot = Wähle einen anderen Ziel-Slot.
+overwrite = Spielstand im Ziel-Slot überschreiben?
+copying = Spielstand wird kopiert …
+copied = Spielstand kopiert. Wähle zum Spielen den Ziel-Slot.
+copied with override = Spielstand kopiert. Prüfe vor dem Spielen die globale Speicher-Slot-Einstellung.
+read error = Der Quellspielstand konnte nicht gelesen werden. Prüfe die Datei und die Speicherkarte.
+write error = Die Kopie konnte nicht geschrieben werden. Prüfe Speicherplatz und Kartenzugriff.
+temporary exists = Prüfe vor dem nächsten Versuch die .tmp-Datei des Zielspielstands.
+backup exists = Prüfe vor dem nächsten Versuch die .bak-Datei des Zielspielstands.
+restore error = Kopieren fehlgeschlagen. Stelle den Zielspielstand aus der .bak-Datei wieder her.
+cleanup error = Spielstand kopiert. Der alte Zielspielstand liegt noch in der .bak-Datei.
 
 [mainlist]
 flash memory = Flash Memory
@@ -365,6 +379,30 @@ text = ROM-Loader verwenden
 not found = Loader nicht gefunden
 error = Error
 info = Information
+save preparation error = Der Spielstand konnte nicht vorbereitet werden. Prüfe Speicherplatz, Kartenzugriff und den Ordner 'saves'.
+file access error = Die Startdatei konnte nicht geöffnet werden. Stelle sie wieder her und prüfe die Speicherkarte.
+folder access error = Der Startordner konnte nicht gelesen werden. Setze die Speicherkarte erneut ein und versuche es noch einmal.
+dldi error = Der Kartentreiber konnte nicht angewendet werden. Installiere die passende Version für deine Flashkarte.
+plugin missing = Installiere das Plugin unter diesem Pfad oder korrigiere seine INI-Datei:
+slot1 missing = Stelle den Slot-1-Loader aus deinem AKMenu-Next-Paket wieder her:
+passme missing = Stelle PassMeLoader aus deinem AKMenu-Next-Paket wieder her:
+pico missing = Installiere beide Pico-Loader-Dateien für deine Flashkarte in /_pico:
+bootstrap hb missing = Installiere hier die Homebrew-Version von nds-bootstrap oder ändere den Homebrew Loader:
+bootstrap nightly missing = Installiere hier die Nightly-Version oder wähle Release als nds-bootstrap-Version:
+bootstrap release missing = Installiere hier die Release-Version von nds-bootstrap:
+bootstrap ini missing = Stelle ndsbs.ini aus deinem AKMenu-Next-Paket wieder her:
+pico path long = Der Spiel- oder Speicherpfad ist für Pico-Loader zu lang. Kürze den Datei- oder Ordnernamen.
+pico plugin path long = Der Plugin-Pfad ist für Pico-Loader zu lang. Kürze den Datei- oder Ordnernamen.
+pico read error = Pico-Loader-Dateien konnten nicht gelesen werden. Installiere beide Dateien erneut in /_pico.
+bootstrap ini write error = nds-bootstrap.ini konnte nicht geschrieben werden. Prüfe Kartenzugriff und Speicherplatz.
+dsiware path error = Die DSiWare-Spiel- oder Speicherpfade konnten nicht gelesen werden. Prüfe die SD-Karte der Konsole.
+dsiware mode error = Lege das DSiWare-Spiel auf die SD-Karte der Konsole und starte AKMenu-Next im DSi-Modus.
+dsiware header error = Der DSiWare-Header konnte nicht gelesen werden. Prüfe die SD-Karte oder stelle die Spieldatei wieder her.
+unlaunch save error = Unlaunch benötigt die Spielstände im Spielordner. Prüfe den SD-Kartenzugriff und versuche es erneut.
+unlaunch path error = Unlaunch konnte den Spielpfad nicht verwenden. Kürze den Datei- oder Ordnernamen.
+cheat preparation error = Cheats konnten nicht vorbereitet werden. Prüfe usrcheat.dat oder deaktiviere Cheats für dieses Spiel.
+plugin dsi path missing = Kein Plugin-Pfad für den DSi-Modus. Prüfe die Plugin-INI in _nds/akmenunext/plugins.
+plugin ds path missing = Kein Plugin-Pfad für den DS-Modus. Prüfe die Plugin-INI in _nds/akmenunext/plugins.
 
 [loading]
 load text = Bitte warten…

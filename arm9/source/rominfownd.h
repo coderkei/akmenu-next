@@ -37,10 +37,6 @@ class cRomInfoWnd : public akui::cForm {
 
     const DSRomInfo& getRomInfo();
 
-    void setSaves(const std::vector<std::string>* saves);
-
-    bool SlotExists(u8 slot);
-
     static void showCheats(const std::string& aFileName);
 
   protected:
@@ -49,6 +45,9 @@ class cRomInfoWnd : public akui::cForm {
     void pressSaveType(void);
 
     void pressCopy(void);
+
+    void copySaveSlot();
+    std::vector<std::string> saveSlotLabels() const;
 
     void pressCheats(void);
 
@@ -89,6 +88,4 @@ class cRomInfoWnd : public akui::cForm {
     u32 _size;
 
     cSettingWnd* _settingWnd;
-
-    const std::vector<std::string>* _saves;
 };

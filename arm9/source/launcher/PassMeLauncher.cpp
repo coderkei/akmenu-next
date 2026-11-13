@@ -17,14 +17,13 @@ bool PassMeLauncher::launchRom(std::string romPath, std::string savePath, u32 fl
     const char passMeLoaderPath[] = "fat:/_nds/akmenunext/PassMeLoader.nds";
 
     if (access(passMeLoaderPath, F_OK) != 0) {
-        printLoaderNotFound(passMeLoaderPath);
+        printLoaderNotFound(passMeLoaderPath, lang().GetString(
+                "loader", "passme missing", "Restore PassMeLoader from your AKMenu-Next package:"));
         return false;
     }
 
     std::vector<const char*> argv;
     argv.push_back(passMeLoaderPath);
     eRunNdsRetCode rc = runNdsFile(argv[0], argv.size(), &argv[0]);
-    if (rc == RUN_NDS_OK) return true;
-
-    return false;
+    return checkNdsLaunch(rc);
 }

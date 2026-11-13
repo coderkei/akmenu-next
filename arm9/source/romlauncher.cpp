@@ -135,12 +135,12 @@ static u32 SaveSize(SAVE_TYPE st) {
     return result;
 }
 
-TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool aMenu, const std::string& savesPath, const std::string& favorite) {
+TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool aMenu,
+                        const std::string& favorite) {
     u32 flags = 0;
     long cheatOffset = 0;
     size_t cheatSize = 0;
     std::string saveName;
-    std::string useSavesPath;
     ILauncher* launcher = nullptr;
     const bool isDsiWare = aRomInfo.isDSiWare();
     bool hb = false;
@@ -177,31 +177,22 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
             }
         }
 
-        std::string savesFolderPath = aFullPath;
-
-        //if saveDir is set to true, use saves dir
+        const std::string saveLocation = cSaveManager::saveLocation(aFullPath);
         if (gs().saveDir) {
-            useSavesPath = savesPath;
-            savesFolderPath.insert(aFullPath.find_last_of("/\\") + 1, "saves/");
-            size_t lastSlashPos = savesFolderPath.find_last_of("/\\");
-            std::string directory = savesFolderPath.substr(0, lastSlashPos + 1);
-            // Create the saves folder if it doesn't exist
-            std::string cleanPath = (directory.find("fat:") == 0) ? directory.substr(4) : directory;
-            cleanPath.pop_back();
-            if (access(cleanPath.c_str(), F_OK) != 0) {
-                mkdir(cleanPath.c_str(), 0777);
-                }
+            const std::string directory = saveLocation.substr(0, saveLocation.find_last_of("/\\"));
+            if (access(directory.c_str(), F_OK) != 0) {
+                mkdir(directory.c_str(), 0777);
             }
-        else useSavesPath = aFullPath;
+        }
 
         const u8 saveSlot = gs().saveSlotOverride >= 0
                                     ? gs().saveSlotOverride
                                     : aRomInfo.saveInfo().getSlot();
-        saveName = cSaveManager::generateSaveName(savesFolderPath, saveSlot);
+        saveName = cSaveManager::generateSaveName(saveLocation, saveSlot);
 
         // If DSiWare, don't make a .sav. Well, you could but it's not gonna get used.
         if (!isDsiWare && isBigSave) {
-            isBigSave = cSaveManager::initializeSaveFile(useSavesPath, saveSlot,
+            isBigSave = cSaveManager::initializeSaveFile(saveLocation, saveSlot,
                                                          bigSaveSize);
             if (!isBigSave) return ELaunchNoFreeSpace;
             flags |= PATCH_SD_SAVE | (bigSaveMask << PATCH_SAVE_SHIFT);
@@ -218,7 +209,7 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
                     saveManager().updateCustomSaveList(aRomInfo.saveInfo());
                 }
             }
-            if (cSaveManager::initializeSaveFile(useSavesPath, saveSlot, SaveSize(st))) {
+            if (cSaveManager::initializeSaveFile(saveLocation, saveSlot, SaveSize(st))) {
                 flags |= PATCH_SD_SAVE | (SaveMask(st) << PATCH_SAVE_SHIFT);
                 saveManager().saveLastInfo(aFullPath, favorite);
             } else {
@@ -288,5 +279,7 @@ TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool 
 void autoLaunchRom(const std::string& aFullPath, const std::string& favorite) {
     DSRomInfo rominfo;
     rominfo.MayBeDSRom(aFullPath);
-    if (rominfo.isDSRom()) launchRom(aFullPath, rominfo, false, "", favorite);
+    if (rominfo.isDSRom() && launchRom(aFullPath, rominfo, false, favorite) == ELaunchNoFreeSpace) {
+        printSavePreparationError();
+    }
 }

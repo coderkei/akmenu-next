@@ -78,8 +78,6 @@ class cMainList : public akui::cListView {
 
     void SwitchShowAllFiles(void);
 
-    const std::vector<std::string>* Saves(void);
-
   protected:
     void draw();
 
@@ -114,7 +112,6 @@ class cMainList : public akui::cListView {
 
     bool _showAllFiles;
 
-    std::vector<std::string> _saves;
 
   protected:
     u32 _topCount;

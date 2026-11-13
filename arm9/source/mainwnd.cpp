@@ -69,12 +69,12 @@ bool launchPluginFile(const cPluginManager::PluginAssociation& plugin, const std
     }
 
     if (launcherPath->empty()) {
-        printError(dsiMode ? "Plugin has no path configured for DSi mode."
-                           : "Plugin has no path configured for DS mode.");
+        printError(LANG("loader", dsiMode ? "plugin dsi path missing" : "plugin ds path missing"));
         return false;
     }
     if (access(launcherPath->c_str(), F_OK) != 0) {
-        printLoaderNotFound(*launcherPath);
+        printLoaderNotFound(*launcherPath, lang().GetString(
+                "loader", "plugin missing", "Install the plugin at this path or correct its INI:"));
         return false;
     }
 
@@ -100,7 +100,7 @@ bool launchPluginFile(const cPluginManager::PluginAssociation& plugin, const std
             if (plugin.useArgv) {
                 argv.push_back(selectedPath.c_str());
             }
-            launched = runNdsFile(argv[0], argv.size(), &argv[0]) == RUN_NDS_OK;
+            launched = checkNdsLaunch(runNdsFile(argv[0], argv.size(), &argv[0]));
             break;
         }
     }
@@ -488,13 +488,8 @@ void cMainWnd::onKeyAPressed() {
 void cMainWnd::launchSelected() {
     std::string fullPath = _mainList->getSelectedFullPath();
     std::string romName = _mainList->getSelectedShowName();
-    size_t lastSlashPos = fullPath.find_last_of("/\\");
-    std::string directory = fullPath.substr(0, lastSlashPos + 1);
-    
-    // Create the new path by appending "saves/"
-    std::string savesPath = directory + "saves/" + romName;
-
-    if (fullPath[fullPath.size() - 1] == '/') {
+    if (fullPath.empty()) return;
+    if (fullPath.back() == '/') {
         _mainList->enterDir(fullPath);
         return;
     }
@@ -524,24 +519,15 @@ void cMainWnd::launchSelected() {
     dbg_printf("(%s)\n", fullPath.c_str());
     dbg_printf("%d\n", fullPath[fullPath.size() - 1]);
 
-    std::string title, text;
-    bool show = true;;
     progressWnd().setTipText("Loading " + romName + "...");
     progressWnd().show();
     progressWnd().setPercent(0);
-    switch (launchRom(fullPath, rominfo,
-                      rominfo.isHomebrew() && "BOOT.NDS" == _mainList->getSelectedShowName(), savesPath, _mainList->IsFavorites() ? "yes" : "no")) {
-        case ELaunchNoFreeSpace:
-            title = LANG("no free space", "title");
-            text = LANG("no free space", "text");
-            break;
-        default:
-            show = false;
-            break;
-    }
+    const TLaunchResult result = launchRom(fullPath, rominfo,
+            rominfo.isHomebrew() && romName == "BOOT.NDS",
+            _mainList->IsFavorites() ? "yes" : "no");
     progressWnd().setPercent(100);
-    if (show) messageBox(this, title, text, MB_OK);
     progressWnd().hide();
+    if (result == ELaunchNoFreeSpace) printSavePreparationError();
 }
 
 void cMainWnd::onKeyBPressed() {
@@ -990,7 +976,6 @@ void cMainWnd::showFileInfo() {
     std::string fullPath = _mainList->getSelectedFullPath();
     romInfoWnd->setFileInfo(fullPath, showName);
     romInfoWnd->setRomInfo(rominfo);
-    romInfoWnd->setSaves(_mainList->Saves());
     romInfoWnd->doModal();
     rominfo = romInfoWnd->getRomInfo();
     _mainList->setRomInfo(_mainList->selectedRowId(), rominfo);

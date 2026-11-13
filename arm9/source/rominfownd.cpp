@@ -16,7 +16,6 @@
 #include "language.h"
 #include "msgbox.h"
 #include "systemfilenames.h"
-#include "ui/binaryfind.h"
 #include "uisettings.h"
 #include "unicode.h"
 #include "windowmanager.h"
@@ -30,8 +29,7 @@ cRomInfoWnd::cRomInfoWnd(s32 x, s32 y, u32 w, u32 h, cWindow* parent, const std:
       _buttonFlash(0, 0, 46, 18, this, "\x03 to NOR"),
       _buttonCopy(0, 0, 46, 18, this, "\x05 to RAM"),
       _buttonCheats(0, 0, 46, 18, this, "\x03 Cheats"),
-      _settingWnd(NULL),
-      _saves(NULL) {
+      _settingWnd(NULL) {
     s16 buttonY = size().y - _buttonOK.size().y - 4;
 
     _buttonOK.setStyle(cButton::press);
@@ -273,10 +271,6 @@ const DSRomInfo& cRomInfoWnd::getRomInfo() {
     return _romInfo;
 }
 
-void cRomInfoWnd::setSaves(const std::vector<std::string>* saves) {
-    _saves = saves;
-}
-
 void cRomInfoWnd::onOK() {
     cForm::onOK();
 }
@@ -400,18 +394,7 @@ void cRomInfoWnd::pressSaveType(void) {
     settingWnd.addSettingItem(LANG("patches", "cheating system"), _values,
                               _romInfo.saveInfo().getCheat());
 
-    _values.clear();
-
-    std::string slotValue;
-    for (size_t ii = 0; ii < 4; ++ii) {
-        if (ii)
-            slotValue = '0' + ii;
-        else
-            slotValue = LANG("save type", "default");
-        if (SlotExists(ii)) slotValue += "*";
-        _values.push_back(slotValue);
-    }
-    settingWnd.addSettingItem(LANG("save type", "save slot"), _values,
+    settingWnd.addSettingItem(LANG("save type", "save slot"), saveSlotLabels(),
                               _romInfo.saveInfo().getSlot());
 
     _values.clear();
@@ -419,6 +402,12 @@ void cRomInfoWnd::pressSaveType(void) {
     _values.push_back(LANG("icon", "as is"));
     _values.push_back(LANG("icon", "firmware"));
     settingWnd.addSettingItem(LANG("icon", "icon"), _values, _romInfo.saveInfo().getIcon());
+
+    if (!_romInfo.isDSiWare()) {
+        settingWnd.addSettingButton(LANG("saveslot", "title"),
+                                    lang().GetString("saveslot", "copy", "Copy"))
+                ->clicked.connect(this, &cRomInfoWnd::copySaveSlot);
+    }
 
     // Refactor this to support nds-bs override in the future
     //_values.clear();
@@ -518,15 +507,81 @@ void cRomInfoWnd::addCode(void) {
     }
 }
 
-bool cRomInfoWnd::SlotExists(u8 slot) {
-    std::string save = cSaveManager::generateSaveName(_fullName, slot);
-    if (_saves) {
-        if (_saves->size() &&
-            akui::binary_find(_saves->begin(), _saves->end(), save, stringComp) != _saves->end())
-            return true;
-    } else {
+std::vector<std::string> cRomInfoWnd::saveSlotLabels() const {
+    std::vector<std::string> labels;
+    const std::string location = cSaveManager::saveLocation(_fullName);
+    for (u8 slot = 0; slot < 4; ++slot) {
+        std::string label = slot ? std::to_string(slot) : LANG("save type", "default");
         struct stat st;
-        if (0 == stat(save.c_str(), &st)) return true;
+        const std::string path = cSaveManager::generateSaveName(location, slot);
+        if (stat(path.c_str(), &st) == 0 && S_ISREG(st.st_mode)) label += "*";
+        labels.push_back(label);
     }
-    return false;
+    return labels;
+}
+
+void cRomInfoWnd::copySaveSlot() {
+    const std::string title = LANG("saveslot", "title");
+    const std::vector<std::string> labels = saveSlotLabels();
+    std::vector<std::string> sourceLabels;
+    std::vector<u8> sourceSlots;
+    size_t selectedSource = 0;
+    const int activeSlot = gs().saveSlotOverride >= 0 ? gs().saveSlotOverride
+                                                    : _settingWnd->getItemSelection(ITEM_SAVESLOT);
+    for (u8 slot = 0; slot < labels.size(); ++slot) {
+        if (labels[slot].back() != '*') continue;
+        if (slot == activeSlot) selectedSource = sourceSlots.size();
+        sourceSlots.push_back(slot);
+        sourceLabels.push_back(labels[slot]);
+    }
+    if (sourceSlots.empty()) {
+        messageBox(_settingWnd, title,
+                   lang().GetString("saveslot", "no saves",
+                                    "No saves found. Play and save first, or check Use Saves Folder."),
+                   MB_OK);
+        return;
+    }
+
+    const u8 initialSource = sourceSlots[selectedSource];
+    u8 selectedTarget = (initialSource + 1) % 4;
+    for (u8 slot = 0; slot < labels.size(); ++slot) {
+        if (labels[slot].back() != '*') {
+            selectedTarget = slot;
+            break;
+        }
+    }
+    for (;;) {
+        cSettingWnd picker(0, 0, 252, 188, _settingWnd, title);
+        picker.addSettingItem(lang().GetString("saveslot", "source slot", "Source Save Slot"),
+                              sourceLabels, selectedSource);
+        picker.addSettingItem(LANG("saveslot", "target slot"), labels, selectedTarget);
+        picker.setConfirmMessage("");
+        if (picker.doModal() != ID_OK) return;
+        selectedSource = picker.getItemSelection(0, 0);
+        selectedTarget = picker.getItemSelection(0, 1);
+        const u8 source = sourceSlots[selectedSource];
+        const u8 target = selectedTarget;
+        if (source == target) {
+            messageBox(_settingWnd, title,
+                       lang().GetString("saveslot", "same slot", "Choose a different target slot."),
+                       MB_OK);
+            continue;
+        }
+
+        const std::string location = cSaveManager::saveLocation(_fullName);
+        const std::string from = cSaveManager::generateSaveName(location, source);
+        const std::string to = cSaveManager::generateSaveName(location, target);
+        struct stat st;
+        const bool exists = stat(to.c_str(), &st) == 0;
+        if (exists && S_ISREG(st.st_mode)) {
+            const std::string warning = lang().GetString(
+                    "saveslot", "overwrite", "Replace the existing save in the target slot?");
+            if (messageBox(_settingWnd, title, warning, MB_YES | MB_NO) != ID_YES) continue;
+        }
+
+        const std::string result = cSaveManager::copySaveFile(from, to, exists);
+        messageBox(_settingWnd, title, result, MB_OK);
+        _settingWnd->setItemTexts(ITEM_SAVESLOT, saveSlotLabels());
+        return;
+    }
 }

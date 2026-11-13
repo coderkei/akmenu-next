@@ -36,6 +36,7 @@ class cSpinBox : public cForm {
     void selectPrev();
 
     void insertItem(const std::string& item, u32 position);
+    void setItemText(u32 id, const std::string& text);
 
     void removeItem(u32 position);
 

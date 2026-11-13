@@ -17,5 +17,6 @@ enum TLaunchResult {
     ELaunchNoFreeSpace
 };
 
-TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool aMenu, const std::string& savesPath, const std::string& favorite);
+TLaunchResult launchRom(const std::string& aFullPath, DSRomInfo& aRomInfo, bool aMenu,
+                        const std::string& favorite);
 void autoLaunchRom(const std::string& aFullPath, const std::string& favorite);

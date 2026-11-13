@@ -31,6 +31,7 @@ class cSettingWnd : public akui::cForm {
                         size_t defaultValue);
     akui::cButton* addSettingButton(const std::string& text, const std::string& buttonText);
     ssize_t getItemSelection(size_t tabId, size_t itemId);
+    void setItemTexts(size_t tabId, size_t itemId, const std::vector<std::string>& texts);
     void setConfirmMessage(const std::string& text);
     template <class TargetType>
     void addYButton(std::string title, TargetType* slotHolder,

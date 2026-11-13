@@ -340,7 +340,21 @@ deselect = 全部復位
 [saveslot]
 title = 複製存檔槽位
 confirm = 確定要複製存檔槽位嗎？
+copy = 複製
+source slot = 來源存檔槽位
 target slot = 目標存檔槽位
+no saves = 找不到存檔。請先在遊戲中存檔，或檢查 'saves' 資料夾設定。
+same slot = 請選擇其他目標槽位。
+overwrite = 要覆寫目標槽位的存檔嗎？
+copying = 正在複製存檔…
+copied = 存檔已複製。請選擇目標槽位來遊玩。
+copied with override = 存檔已複製。使用目標存檔前，請檢查全域存檔槽位設定。
+read error = 無法讀取來源存檔。請檢查存檔檔案和記憶卡。
+write error = 無法寫入副本。請檢查剩餘空間和記憶卡是否可寫入。
+temporary exists = 請檢查目標存檔的 .tmp 檔案後再試一次。
+backup exists = 請檢查目標存檔的 .bak 檔案後再試一次。
+restore error = 複製失敗。請從 .bak 檔案還原目標存檔。
+cleanup error = 存檔已複製。目標槽位的舊存檔仍保留在 .bak 檔案中。
 
 [mainlist]
 flash memory = 內建記憶體
@@ -355,6 +369,30 @@ text = 使用ROM引導器
 not found = 找不到引導器
 error = 錯誤
 info = 資訊
+save preparation error = 無法準備存檔。請檢查剩餘空間、記憶卡和 'saves' 資料夾。
+file access error = 無法開啟啟動檔案。請還原檔案並檢查記憶卡。
+folder access error = 無法讀取啟動資料夾。請重新插入記憶卡後再試一次。
+dldi error = 無法套用記憶卡驅動程式。請重新安裝適用於你的燒錄卡的版本。
+plugin missing = 請在此路徑安裝外掛程式，或修正其 INI 檔案：
+slot1 missing = 請從 AKMenu-Next 安裝套件還原 Slot-1 啟動程式：
+passme missing = 請從 AKMenu-Next 安裝套件還原 PassMeLoader：
+pico missing = 請將適用於你的燒錄卡的兩個 Pico-Loader 檔案放入 /_pico：
+bootstrap hb missing = 請在此處安裝 nds-bootstrap 的自製軟體版，或變更自製讀取器設定：
+bootstrap nightly missing = 請在此處安裝 Nightly 版，或在 nds-bootstrap 版本設定中選擇 Release：
+bootstrap release missing = 請在此處安裝 nds-bootstrap 的 Release 版：
+bootstrap ini missing = 請從 AKMenu-Next 安裝套件還原 ndsbs.ini：
+pico path long = 遊戲或存檔路徑超出 Pico-Loader 的長度限制。請縮短檔名或資料夾名稱。
+pico plugin path long = 外掛程式路徑超出 Pico-Loader 的長度限制。請縮短檔名或資料夾名稱。
+pico read error = 無法讀取 Pico-Loader 檔案。請將兩個檔案重新放入 /_pico。
+bootstrap ini write error = 無法寫入 nds-bootstrap.ini。請檢查記憶卡是否可寫入及剩餘空間。
+dsiware path error = 無法讀取 DSiWare 遊戲或存檔路徑。請檢查主機的 SD 卡。
+dsiware mode error = 請將 DSiWare 遊戲放入主機的 SD 卡，並以 DSi 模式啟動 AKMenu-Next。
+dsiware header error = 無法讀取 DSiWare 標頭。請檢查 SD 卡或還原遊戲檔案。
+unlaunch save error = Unlaunch 要求存檔與遊戲位於同一資料夾。請檢查 SD 卡是否可存取後再試一次。
+unlaunch path error = Unlaunch 無法使用此遊戲路徑。請縮短檔名或資料夾名稱。
+cheat preparation error = 無法準備金手指。請檢查 usrcheat.dat，或停用此遊戲的金手指。
+plugin dsi path missing = 未設定 DSi 模式的外掛程式路徑。請檢查 _nds/akmenunext/plugins 中的 INI 檔案。
+plugin ds path missing = 未設定 DS 模式的外掛程式路徑。請檢查 _nds/akmenunext/plugins 中的 INI 檔案。
 
 [loading]
 load text = 請稍後...

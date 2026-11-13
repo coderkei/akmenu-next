@@ -338,9 +338,23 @@ info = 更多…
 deselect = 取消选择所有
 
 [saveslot]
-title = 存档管理
+title = 复制存档
 confirm = 你是否想要复制此位置存档？
+copy = 复制
+source slot = 源存档位置
 target slot = 目标存档位置
+no saves = 未找到存档。请先在游戏中保存，或检查 'saves' 文件夹设置。
+same slot = 请选择其他目标存档位置。
+overwrite = 要覆盖目标位置的存档吗？
+copying = 正在复制存档…
+copied = 存档已复制。请选择目标存档位置开始游戏。
+copied with override = 存档已复制。使用目标存档前，请检查全局存档位置设置。
+read error = 无法读取源存档。请检查存档文件和内存卡。
+write error = 无法写入副本。请检查剩余空间和内存卡是否可写。
+temporary exists = 请检查目标存档的 .tmp 文件后重试。
+backup exists = 请检查目标存档的 .bak 文件后重试。
+restore error = 复制失败。请从 .bak 文件恢复目标存档。
+cleanup error = 存档已复制。目标位置的旧存档仍保存在 .bak 文件中。
 
 [mainlist]
 flash memory = 内置闪存
@@ -355,6 +369,30 @@ text = 使用ROM引导器
 not found = 找不到引导器
 error = 错误
 info = 信息
+save preparation error = 无法准备存档。请检查剩余空间、内存卡和 'saves' 文件夹。
+file access error = 无法打开启动文件。请恢复文件并检查内存卡。
+folder access error = 无法读取启动文件夹。请重新插入内存卡后重试。
+dldi error = 无法应用内存卡驱动。请重新安装适用于你的烧录卡的版本。
+plugin missing = 请在此路径安装插件，或修正其 INI 文件：
+slot1 missing = 请从 AKMenu-Next 安装包中恢复 Slot-1 启动程序：
+passme missing = 请从 AKMenu-Next 安装包中恢复 PassMeLoader：
+pico missing = 请将适用于你的烧录卡的两个 Pico-Loader 文件放入 /_pico：
+bootstrap hb missing = 请在此处安装 nds-bootstrap 的自制软件版，或更改自制加载器设置：
+bootstrap nightly missing = 请在此处安装 Nightly 版，或在 nds-bootstrap 版本设置中选择 Release：
+bootstrap release missing = 请在此处安装 nds-bootstrap 的 Release 版：
+bootstrap ini missing = 请从 AKMenu-Next 安装包中恢复 ndsbs.ini：
+pico path long = 游戏或存档路径超出 Pico-Loader 的长度限制。请缩短文件名或文件夹名。
+pico plugin path long = 插件路径超出 Pico-Loader 的长度限制。请缩短文件名或文件夹名。
+pico read error = 无法读取 Pico-Loader 文件。请将两个文件重新放入 /_pico。
+bootstrap ini write error = 无法写入 nds-bootstrap.ini。请检查内存卡是否可写及剩余空间。
+dsiware path error = 无法读取 DSiWare 游戏或存档路径。请检查主机的 SD 卡。
+dsiware mode error = 请将 DSiWare 游戏放入主机的 SD 卡，并在 DSi 模式下启动 AKMenu-Next。
+dsiware header error = 无法读取 DSiWare 文件头。请检查 SD 卡或恢复游戏文件。
+unlaunch save error = Unlaunch 要求存档与游戏位于同一文件夹。请检查 SD 卡访问权限后重试。
+unlaunch path error = Unlaunch 无法使用此游戏路径。请缩短文件名或文件夹名。
+cheat preparation error = 无法准备金手指。请检查 usrcheat.dat，或关闭此游戏的金手指。
+plugin dsi path missing = 未设置 DSi 模式的插件路径。请检查 _nds/akmenunext/plugins 中的插件 INI 文件。
+plugin ds path missing = 未设置 DS 模式的插件路径。请检查 _nds/akmenunext/plugins 中的插件 INI 文件。
 
 [loading]
 load text = 请稍候...

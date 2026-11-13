@@ -90,6 +90,12 @@ void cSpinBox::insertItem(const std::string& item, u32 position) {
     _items.insert(_items.begin() + position, item);
 }
 
+void cSpinBox::setItemText(u32 id, const std::string& text) {
+    if (id >= _items.size()) return;
+    _items[id] = text;
+    if (id == _selectedItemId) selectItem(id);
+}
+
 void cSpinBox::removeItem(u32 position) {
     if (position > _items.size() - 1) return;
 

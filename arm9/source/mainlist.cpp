@@ -197,7 +197,6 @@ static bool extnameFilter(const std::vector<std::string>& extNames, std::string 
 }
 
 bool cMainList::enterDir(const std::string& dirName) {
-    _saves.clear();
     if (memcmp(dirName.c_str(), "...", 3) == 0 || dirName.empty())  // select RPG or SD card
     {
         removeAllRows();
@@ -291,8 +290,6 @@ bool cMainList::enterDir(const std::string& dirName) {
     extNames.insert(extNames.end(), pluginExtensions.begin(), pluginExtensions.end());
     if (gs().fileListType > 0) extNames.push_back(".sav");
     if (_showAllFiles || gs().fileListType > 1) extNames.clear();
-    std::vector<std::string> savNames;
-    savNames.push_back(".sav");
 
     // insert 一堆文件, 两列，一列作为显示，一列作为真实文件名
     std::string extName;
@@ -362,15 +359,7 @@ bool cMainList::enterDir(const std::string& dirName) {
                 } else {
                     size_t lastDotPos = lfn.find_last_of('.');
                     extName = (lfn.npos != lastDotPos) ? lfn.substr(lastDotPos) : "";
-                    if (!extnameFilter(extNames, extName)) {
-                        if (extnameFilter(savNames, extName)) {
-                            _saves.push_back(dirName + lfn);
-                        }
-                        continue;
-                    }
-                    if (extnameFilter(savNames, extName)) {
-                        _saves.push_back(dirName + lfn);
-                    }
+                    if (!extnameFilter(extNames, extName)) continue;
                 }
 
                 DirEntry de;
@@ -481,7 +470,6 @@ bool cMainList::enterDir(const std::string& dirName) {
             }
             _romInfoList.push_back(rominfo);
         }
-        std::sort(_saves.begin(), _saves.end(), stringComp);
         _currentDir = dirName;
     }
 
@@ -706,10 +694,6 @@ bool cMainList::IsFavorites(void) {
 
 bool cMainList::IsRecent(void) {
     return ("recent:/" == _currentDir);
-}
-
-const std::vector<std::string>* cMainList::Saves(void) {
-    return (IsFavorites() || IsRecent()) ? NULL : &_saves;
 }
 
 void cMainList::SwitchShowAllFiles(void) {

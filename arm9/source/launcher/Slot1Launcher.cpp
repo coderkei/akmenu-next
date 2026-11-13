@@ -17,14 +17,13 @@ bool Slot1Launcher::launchRom(std::string romPath, std::string savePath, u32 fla
     std::string slot1LoaderPath = fsManager().resolveSystemPath("/_nds/akmenunext/slot1launch.nds");
 
     if (access(slot1LoaderPath.c_str(), F_OK) != 0) {
-        printLoaderNotFound(slot1LoaderPath);
+        printLoaderNotFound(slot1LoaderPath, lang().GetString(
+                "loader", "slot1 missing", "Restore the Slot-1 launcher from your AKMenu-Next package:"));
         return false;
     }
 
     std::vector<const char*> argv;
     argv.push_back(slot1LoaderPath.c_str());
     eRunNdsRetCode rc = runNdsFile(argv[0], argv.size(), &argv[0]);
-    if (rc == RUN_NDS_OK) return true;
-
-    return false;
+    return checkNdsLaunch(rc);
 }

@@ -205,9 +205,9 @@ bool cSettingWnd::process(const akui::cMessage& msg) {
 }
 
 void cSettingWnd::onOK(void) {
-    u32 ret =
-            messageBox(this, LANG("setting window", "confirm"), _confirmMessage, MB_OK | MB_CANCEL);
-    if (ID_OK != ret) return;
+    if (!_confirmMessage.empty() &&
+        ID_OK != messageBox(this, LANG("setting window", "confirm"), _confirmMessage,
+                            MB_OK | MB_CANCEL)) return;
     _modalRet = 1;
 }
 
@@ -384,6 +384,12 @@ ssize_t cSettingWnd::getItemSelection(size_t tabId, size_t itemId) {
     if (itemId >= items(tabId).size()) return -1;
     if (!items(tabId)[itemId]._item) return -1;
     return items(tabId)[itemId]._item->selectedItemId();
+}
+
+void cSettingWnd::setItemTexts(size_t tabId, size_t itemId,
+                               const std::vector<std::string>& texts) {
+    cSpinBox* item = items(tabId)[itemId]._item;
+    for (size_t i = 0; i < texts.size(); ++i) item->setItemText(i, texts[i]);
 }
 
 /*

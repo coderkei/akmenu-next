@@ -320,9 +320,23 @@ info = More…
 deselect = Deselect all
 
 [saveslot]
-title = セーブスロットコピー
+title = セーブスロットをコピー
 confirm = セーブスロットをコピーしますか？
-target slot = ターゲットセーブスロット
+copy = コピー
+source slot = コピー元スロット
+target slot = コピー先スロット
+no saves = セーブがありません。ゲーム内でセーブするか、saves フォルダの設定を確認してください。
+same slot = 別のコピー先を選んでください。
+overwrite = コピー先のセーブを上書きしますか？
+copying = セーブをコピー中…
+copied = コピーしました。プレイするにはコピー先のスロットを選んでください。
+copied with override = コピーしました。プレイ前にセーブスロットの全体設定を確認してください。
+read error = コピー元を読み込めません。セーブファイルとカードを確認してください。
+write error = コピーを書き込めません。空き容量とカードへのアクセスを確認してください。
+temporary exists = 再試行する前に、コピー先の .tmp ファイルを確認してください。
+backup exists = 再試行する前に、コピー先の .bak ファイルを確認してください。
+restore error = コピーに失敗しました。コピー先のセーブを .bak ファイルから復元してください。
+cleanup error = コピーしました。以前のセーブは .bak ファイルに残っています。
 
 [mainlist]
 flash memory = Flash Memory
@@ -363,6 +377,30 @@ text = ROMローダーを使用する
 not found = ローダーが見つかりません
 error = Error
 info = Information
+save preparation error = セーブを準備できません。空き容量、カードへのアクセス、saves フォルダを確認してください。
+file access error = 起動ファイルを開けません。ファイルを復元し、カードを確認してください。
+folder access error = 起動フォルダを読み込めません。カードを挿し直して再試行してください。
+dldi error = カードドライバーを適用できません。フラッシュカートに合った版を入れ直してください。
+plugin missing = この場所にプラグインを配置するか、プラグインの INI を修正してください：
+slot1 missing = AKMenu-Next の配布パッケージから Slot-1 ローダーを復元してください：
+passme missing = AKMenu-Next の配布パッケージから PassMeLoader を復元してください：
+pico missing = フラッシュカート用の Pico-Loader ファイルを両方とも /_pico に配置してください：
+bootstrap hb missing = nds-bootstrap のホームブリュー版をここに配置するか、ホームブリュー・ローダーを変更してください：
+bootstrap nightly missing = Nightly 版をここに配置するか、nds-bootstrap のバージョン設定で Release を選んでください：
+bootstrap release missing = nds-bootstrap の Release 版をここに配置してください：
+bootstrap ini missing = AKMenu-Next の配布パッケージから ndsbs.ini を復元してください：
+pico path long = ゲームかセーブのパスが Pico-Loader には長すぎます。ファイル名かフォルダ名を短くしてください。
+pico plugin path long = プラグインのパスが Pico-Loader には長すぎます。ファイル名かフォルダ名を短くしてください。
+pico read error = Pico-Loader を読み込めません。両方のファイルを /_pico に入れ直してください。
+bootstrap ini write error = nds-bootstrap.ini を書き込めません。カードへのアクセスと空き容量を確認してください。
+dsiware path error = DSiWare のゲームやセーブのパスを読み込めません。本体の SD カードを確認してください。
+dsiware mode error = DSiWare を本体の SD カードに入れ、AKMenu-Next を DSi モードで起動してください。
+dsiware header error = DSiWare のヘッダーを読み込めません。SD カードを確認するか、ゲームファイルを復元してください。
+unlaunch save error = Unlaunch ではセーブをゲームと同じフォルダに置く必要があります。SD カードへのアクセスを確認し、再試行してください。
+unlaunch path error = Unlaunch でこのパスを使用できません。ファイル名かフォルダ名を短くしてください。
+cheat preparation error = チートを準備できません。usrcheat.dat を確認するか、このゲームのチートを無効にしてください。
+plugin dsi path missing = DSi モード用のプラグインのパスがありません。_nds/akmenunext/plugins 内の INI を確認してください。
+plugin ds path missing = DS モード用のプラグインのパスがありません。_nds/akmenunext/plugins 内の INI を確認してください。
 
 [loading]
 load text = お待ちください...

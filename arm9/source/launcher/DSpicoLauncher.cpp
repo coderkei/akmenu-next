@@ -102,18 +102,27 @@ bool DSpicoLauncher::launchRomInternal(std::string romPath, std::string savePath
             fsManager().resolveSystemPath("/_pico/picoLoader7.bin");
     const std::string picoLoader9Path =
             fsManager().resolveSystemPath("/_pico/picoLoader9.bin");
+    const std::string loaderHelp = lang().GetString(
+            "loader", "pico missing", "Install both Pico-Loader files for your flashcart in /_pico:");
 
     mRomPath = romPath;
     mSavePath = savePath;
     mFlags = flags;
 
     pload_params_t sLoadParams{};
+    if (mRomPath.size() >= sizeof(sLoadParams.romPath) ||
+        mSavePath.size() >= sizeof(sLoadParams.savePath)) {
+        progressWnd().hide();
+        printError(LANG("loader", "pico path long"));
+        return false;
+    }
     strcpy(sLoadParams.romPath, mRomPath.c_str());
     strcpy(sLoadParams.savePath, mSavePath.c_str());
     if (!arguments.empty()) {
         const size_t argumentsLength = arguments.length() + 1;
         if (argumentsLength > sizeof(sLoadParams.arguments)) {
-            printError("The plugin argument is too long for Pico-Loader.");
+            progressWnd().hide();
+            printError(LANG("loader", "pico plugin path long"));
             return false;
         }
         memcpy(sLoadParams.arguments, arguments.c_str(), argumentsLength);
@@ -124,23 +133,11 @@ bool DSpicoLauncher::launchRomInternal(std::string romPath, std::string savePath
     progressWnd().show();
     progressWnd().setPercent(0);
 
-    if(access(picoLoader7Path.c_str(), F_OK) != 0) {
-        progressWnd().hide();
-        printLoaderNotFound(picoLoader7Path);
-        return false;
-    }
-
-    if(access(picoLoader9Path.c_str(), F_OK) != 0) {
-        progressWnd().hide();
-        printLoaderNotFound(picoLoader9Path);
-        return false;
-    }
-
     auto* loader9 = fopen(picoLoader9Path.c_str(), "rb");
 
     if(!loader9){
         progressWnd().hide();
-        printLoaderNotFound(picoLoader9Path);
+        printLoaderNotFound(picoLoader9Path, loaderHelp);
         return false;
     }
     auto* loader7 = fopen(picoLoader7Path.c_str(), "rb");
@@ -148,7 +145,7 @@ bool DSpicoLauncher::launchRomInternal(std::string romPath, std::string savePath
     if(!loader7){
         fclose(loader9);
         progressWnd().hide();
-        printLoaderNotFound(picoLoader7Path);
+        printLoaderNotFound(picoLoader7Path, loaderHelp);
         return false;
     }
 
@@ -158,22 +155,33 @@ bool DSpicoLauncher::launchRomInternal(std::string romPath, std::string savePath
     progressWnd().setPercent(20);
 
 
-    fseek(loader9, 0, SEEK_END);
-    auto picoLoader9Size = ftell(loader9);
-    fseek(loader9, 0, SEEK_SET);
+    const long picoLoader9Size = fseek(loader9, 0, SEEK_END) == 0 ? ftell(loader9) : -1;
+    const long picoLoader7Size = fseek(loader7, 0, SEEK_END) == 0 ? ftell(loader7) : -1;
+    if (picoLoader9Size <= 0 || picoLoader7Size <= 0 ||
+        fseek(loader9, 0, SEEK_SET) != 0 || fseek(loader7, 0, SEEK_SET) != 0) {
+        fclose(loader7);
+        fclose(loader9);
+        progressWnd().hide();
+        printError(LANG("loader", "pico read error"));
+        return false;
+    }
 
-    fseek(loader7, 0, SEEK_END);
-    auto picoLoader7Size = ftell(loader7);
-    fseek(loader7, 0, SEEK_SET);
-
-    auto picoLoader7 = new(cache_align) u8[picoLoader7Size];
-    fread(picoLoader7, 1, picoLoader7Size, loader7);
+    auto picoLoader7 = new(cache_align) u8[(picoLoader7Size + 1) & ~1]{};
+    const size_t read7 = fread(picoLoader7, 1, picoLoader7Size, loader7);
     fclose(loader7);
     progressWnd().setPercent(40);
 
-    auto picoLoader9 = new(cache_align) u8[picoLoader9Size];
-    fread(picoLoader9, 1, picoLoader9Size, loader9);
+    auto picoLoader9 = new(cache_align) u8[(picoLoader9Size + 1) & ~1]{};
+    const size_t read9 = fread(picoLoader9, 1, picoLoader9Size, loader9);
     fclose(loader9);
+    if (read7 != static_cast<size_t>(picoLoader7Size) ||
+        read9 != static_cast<size_t>(picoLoader9Size)) {
+        delete[] picoLoader9;
+        delete[] picoLoader7;
+        progressWnd().hide();
+        printError(LANG("loader", "pico read error"));
+        return false;
+    }
     progressWnd().setPercent(75);
 
     soundDisable();

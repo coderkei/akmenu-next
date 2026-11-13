@@ -10,8 +10,10 @@
 //�
 
 #include "savemngr.h"
+#include <cerrno>
 #include <fat.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include "datetime.h"
 #include "dbgtool.h"
@@ -204,6 +206,104 @@ bool cSaveManager::initializeSaveFile(const std::string& romFilename, u8 slot, u
         close(f);
     }
     return res;
+}
+
+std::string cSaveManager::saveLocation(const std::string& romFilename) {
+    std::string location = romFilename;
+    if (gs().saveDir) location.insert(location.find_last_of("/\\") + 1, "saves/");
+    return location;
+}
+
+std::string cSaveManager::copySaveFile(const std::string& source, const std::string& target,
+                                      bool replace) {
+    const std::string writeError = lang().GetString(
+            "saveslot", "write error", "Could not write the copy. Check free space and card access.");
+    const std::string backup = target + ".bak";
+    const std::string temporary = target + ".tmp";
+    struct stat st;
+    if (stat(backup.c_str(), &st) == 0 || errno != ENOENT) {
+        return lang().GetString("saveslot", "backup exists",
+                                "Check the target save's .bak file before trying again.");
+    }
+    if (stat(target.c_str(), &st) == 0) {
+        if (!replace || !S_ISREG(st.st_mode)) return writeError;
+    } else if (errno != ENOENT || replace) {
+        return writeError;
+    }
+
+    FILE* input = fopen(source.c_str(), "rb");
+    if (!input) {
+        return lang().GetString("saveslot", "read error",
+                                "Could not read the source save. Check the save file and card.");
+    }
+    int output = open(temporary.c_str(), O_WRONLY | O_CREAT | O_EXCL, 0666);
+    if (output < 0) {
+        const int openError = errno;
+        fclose(input);
+        if (openError == EEXIST) {
+            return lang().GetString("saveslot", "temporary exists",
+                                    "Check the target save's .tmp file before trying again.");
+        }
+        return writeError;
+    }
+
+    progressWnd().setTipText(lang().GetString("saveslot", "copying", "Copying save..."));
+    progressWnd().show();
+    progressWnd().setPercent(0);
+    std::vector<u8> buffer(32 * 1024);
+    size_t count;
+    u64 copied = 0;
+    unsigned lastPercent = 0;
+    const u64 size = fstat(fileno(input), &st) == 0 ? st.st_size : 0;
+    bool written = true;
+    while ((count = fread(buffer.data(), 1, buffer.size(), input)) != 0) {
+        if (write(output, buffer.data(), count) != static_cast<ssize_t>(count)) {
+            written = false;
+            break;
+        }
+        copied += count;
+        if (size) {
+            const unsigned percent = std::min<u64>(copied * 100 / size, 100);
+            if (percent != lastPercent) {
+                progressWnd().setPercent(percent);
+                lastPercent = percent;
+            }
+        }
+    }
+    const bool readError = ferror(input) || (written && size && copied != size);
+    fclose(input);
+    if (close(output) != 0) written = false;
+    progressWnd().hide();
+    if (readError || !written) {
+        remove(temporary.c_str());
+        if (readError) {
+            return lang().GetString("saveslot", "read error",
+                                    "Could not read the source save. Check the save file and card.");
+        }
+        return writeError;
+    }
+
+    if (replace && rename(target.c_str(), backup.c_str()) != 0) {
+        remove(temporary.c_str());
+        return writeError;
+    }
+    if (rename(temporary.c_str(), target.c_str()) != 0) {
+        remove(temporary.c_str());
+        if (replace && rename(backup.c_str(), target.c_str()) != 0) {
+            return lang().GetString("saveslot", "restore error",
+                                    "Copy failed. Restore the target save from its .bak file.");
+        }
+        return writeError;
+    }
+    if (replace && remove(backup.c_str()) != 0) {
+        return lang().GetString("saveslot", "cleanup error",
+                                "Save copied. The previous target save is still in its .bak file.");
+    }
+    if (gs().saveSlotOverride >= 0) {
+        return lang().GetString("saveslot", "copied with override",
+                                "Save copied. Check Save Slot Override before playing the target slot.");
+    }
+    return lang().GetString("saveslot", "copied", "Save copied. Choose the target slot to play it.");
 }
 
 std::string cSaveManager::generateSaveName(const std::string& romFilename, u8 slot) {

@@ -334,7 +334,21 @@ deselect = Снять всё
 [saveslot]
 title = Копировать слот сохранения
 confirm = Скопировать слот сохранения?
-target slot = Целевой слот сохранения
+copy = Копировать
+source slot = Исходный слот
+target slot = Целевой слот
+no saves = Сохранений нет. Сначала сохранитесь в игре или проверьте настройку папки «saves».
+same slot = Выберите другой целевой слот.
+overwrite = Заменить сохранение в целевом слоте?
+copying = Копирование сохранения…
+copied = Сохранение скопировано. Для игры выберите целевой слот.
+copied with override = Сохранение скопировано. Перед запуском проверьте общую настройку слота.
+read error = Не удалось прочитать исходное сохранение. Проверьте файл и карту памяти.
+write error = Не удалось записать копию. Проверьте свободное место и доступ к карте.
+temporary exists = Перед повтором проверьте файл .tmp целевого сохранения.
+backup exists = Перед повтором проверьте файл .bak целевого сохранения.
+restore error = Не удалось скопировать. Восстановите целевое сохранение из файла .bak.
+cleanup error = Сохранение скопировано. Предыдущее сохранение осталось в файле .bak.
 
 [mainlist]
 flash memory = Flash-память
@@ -349,6 +363,30 @@ text = Использовать загрузчик ROM krolik
 not found = Загрузчик не найден
 error = Ошибка
 info = Сведения
+save preparation error = Не удалось подготовить сохранение. Проверьте свободное место, доступ к карте и папку «saves».
+file access error = Не удалось открыть файл запуска. Восстановите его и проверьте карту.
+folder access error = Не удалось прочитать папку запуска. Вставьте карту заново и повторите попытку.
+dldi error = Не удалось применить драйвер карты. Переустановите версию для вашего флеш-картриджа.
+plugin missing = Установите плагин по этому пути или исправьте его INI-файл:
+slot1 missing = Восстановите загрузчик Slot-1 из пакета AKMenu-Next:
+passme missing = Восстановите PassMeLoader из пакета AKMenu-Next:
+pico missing = Установите оба файла Pico-Loader для вашего флеш-картриджа в /_pico:
+bootstrap hb missing = Установите сюда версию nds-bootstrap для homebrew или измените настройку Homebrew Loader:
+bootstrap nightly missing = Установите сюда версию Nightly или выберите Release в настройке версии nds-bootstrap:
+bootstrap release missing = Установите сюда версию Release загрузчика nds-bootstrap:
+bootstrap ini missing = Восстановите ndsbs.ini из пакета AKMenu-Next:
+pico path long = Путь к игре или сохранению слишком длинный для Pico-Loader. Сократите имена файла или папок.
+pico plugin path long = Путь к плагину слишком длинный для Pico-Loader. Сократите имена файла или папок.
+pico read error = Не удалось прочитать файлы Pico-Loader. Переустановите оба файла в /_pico.
+bootstrap ini write error = Не удалось записать nds-bootstrap.ini. Проверьте доступ к карте и свободное место.
+dsiware path error = Не удалось прочитать пути к игре DSiWare или сохранениям. Проверьте SD-карту консоли.
+dsiware mode error = Поместите игру DSiWare на SD-карту консоли и запустите AKMenu-Next в режиме DSi.
+dsiware header error = Не удалось прочитать заголовок DSiWare. Проверьте SD-карту или восстановите файл игры.
+unlaunch save error = Unlaunch нужны сохранения в папке игры. Проверьте доступ к SD-карте и повторите попытку.
+unlaunch path error = Unlaunch не удалось использовать путь к игре. Сократите имена файла или папок.
+cheat preparation error = Не удалось подготовить читы. Проверьте usrcheat.dat или отключите читы для этой игры.
+plugin dsi path missing = Путь к плагину для режима DSi не задан. Проверьте его INI-файл в _nds/akmenunext/plugins.
+plugin ds path missing = Путь к плагину для режима DS не задан. Проверьте его INI-файл в _nds/akmenunext/plugins.
 
 [loading]
 load text = Подождите...

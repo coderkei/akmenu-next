@@ -18,7 +18,5 @@ bool HomebrewLauncher::launchRom(std::string romPath, std::string savePath, u32 
     std::vector<const char*> argv;
     argv.push_back(romPath.c_str());
     eRunNdsRetCode rc = runNdsFile(argv[0], argv.size(), &argv[0]);
-    if (rc == RUN_NDS_OK) return true;
-
-    return false;
+    return checkNdsLaunch(rc);
 }

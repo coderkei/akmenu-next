@@ -327,9 +327,23 @@ info = Más info
 deselect = Desact. todo
 
 [saveslot]
-title = Slot de guardado actual
+title = Copiar slot de guardado
 confirm = ¿Seguro de que quieres copiar el save a este nuevo slot?
-target slot = Slot de guardado de destino
+copy = Copiar
+source slot = Slot de origen
+target slot = Slot de destino
+no saves = No se encontraron partidas. Guarda en el juego o revisa la opción «Usar carpeta 'saves'».
+same slot = Elige otro slot de destino.
+overwrite = ¿Reemplazar la partida del slot de destino?
+copying = Copiando partida…
+copied = Partida copiada. Elige el slot de destino para jugar.
+copied with override = Partida copiada. Revisa el ajuste global del slot antes de jugar.
+read error = No se pudo leer la partida de origen. Comprueba el archivo y la tarjeta.
+write error = No se pudo escribir la copia. Comprueba el espacio libre y el acceso a la tarjeta.
+temporary exists = Revisa el archivo .tmp de la partida de destino antes de reintentar.
+backup exists = Revisa el archivo .bak de la partida de destino antes de reintentar.
+restore error = Falló la copia. Restaura la partida de destino desde su archivo .bak.
+cleanup error = Partida copiada. La partida anterior sigue en el archivo .bak.
 
 [mainlist]
 flash memory = Memoria flash
@@ -370,6 +384,30 @@ text = Utilice el cargador de ROM
 not found = Cargador no encontrado
 error = Error
 info = Information
+save preparation error = No se pudo preparar la partida. Comprueba el espacio libre, el acceso a la tarjeta y la carpeta 'saves'.
+file access error = No se pudo abrir el archivo de inicio. Restáuralo y comprueba la tarjeta.
+folder access error = No se pudo leer la carpeta de inicio. Vuelve a insertar la tarjeta e inténtalo de nuevo.
+dldi error = No se pudo aplicar el controlador. Reinstala la versión adecuada para tu flashcard.
+plugin missing = Instala el plugin en esta ruta o corrige su archivo INI:
+slot1 missing = Restaura el cargador de Slot-1 desde el paquete de AKMenu-Next:
+passme missing = Restaura PassMeLoader desde el paquete de AKMenu-Next:
+pico missing = Instala los dos archivos de Pico-Loader para tu flashcard en /_pico:
+bootstrap hb missing = Instala aquí la versión homebrew de nds-bootstrap o cambia el Homebrew Loader:
+bootstrap nightly missing = Instala aquí la versión Nightly o selecciona Release como versión de nds-bootstrap:
+bootstrap release missing = Instala aquí la versión Release de nds-bootstrap:
+bootstrap ini missing = Restaura ndsbs.ini desde el paquete de AKMenu-Next:
+pico path long = La ruta del juego o de la partida es demasiado larga para Pico-Loader. Acorta el nombre del archivo o de las carpetas.
+pico plugin path long = La ruta del plugin es demasiado larga para Pico-Loader. Acorta el nombre del archivo o de las carpetas.
+pico read error = No se pudieron leer los archivos de Pico-Loader. Reinstala ambos en /_pico.
+bootstrap ini write error = No se pudo escribir nds-bootstrap.ini. Comprueba el acceso a la tarjeta y el espacio libre.
+dsiware path error = No se pudieron leer las rutas del juego DSiWare o sus partidas. Comprueba la tarjeta SD de la consola.
+dsiware mode error = Copia el juego DSiWare a la tarjeta SD de la consola e inicia AKMenu-Next en modo DSi.
+dsiware header error = No se pudo leer la cabecera DSiWare. Comprueba la tarjeta SD o restaura el archivo del juego.
+unlaunch save error = Unlaunch necesita las partidas en la carpeta del juego. Comprueba el acceso a la tarjeta SD y reintenta.
+unlaunch path error = Unlaunch no pudo usar esta ruta. Acorta el nombre del archivo o de las carpetas.
+cheat preparation error = No se pudieron preparar los trucos. Revisa usrcheat.dat o desactiva los trucos para este juego.
+plugin dsi path missing = Falta la ruta del plugin en modo DSi. Revisa su archivo INI en _nds/akmenunext/plugins.
+plugin ds path missing = Falta la ruta del plugin en modo DS. Revisa su archivo INI en _nds/akmenunext/plugins.
 
 [loading]
 load text = Espere por favor…

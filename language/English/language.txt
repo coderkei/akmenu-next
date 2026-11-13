@@ -334,8 +334,21 @@ deselect = Deselect all
 
 [saveslot]
 title = Copy Save Slot
-confirm = Are you sure you want to copy save slot?
+copy = Copy
+source slot = Source Save Slot
 target slot = Target Save Slot
+no saves = No saves found. Play and save first, or check Use Saves Folder.
+same slot = Choose a different target slot.
+overwrite = Replace the existing save in the target slot?
+copying = Copying save...
+copied = Save copied. Choose the target slot to play it.
+copied with override = Save copied. Check Save Slot Override before playing the target slot.
+read error = Could not read the source save. Check the save file and card.
+write error = Could not write the copy. Check free space and card access.
+temporary exists = Check the target save's .tmp file before trying again.
+backup exists = Check the target save's .bak file before trying again.
+restore error = Copy failed. Restore the target save from its .bak file.
+cleanup error = Save copied. The previous target save is still in its .bak file.
 
 [mainlist]
 flash memory = Flash Memory
@@ -350,6 +363,30 @@ text = Use ROM loader
 not found = Loader not found
 error = Error
 info = Information
+save preparation error = Could not prepare the save. Check free space, card access, and the saves folder.
+file access error = Could not open the launch file. Restore it and check the card.
+folder access error = Could not read the launch folder. Reinsert the card and try again.
+dldi error = Could not apply the card driver. Reinstall the correct build for your flashcart.
+plugin missing = Install the plugin at this path or correct its INI:
+slot1 missing = Restore the Slot-1 launcher from your AKMenu-Next package:
+passme missing = Restore PassMeLoader from your AKMenu-Next package:
+pico missing = Install both Pico-Loader files for your flashcart in /_pico:
+bootstrap hb missing = Install nds-bootstrap's homebrew build here, or change Homebrew Loader:
+bootstrap nightly missing = Install the Nightly build here, or select Release in nds-bootstrap version:
+bootstrap release missing = Install the Release build of nds-bootstrap here:
+bootstrap ini missing = Restore ndsbs.ini from your AKMenu-Next package:
+pico path long = The game or save path is too long for Pico-Loader. Shorten the filename or folder path.
+pico plugin path long = The plugin path is too long for Pico-Loader. Shorten the filename or folder path.
+pico read error = Could not read the Pico-Loader files. Reinstall both files in /_pico.
+bootstrap ini write error = Could not write nds-bootstrap.ini. Check card access and free space.
+dsiware path error = Could not read the DSiWare game or save paths. Check the console SD card.
+dsiware mode error = Put the DSiWare game on the console SD card and start AKMenu-Next in DSi mode.
+dsiware header error = Could not read the DSiWare header. Check the SD card or restore the game file.
+unlaunch save error = Unlaunch needs saves beside the game. Check SD card access and try again.
+unlaunch path error = Unlaunch could not use this game path. Try a shorter filename or folder path.
+cheat preparation error = Could not prepare cheats. Check usrcheat.dat or disable cheats for this game.
+plugin dsi path missing = No DSi-mode plugin path. Check the plugin INI in _nds/akmenunext/plugins.
+plugin ds path missing = No DS-mode plugin path. Check the plugin INI in _nds/akmenunext/plugins.
 
 [loading]
 load text = Please wait...

@@ -384,7 +384,11 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg,
         const std::string bootstrapIniPath = mBootstrapRoot + "_nds/nds-bootstrap.ini";
         configureNdsBootstrapDonors(ini, false, false, bootstrapIniPath);
         ini.SetString("NDS-BOOTSTRAP", "DSI_MODE", 0);
-        ini.SaveIniFile(bootstrapIniPath);
+        if (!ini.SaveIniFile(bootstrapIniPath)) {
+            progressWnd().hide();
+            printError(LANG("loader", "bootstrap ini write error"));
+            return false;
+        }
         debugOverlay::updateDonorStatus(ini, false);
         return true;
     }
@@ -399,7 +403,7 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg,
             (access(mDsiWarePrvPath.c_str(), F_OK) == 0 &&
              !makeDsiSdAlias(mDsiWarePrvPath, privateSaveAlias, sizeof(privateSaveAlias)))) {
             progressWnd().hide();
-            printError("Could not prepare the DSiWare SD card paths for nds-bootstrap.");
+            printError(LANG("loader", "dsiware path error"));
             return false;
         }
 
@@ -431,7 +435,9 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg,
     std::string custIniPath = fsManager().resolveSystemPath("/_nds/akmenunext/ndsbs.ini");
 
     if(access(custIniPath.c_str(), F_OK) != 0){
-            akui::messageBox(NULL, LANG("nds bootstrap", "inimissingtitle"), LANG("nds bootstrap", "inimissing"), MB_OK);
+            progressWnd().hide();
+            printLoaderNotFound(custIniPath, lang().GetString(
+                    "loader", "bootstrap ini missing", "Restore ndsbs.ini from your AKMenu-Next package:"));
             return false;
         }
 
@@ -568,7 +574,11 @@ bool NdsBootstrapLauncher::prepareIni(bool hb, const std::string& homebrewArg,
         ini.SetString("NDS-BOOTSTRAP", "DEBUG", "1");
     }
 
-    ini.SaveIniFile(bootstrapIniPath);
+    if (!ini.SaveIniFile(bootstrapIniPath)) {
+        progressWnd().hide();
+        printError(LANG("loader", "bootstrap ini write error"));
+        return false;
+    }
     debugOverlay::updateDonorStatus(ini, !homebrewLaunch);
 
     return true;
@@ -598,8 +608,7 @@ bool launchHbStrap(const std::string& argPath){
     }
     progressWnd().hide();
     eRunNdsRetCode rc = runNdsFile(argv[0], argv.size(), &argv[0]);
-    if (rc == RUN_NDS_OK) return true;
-    return false;
+    return checkNdsLaunch(rc);
 }
 
 bool NdsBootstrapLauncher::launchRom(std::string romPath, std::string savePath, u32 flags,
@@ -633,7 +642,9 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
         mSavePath = savePath;
         if(access(ndsHbBootstrapPath.c_str(), F_OK) != 0){
             progressWnd().hide();
-            printLoaderNotFound(ndsHbBootstrapPath);
+            printLoaderNotFound(ndsHbBootstrapPath, lang().GetString(
+                    "loader", "bootstrap hb missing",
+                    "Install nds-bootstrap's homebrew build here, or change Homebrew Loader:"));
             return false;
         }
         progressWnd().setTipText("Initializing nds-bootstrap...");
@@ -658,7 +669,8 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
 
     // DSiWare saves and bootstrap paths are supported from the DSi SD card in DSi mode.
     if (dsiWare && (!isDSiMode() || romPath.compare(0, 4, "sd:/") != 0)) {
-        printError("DSiWare launch requires a ROM on the DSi SD card and DSi mode.");
+        progressWnd().hide();
+        printError(LANG("loader", "dsiware mode error"));
         return false;
     }
 
@@ -691,7 +703,8 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
     if (dsiWare) {
         if (!getDsiWareHeaderInfo(romPath, dsiWareTwlRomSize, dsiWarePublicSaveSize,
                                   dsiWarePrivateSaveSize)) {
-            printError("Could not read the DSiWare ROM header.");
+            progressWnd().hide();
+            printError(LANG("loader", "dsiware header error"));
             return false;
         }
 
@@ -715,7 +728,8 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
 
             if (!moveDsiWareSaveBesideRom(configuredPubPath, mDsiWarePubPath) ||
                 !moveDsiWareSaveBesideRom(configuredPrvPath, mDsiWarePrvPath)) {
-                printError("Could not move the DSiWare save files beside the ROM for Unlaunch.");
+                progressWnd().hide();
+                printError(LANG("loader", "unlaunch save error"));
                 return false;
             }
 
@@ -727,21 +741,16 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
                 (dsiWarePrivateSaveSize > 0 &&
                  !ensureDsiWareSave(mDsiWarePrvPath, dsiWarePrivateSaveSize))) {
                 progressWnd().hide();
-                printError("Could not create the DSiWare save files on the SD card.");
+                printSavePreparationError();
                 return false;
             }
 
             progressWnd().hide();
             if (!bootDsiWareWithUnlaunch(mRomPath)) {
-                printError("Could not prepare the Unlaunch DSiWare boot path.");
+                printError(LANG("loader", "unlaunch path error"));
                 return false;
             }
         }
-    }
-
-    //has the user used nds-bootstrap before?
-    if(access(ndsBootstrapCheck.c_str(), F_OK) != 0){
-        akui::messageBox(NULL, LANG("nds bootstrap", "firsttimetitle"), LANG("nds bootstrap", "firsttime"), MB_OK);
     }
 
     progressWnd().setTipText("Initializing nds-bootstrap...");
@@ -752,7 +761,9 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
     if((gs().nightly && _romInfo.saveInfo().getNightly() == 2) || _romInfo.saveInfo().getNightly() == 1){
         if(access(ndsBootstrapPathNightly.c_str(), F_OK) != 0){
             progressWnd().hide();
-            printLoaderNotFound(ndsBootstrapPathNightly);
+            printLoaderNotFound(ndsBootstrapPathNightly, lang().GetString(
+                    "loader", "bootstrap nightly missing",
+                    "Install the Nightly build here, or select Release in nds-bootstrap version:"));
             return false;
         }
         else{
@@ -762,12 +773,20 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
     else{
         if(access(ndsBootstrapPath.c_str(), F_OK) != 0){
             progressWnd().hide();
-            printLoaderNotFound(ndsBootstrapPath);
+            printLoaderNotFound(ndsBootstrapPath, lang().GetString(
+                    "loader", "bootstrap release missing", "Install the Release build of nds-bootstrap here:"));
             return false;
         }
         else{
             useNightly = false;
         }
+    }
+
+    if (access(ndsBootstrapCheck.c_str(), F_OK) != 0) {
+        progressWnd().hide();
+        akui::messageBox(NULL, LANG("nds bootstrap", "firsttimetitle"),
+                         LANG("nds bootstrap", "firsttime"), MB_OK);
+        progressWnd().show();
     }
 
     std::vector<const char*> argv;
@@ -789,7 +808,7 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
             (dsiWarePrivateSaveSize > 0 &&
              !ensureDsiWareSave(mDsiWarePrvPath, dsiWarePrivateSaveSize))) {
             progressWnd().hide();
-            printError("Could not create the DSiWare save files on the SD card.");
+            printSavePreparationError();
             return false;
         }
 
@@ -847,6 +866,8 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
         progressWnd().setPercent(90);
         if (flags & PATCH_CHEATS) {
             if (!prepareCheats()) {
+                progressWnd().hide();
+                printError(LANG("loader", "cheat preparation error"));
                 return false;
             }
         }
@@ -861,6 +882,6 @@ bool NdsBootstrapLauncher::launchRomInternal(std::string romPath, std::string sa
 
     // Launch
     eRunNdsRetCode rc = runNdsFile(argv[0], argv.size(), &argv[0]);
-    if (rc == RUN_NDS_OK) return true;
-    return false; 
+    progressWnd().hide();
+    return checkNdsLaunch(rc);
 }
