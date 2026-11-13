@@ -64,6 +64,7 @@ class DSRomInfo {
     void drawDSRomIcon(u8 x, u8 y, GRAPHICS_ENGINE engine, bool small);
     void drawDSRomIconMem(void* mem);
     tNDSBanner& banner(void);
+    bool hasSidecarBanner() const { return _bannerSource == EBannerSidecar; }
     SAVE_INFO_EX& saveInfo(void);
     u8 version(void);
     void setExtIcon(const std::string& aValue);

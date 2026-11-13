@@ -686,17 +686,15 @@ void cMainList::updateInternalNames(void) {
         size_t total = _visibleRowCount;
         if (total > _rows.size() - _firstVisibleRowId) total = _rows.size() - _firstVisibleRowId;
         for (size_t ii = 0; ii < total; ++ii) {
-            if (0 == _rows[_firstVisibleRowId + ii][INTERNALNAME_COLUMN].text().length()) {
-                if (_romInfoList[_firstVisibleRowId + ii].isDSRom()) {
-                    _rows[_firstVisibleRowId + ii][INTERNALNAME_COLUMN].setText(
-                            unicode_to_local_string(_romInfoList[_firstVisibleRowId + ii]
-                                                            .banner()
-                                                            .titles[gs().language],
-                                                    128, NULL));
-                } else {
-                    _rows[_firstVisibleRowId + ii][INTERNALNAME_COLUMN].setText(
-                            _rows[_firstVisibleRowId + ii][SHOWNAME_COLUMN].text());
+            const size_t row = _firstVisibleRowId + ii;
+            if (_rows[row][INTERNALNAME_COLUMN].text().empty()) {
+                DSRomInfo& rominfo = _romInfoList[row];
+                std::string title;
+                if (rominfo.hasSidecarBanner() || rominfo.isDSRom()) {
+                    title = unicode_to_local_string(rominfo.banner().titles[gs().language], 128, NULL);
                 }
+                _rows[row][INTERNALNAME_COLUMN].setText(
+                        title.empty() ? _rows[row][SHOWNAME_COLUMN].text() : title);
             }
         }
     }
