@@ -90,7 +90,7 @@ See [the licenses folder](https://github.com/coderkei/akmenu-next/tree/main/lice
 
 ## Developer note
 
-This project contains code generated or refined with the assistance of AI language models, including contributions from external pull requests. All AI-assisted code is reviewed, edited, and modified as necessary before being accepted and integrated, in accordance with the project's [contributing guidelines](CONTRIBUTING.MD).
+This project contains code generated or refined with the assistance of AI language models, including contributions from external pull requests. All AI-assisted code is reviewed, edited, and modified as necessary before being accepted and integrated, in accordance with the project's [contributing guidelines](CONTRIBUTING.md).
 
 ## Contributing
 
