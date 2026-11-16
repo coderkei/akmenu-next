@@ -88,6 +88,10 @@ There's more in the [AKMenu-Next Plugin Documentation](https://coderkei.github.i
 This project is made up of code from a few different sources and is licensed as a whole under GPL-3.0-or-later.
 See [the licenses folder](https://github.com/coderkei/akmenu-next/tree/main/licenses) for more info and copies of all the licenses that apply.
 
+## Developer note
+
+This project contains code generated or refined with the assistance of AI language models, including contributions from external pull requests. All AI-assisted code is reviewed, edited, and modified as necessary before being accepted and integrated, in accordance with the project's [contributing guidelines](CONTRIBUTING.MD).
+
 ## Contributing
 
 Contributions are welcome, just make sure you've read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. Game compatibility issues should go to [nds-bootstrap](https://github.com/DS-Homebrew/nds-bootstrap) or [Pico-Loader](https://github.com/LNH-team/pico-loader) instead.
