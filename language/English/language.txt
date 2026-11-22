@@ -22,12 +22,12 @@ ok = OK
 cancel = Cancel
 
 [progress window]
-processing save = Creating save, dont power off
-processing copy = Copying file, dont power off, %c for cancel
+processing save = Creating save, don't power off
+processing copy = Copying file, don't power off, %c for cancel
 first use sd = Checking SD card for the first time using
 gba load = Loading gba game
 gba save load = Loading gba save
-gba save store = Processing gba save, dont power off
+gba save store = Processing gba save, don't power off
 erase nor = Erase NOR flash
 
 [copy file error]
@@ -68,7 +68,7 @@ text = Failed to restore save data.
 
 [language changed]
 title = Question
-text = System language setting changed, restart now to apply new lanaguage setting? Choose "No" to restart later.
+text = System language setting changed, restart now to apply new language setting? Choose "No" to restart later.
 
 [ui style changed]
 title = Question
@@ -141,7 +141,7 @@ text = There is not enough space on the disk.
 
 [unsupported sd]
 title = Unsupported SD card
-text = This SD card(Model:%s) is not suitable for running offical DS programs, please copy program from SD card to Acekard Internal Flash Memory and try again.
+text = This SD card(Model:%s) is not suitable for running official DS programs, please copy program from SD card to Acekard Internal Flash Memory and try again.
 
 [sd card error]
 title = SD card error
@@ -246,7 +246,7 @@ text = Do you want abort save processing?
 
 [gba warn]
 title = Warning
-text = Gba roms with size more then 32M don't support!
+text = Gba roms with size more than 32M don't support!
 
 [patches]
 download play = Single Card Play
@@ -440,7 +440,7 @@ pt = Portuguese
 pt-BR = Portuguese (BR)
 ro = Romanian
 ru = Russian
-ry = Rusyn
+ry = Ryukyuan
 sv = Swedish
 tr = Turkish
 uk = Ukrainian

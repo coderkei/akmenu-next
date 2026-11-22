@@ -31,7 +31,7 @@ inline constexpr OverlayLanguage overlayLanguages[] = {
     {"pt-BR", "Portuguese (BR)"},
     {"ro", "Romanian"},
     {"ru", "Russian", "Русский"},
-    {"ry", "Rusyn"},
+    {"ry", "Ryukyuan"},
     {"sv", "Swedish"},
     {"tr", "Turkish"},
     {"uk", "Ukrainian"},
